@@ -1,5 +1,9 @@
 <div align="center">
 
+<img src="./profile/gitprofile.png" width="100%" alt="Adnan Sami Profile Banner" />
+
+<br>
+
 # 👋 Hi, I'm Adnan Sami
 
 ### Frontend Developer • Web Designer • Digital Creator
@@ -40,6 +44,14 @@ Building clean, practical and user-focused digital experiences from Bangladesh �
 <img src="https://img.shields.io/badge/Reddit-adnanzeros-FF4500?style=for-the-badge&logo=reddit&logoColor=white" />
 </a>
 
+<a href="mailto:asadnanzeros@gmail.com">
+<img src="https://img.shields.io/badge/Email-asadnanzeros%40gmail.com-D14836?style=for-the-badge&logo=gmail&logoColor=white" />
+</a>
+
+</p>
+
+<p>
+📍 Bangladesh &nbsp; • &nbsp; ✉️ asadnanzeros@gmail.com
 </p>
 
 </div>
@@ -229,10 +241,6 @@ I believe the best way to learn technology is by building real projects, solving
 <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" />
 </a>
 
-<!-- <a href="https://www.facebook.com/adnansamidm">
-<img src="https://img.shields.io/badge/Facebook-1877F2?style=for-the-badge&logo=facebook&logoColor=white" />
-</a> -->
-
 <a href="https://www.instagram.com/adnanzeros">
 <img src="https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white" />
 </a>
@@ -245,12 +253,12 @@ I believe the best way to learn technology is by building real projects, solving
 <img src="https://img.shields.io/badge/Reddit-FF4500?style=for-the-badge&logo=reddit&logoColor=white" />
 </a>
 
-<!-- <a href="https://www.tiktok.com/@adnanzerosx">
-<img src="https://img.shields.io/badge/TikTok-000000?style=for-the-badge&logo=tiktok&logoColor=white" />
-</a> -->
-
 <a href="https://x.com/adnanzerosx">
 <img src="https://img.shields.io/badge/X-000000?style=for-the-badge&logo=x&logoColor=white" />
+</a>
+
+<a href="mailto:asadnanzeros@gmail.com">
+<img src="https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white" />
 </a>
 
 </div>
