@@ -50,9 +50,9 @@ Building clean, practical and user-focused digital experiences from Bangladesh �
 
 </p>
 
-<p>
+<!-- <p>
 📍 Bangladesh &nbsp; • &nbsp; ✉️ asadnanzeros@gmail.com
-</p>
+</p> -->
 
 </div>
 
