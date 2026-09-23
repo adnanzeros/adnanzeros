@@ -74,6 +74,17 @@ I work across web development, UI design, WordPress, frontend technologies and m
 
 ---
 
+# 🚀 Currently Working On
+
+* 🌐 Building modern websites and web applications
+* ⚛️ Improving my React and frontend development skills
+* 🧩 Creating useful Chrome Extensions
+* 🎨 Exploring UI/UX and digital design
+* ☁️ Learning modern deployment and cloud technologies
+* 💡 Turning practical ideas into real-world digital products
+
+---
+
 # 🛠️ Tech Stack
 
 ## 🌐 Languages & Web
@@ -84,8 +95,6 @@ I work across web development, UI design, WordPress, frontend technologies and m
 <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" />
 <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
 </p>
-
-**HTML5 • CSS3 • JavaScript • TypeScript**
 
 ---
 
@@ -100,8 +109,6 @@ I work across web development, UI design, WordPress, frontend technologies and m
 <img src="https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" />
 </p>
 
-**React • Next.js • React Native • React Router • Vite • Tailwind CSS**
-
 ---
 
 ## ☁️ Cloud, Hosting & Services
@@ -112,8 +119,6 @@ I work across web development, UI design, WordPress, frontend technologies and m
 <img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" />
 <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" />
 </p>
-
-**Google Cloud • Netlify • Vercel • Firebase**
 
 ---
 
@@ -126,8 +131,6 @@ I work across web development, UI design, WordPress, frontend technologies and m
 <img src="https://img.shields.io/badge/NPM-CB3837?style=for-the-badge&logo=npm&logoColor=white" />
 </p>
 
-**Python • PowerShell • Windows Terminal • NPM**
-
 ---
 
 ## 🔧 Version Control
@@ -136,8 +139,6 @@ I work across web development, UI design, WordPress, frontend technologies and m
 <img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white" />
 <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" />
 </p>
-
-**Git • GitHub**
 
 ---
 
@@ -150,19 +151,6 @@ I work across web development, UI design, WordPress, frontend technologies and m
 <img src="https://img.shields.io/badge/Blender-E87D0D?style=for-the-badge&logo=blender&logoColor=white" />
 <img src="https://img.shields.io/badge/Adobe_XD-470137?style=for-the-badge&logo=adobexd&logoColor=white" />
 </p>
-
-**WordPress • Canva • Figma • Blender • Adobe XD**
-
----
-
-# 🚀 What I'm Working On
-
-* 🌐 Building modern websites and web applications
-* ⚛️ Improving my React and frontend development skills
-* 🧩 Creating useful Chrome Extensions
-* 🎨 Exploring UI/UX and digital design
-* ☁️ Learning modern deployment and cloud technologies
-* 💡 Turning practical ideas into real-world digital products
 
 ---
 
@@ -178,24 +166,23 @@ A practical learning and guidance platform designed to help learners develop ski
 
 ---
 
+## 🚀 DevStack
+
+A React-based technology stack builder where users can explore technologies and build their own development stack.
+
+**Tech:** React • JavaScript • CSS • Vite • React Toastify
+
+🌐 **Live Demo:** https://sparkling-chaja-0c0966.netlify.app/
+
+💻 **GitHub:** https://github.com/adnanzeros/Assignment-5
+
+---
+
 ## 🧩 Chrome Extensions
 
 Building useful browser extensions focused on productivity and solving everyday digital problems.
 
 **Tech:** HTML • CSS • JavaScript • Chrome Extension APIs
-
----
-
-## ⚛️ React Projects
-
-Building frontend projects to improve my understanding of:
-
-* Component-based architecture
-* React Hooks
-* State management
-* Responsive UI
-* API integration
-* Modern frontend workflows
 
 ---
 
@@ -215,13 +202,23 @@ Building frontend projects to improve my understanding of:
 
 | Area        | Focus                        |
 | ----------- | ---------------------------- |
-| ⚛️ Frontend | React, Next.js, JavaScript   |
+| ⚛️ Frontend | React, JavaScript, Next.js   |
 | 🎨 Design   | UI/UX, Figma, Canva          |
 | 🌐 Web      | Responsive & modern websites |
 | ☁️ Cloud    | Vercel, Netlify, Firebase    |
 | 🧩 Tools    | Chrome Extensions            |
 | 🐙 Git      | Git & GitHub workflow        |
 | 🚀 Projects | Real-world digital products  |
+
+---
+
+# 📚 Currently Exploring
+
+<p>
+<img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white" />
+<img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
+<img src="https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
+</p>
 
 ---
 
@@ -249,12 +246,20 @@ I believe the best way to learn technology is by building real projects, solving
 <img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" />
 </a>
 
+<a href="https://www.facebook.com/adnansamidm">
+<img src="https://img.shields.io/badge/Facebook-1877F2?style=for-the-badge&logo=facebook&logoColor=white" />
+</a>
+
 <a href="https://www.reddit.com/user/adnanzeros/">
 <img src="https://img.shields.io/badge/Reddit-FF4500?style=for-the-badge&logo=reddit&logoColor=white" />
 </a>
 
 <a href="https://x.com/adnanzerosx">
 <img src="https://img.shields.io/badge/X-000000?style=for-the-badge&logo=x&logoColor=white" />
+</a>
+
+<a href="https://www.tiktok.com/@adnanzerosx">
+<img src="https://img.shields.io/badge/TikTok-000000?style=for-the-badge&logo=tiktok&logoColor=white" />
 </a>
 
 <a href="mailto:asadnanzeros@gmail.com">
