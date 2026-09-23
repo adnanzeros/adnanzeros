@@ -68,7 +68,7 @@ I work across web development, UI design, WordPress, frontend technologies and m
 ## ⚛️ Frameworks & Libraries
 
 <p>
-  <img src="https://skillicons.dev/icons?i=react,nextjs,reactnative,reactrouter,vite,tailwind" />
+  <img src="https://skillicons.dev/icons?i=react,nextjs,reactnative,vite,tailwind" />
 </p>
 
 **React • Next.js • React Native • React Router • Vite • Tailwind CSS**
@@ -161,41 +161,11 @@ Building frontend projects to improve my understanding of:
 
 <div align="center">
 
-<img src="https://github-readme-stats.vercel.app/api?username=adnanzeros&show_icons=true&hide_border=true&rank_icon=github" height="165" />
+<img src="./profile/stats.svg" height="170" alt="GitHub Statistics" />
 
-<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=adnanzeros&layout=compact&hide_border=true" height="165" />
-
-</div>
-
----
-
-# 🔥 GitHub Streak
-
-<div align="center">
-
-<img src="https://streak-stats.demolab.com?user=adnanzeros&hide_border=true" />
+<img src="./profile/top-langs.svg" height="170" alt="Top Languages" />
 
 </div>
-
-<!-- ---
-
-# 🏆 GitHub Trophies
-
-<div align="center">
-
-<img src="https://github-profile-trophy.vercel.app/?username=adnanzeros&theme=flat&no-frame=true&margin-w=8" />
-
-</div> -->
-
----
-
-<!-- # 📈 Contribution Activity
-
-<div align="center">
-
-<img src="https://github-readme-activity-graph.vercel.app/graph?username=adnanzeros&hide_border=true" />
-
-</div> -->
 
 ---
 
