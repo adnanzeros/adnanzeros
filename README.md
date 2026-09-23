@@ -75,7 +75,7 @@ I work across web development, UI design, WordPress, frontend technologies and m
 
 ---
 
-## ☁️ Cloud, Hosting & Backend Services
+## ☁️ Cloud, Hosting & Services
 
 <p>
   <img src="https://skillicons.dev/icons?i=gcp,netlify,vercel,firebase" />
@@ -95,7 +95,7 @@ I work across web development, UI design, WordPress, frontend technologies and m
 
 ---
 
-## 🔧 Version Control & Tools
+## 🔧 Version Control
 
 <p>
   <img src="https://skillicons.dev/icons?i=git,github" />
@@ -117,19 +117,12 @@ I work across web development, UI design, WordPress, frontend technologies and m
 
 # 🚀 What I'm Working On
 
-```text
-🌐 Web Development
-       ↓
-⚛️ React & Modern Frontend
-       ↓
-🎨 UI / UX Design
-       ↓
-🧩 Digital Tools & Extensions
-       ↓
-🚀 Real-world Projects
-```
-
-I'm currently focused on improving my frontend development skills and building practical projects that solve real problems.
+* 🌐 Building modern websites and web applications
+* ⚛️ Improving my React and frontend development skills
+* 🧩 Creating useful Chrome Extensions
+* 🎨 Exploring UI/UX and digital design
+* ☁️ Learning modern deployment and cloud technologies
+* 💡 Turning practical ideas into real-world digital products
 
 ---
 
@@ -151,7 +144,7 @@ Building useful browser extensions focused on productivity and solving everyday 
 
 ---
 
-## 💻 React Projects
+## ⚛️ React Projects
 
 Building frontend projects to improve my understanding of:
 
@@ -186,7 +179,17 @@ Building frontend projects to improve my understanding of:
 
 ---
 
-# 📈 Contribution Graph
+# 🏆 GitHub Trophies
+
+<div align="center">
+
+<img src="https://github-profile-trophy.vercel.app/?username=adnanzeros&theme=flat&no-frame=true&margin-w=8" />
+
+</div>
+
+---
+
+# 📈 Contribution Activity
 
 <div align="center">
 
@@ -223,31 +226,31 @@ I believe the best way to learn technology is by building real projects, solving
 <div align="center">
 
 <a href="https://github.com/adnanzeros">
-<img src="https://skillicons.dev/icons?i=github" width="45"/>
+  <img src="https://skillicons.dev/icons?i=github" width="45"/>
 </a>
 
 <a href="https://www.facebook.com/adnansamidm">
-<img src="https://skillicons.dev/icons?i=facebook" width="45"/>
+  <img src="https://skillicons.dev/icons?i=facebook" width="45"/>
 </a>
 
 <a href="https://www.linkedin.com/in/adnanzeros/">
-<img src="https://skillicons.dev/icons?i=linkedin" width="45"/>
+  <img src="https://skillicons.dev/icons?i=linkedin" width="45"/>
 </a>
 
 <a href="https://www.reddit.com/user/adnanzeros/">
-<img src="https://skillicons.dev/icons?i=reddit" width="45"/>
+  <img src="https://skillicons.dev/icons?i=reddit" width="45"/>
 </a>
 
 <a href="https://codepen.io/adnanzeros">
-<img src="https://skillicons.dev/icons?i=codepen" width="45"/>
+  <img src="https://skillicons.dev/icons?i=codepen" width="45"/>
 </a>
 
 <a href="https://www.tiktok.com/@adnanzerosx">
-<img src="https://skillicons.dev/icons?i=tiktok" width="45"/>
+  <img src="https://skillicons.dev/icons?i=tiktok" width="45"/>
 </a>
 
 <a href="https://x.com/adnanzerosx">
-<img src="https://skillicons.dev/icons?i=twitter" width="45"/>
+  <img src="https://skillicons.dev/icons?i=twitter" width="45"/>
 </a>
 
 </div>
