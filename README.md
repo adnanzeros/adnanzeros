@@ -177,7 +177,7 @@ Building frontend projects to improve my understanding of:
 
 </div>
 
----
+<!-- ---
 
 # 🏆 GitHub Trophies
 
@@ -185,17 +185,17 @@ Building frontend projects to improve my understanding of:
 
 <img src="https://github-profile-trophy.vercel.app/?username=adnanzeros&theme=flat&no-frame=true&margin-w=8" />
 
-</div>
+</div> -->
 
 ---
 
-# 📈 Contribution Activity
+<!-- # 📈 Contribution Activity
 
 <div align="center">
 
 <img src="https://github-readme-activity-graph.vercel.app/graph?username=adnanzeros&hide_border=true" />
 
-</div>
+</div> -->
 
 ---
 
