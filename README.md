@@ -8,28 +8,40 @@
 
 ### Frontend Developer • Web Designer • Digital Creator
 
-Building clean, practical and user-focused digital experiences from Bangladesh 🇧🇩
+Building clean, practical and user-focused digital experiences from
+
+# Bangladesh 🇧🇩
 
 <p>
 
 <a href="https://github.com/adnanzeros">
+
 <img src="https://img.shields.io/badge/GitHub-adnanzeros-181717?style=for-the-badge&logo=github&logoColor=white" />
+
 </a>
 
 <a href="https://www.linkedin.com/in/adnanzeros/">
+
 <img src="https://img.shields.io/badge/LinkedIn-adnanzeros-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" />
+
 </a>
 
 <a href="https://www.facebook.com/adnansamidm">
+
 <img src="https://img.shields.io/badge/Facebook-adnansamidm-1877F2?style=for-the-badge&logo=facebook&logoColor=white" />
+
 </a>
 
 <a href="https://www.instagram.com/adnanzeros">
+
 <img src="https://img.shields.io/badge/Instagram-adnanzeros-E4405F?style=for-the-badge&logo=instagram&logoColor=white" />
+
 </a>
 
 <a href="https://x.com/adnanzerosx">
+
 <img src="https://img.shields.io/badge/X-adnanzerosx-000000?style=for-the-badge&logo=x&logoColor=white" />
+
 </a>
 
 </p>
@@ -37,22 +49,77 @@ Building clean, practical and user-focused digital experiences from Bangladesh �
 <p>
 
 <a href="https://www.tiktok.com/@adnanzerosx">
+
 <img src="https://img.shields.io/badge/TikTok-adnanzerosx-000000?style=for-the-badge&logo=tiktok&logoColor=white" />
+
 </a>
 
 <a href="https://www.reddit.com/user/adnanzeros/">
+
 <img src="https://img.shields.io/badge/Reddit-adnanzeros-FF4500?style=for-the-badge&logo=reddit&logoColor=white" />
+
 </a>
 
-<a href="mailto:asadnanzeros@gmail.com">
+<!-- <a href="mailto:asadnanzeros@gmail.com">
+
 <img src="https://img.shields.io/badge/Email-asadnanzeros%40gmail.com-D14836?style=for-the-badge&logo=gmail&logoColor=white" />
-</a>
+
+</a> -->
 
 </p>
+
 
 <!-- <p>
 📍 Bangladesh &nbsp; • &nbsp; ✉️ asadnanzeros@gmail.com
 </p> -->
+=======
+<p>
+
+📍Dhaka, Bangladesh   •   <a href="mailto:asadnanzeros@gmail.com">
+
+<img src="https://img.shields.io/badge/Email-asadnanzeros%40gmail.com-D14836?style=for-the-badge&logo=gmail&logoColor=white" />
+
+</a>
+
+</p>
+
+
+</div>
+
+---
+
+## 💬 Quote
+
+<div align="center">
+
+### “Doing something is better than doing nothing.”
+
+**— adnanzeros**
+
+<br>
+
+<details>
+<summary>🌐 Translate Quote</summary>
+
+<br>
+
+🇬🇧 **English**
+
+> “Doing something is better than doing nothing.”
+
+🇧🇩 **বাংলা**
+
+> “কিছু না করার থেকে কিছু করা ভালো।”
+
+🇪🇸 **Español**
+
+> “Hacer algo es mejor que no hacer nada.”
+
+🇨🇳 **中文**
+
+> “做点什么总比什么都不做要好。”
+
+</details>
 
 </div>
 
@@ -90,10 +157,15 @@ I work across web development, UI design, WordPress, frontend technologies and m
 ## 🌐 Languages & Web
 
 <p>
+
 <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" />
+
 <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" />
+
 <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" />
+
 <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
+
 </p>
 
 ---
@@ -101,12 +173,19 @@ I work across web development, UI design, WordPress, frontend technologies and m
 ## ⚛️ Frameworks & Libraries
 
 <p>
+
 <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
+
 <img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white" />
+
 <img src="https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
+
 <img src="https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=reactrouter&logoColor=white" />
+
 <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" />
+
 <img src="https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" />
+
 </p>
 
 ---
@@ -114,10 +193,15 @@ I work across web development, UI design, WordPress, frontend technologies and m
 ## ☁️ Cloud, Hosting & Services
 
 <p>
+
 <img src="https://img.shields.io/badge/Google_Cloud-4285F4?style=for-the-badge&logo=googlecloud&logoColor=white" />
+
 <img src="https://img.shields.io/badge/Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white" />
+
 <img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" />
+
 <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" />
+
 </p>
 
 ---
@@ -125,10 +209,15 @@ I work across web development, UI design, WordPress, frontend technologies and m
 ## 💻 Programming & Development Environment
 
 <p>
+
 <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" />
+
 <img src="https://img.shields.io/badge/PowerShell-5391FE?style=for-the-badge&logo=powershell&logoColor=white" />
+
 <img src="https://img.shields.io/badge/Windows_Terminal-4D4D4D?style=for-the-badge&logo=windowsterminal&logoColor=white" />
+
 <img src="https://img.shields.io/badge/NPM-CB3837?style=for-the-badge&logo=npm&logoColor=white" />
+
 </p>
 
 ---
@@ -136,8 +225,11 @@ I work across web development, UI design, WordPress, frontend technologies and m
 ## 🔧 Version Control
 
 <p>
+
 <img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white" />
+
 <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" />
+
 </p>
 
 ---
@@ -145,11 +237,17 @@ I work across web development, UI design, WordPress, frontend technologies and m
 ## 🎨 Design & Creative Tools
 
 <p>
+
 <img src="https://img.shields.io/badge/WordPress-21759B?style=for-the-badge&logo=wordpress&logoColor=white" />
+
 <img src="https://img.shields.io/badge/Canva-00C4CC?style=for-the-badge&logo=canva&logoColor=white" />
+
 <img src="https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white" />
+
 <img src="https://img.shields.io/badge/Blender-E87D0D?style=for-the-badge&logo=blender&logoColor=white" />
+
 <img src="https://img.shields.io/badge/Adobe_XD-470137?style=for-the-badge&logo=adobexd&logoColor=white" />
+
 </p>
 
 ---
@@ -215,9 +313,13 @@ Building useful browser extensions focused on productivity and solving everyday 
 # 📚 Currently Exploring
 
 <p>
+
 <img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white" />
+
 <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
+
 <img src="https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
+
 </p>
 
 ---
@@ -235,35 +337,51 @@ I believe the best way to learn technology is by building real projects, solving
 <div align="center">
 
 <a href="https://github.com/adnanzeros">
+
 <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" />
+
 </a>
 
 <a href="https://www.instagram.com/adnanzeros">
+
 <img src="https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white" />
+
 </a>
 
 <a href="https://www.linkedin.com/in/adnanzeros/">
+
 <img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" />
+
 </a>
 
-<a href="https://www.facebook.com/adnansamidm">
+<!-- <a href="https://www.facebook.com/adnansamidm">
+
 <img src="https://img.shields.io/badge/Facebook-1877F2?style=for-the-badge&logo=facebook&logoColor=white" />
-</a>
 
-<a href="https://www.reddit.com/user/adnanzeros/">
+</a> -->
+
+<!-- <a href="https://www.reddit.com/user/adnanzeros/">
+
 <img src="https://img.shields.io/badge/Reddit-FF4500?style=for-the-badge&logo=reddit&logoColor=white" />
-</a>
+
+</a> -->
 
 <a href="https://x.com/adnanzerosx">
+
 <img src="https://img.shields.io/badge/X-000000?style=for-the-badge&logo=x&logoColor=white" />
+
 </a>
 
-<a href="https://www.tiktok.com/@adnanzerosx">
+<!-- <a href="https://www.tiktok.com/@adnanzerosx">
+
 <img src="https://img.shields.io/badge/TikTok-000000?style=for-the-badge&logo=tiktok&logoColor=white" />
-</a>
+
+</a> -->
 
 <a href="mailto:asadnanzeros@gmail.com">
+
 <img src="https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white" />
+
 </a>
 
 </div>
