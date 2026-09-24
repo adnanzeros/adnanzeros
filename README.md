@@ -217,11 +217,66 @@ A React-based technology stack builder that allows users to explore technologies
 
 ---
 
-## 🧩 Chrome Extensions
+# 🧩 TimeMate — Screen Time Coach
 
-Developing practical browser extensions designed to improve productivity and solve everyday digital problems.
+**TimeMate** is a Chrome Extension designed to help users understand and manage their browser screen time.
+
+It tracks time spent on browser tabs and websites and provides reminders to help users become more aware of their browsing habits.
+
+---
+
+## ✨ Features
+
+- ⏱️ Track browser tab and website usage
+- 🌐 Track time by individual domain
+- 🔔 Periodic screen-time reminders
+- 👤 Personalized reminder messages
+- 🌓 Light and dark theme support
+- 🎯 Focus Mode
+- 🚫 Website blocking support
+- 🔊 Reminder sound
+- 🧩 Chrome Extension Manifest V3
+- 💾 Local settings and usage data
+
+---
+
+## 🖼️ Preview
+
+![TimeMate — Screen Time Coach](./profile/timematess.png)
+
+---
+
+## 🛠️ Tech Stack
+
+- HTML
+- CSS
+- JavaScript
+- Chrome Extension APIs
+- Manifest V3
+
+---
+
+## 📂 Repository
+
+👉 **GitHub:**  
+
+https://github.com/adnanzeros/screen-time-coach
+
+---
+
+## 🎯 Project Goal
+
+The goal of **TimeMate** is to create a practical browser-based productivity tool that helps users become more aware of their screen-time habits while browsing the web.
+
+---
+
+## 🧩 Other Chrome Extension Experiments
+
+I also experiment with browser extensions and small digital tools that solve practical everyday problems.
 
 **Tech:** HTML • CSS • JavaScript • Chrome Extension APIs
+
+
 
 ---
 
