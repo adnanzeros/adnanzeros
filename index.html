@@ -1,100 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>adnanzeros — Adnan Sami, Frontend Developer</title>
-<meta name="description" content="Adnan Sami, known online as adnanzeros. Frontend developer and web designer from Dhaka.">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>adnanzeros — Adnan Sami, Frontend Developer</title>
+  <meta name="description"
+    content="Adnan Sami, known online as adnanzeros. Frontend developer and web designer from Dhaka.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-<div id="bar"></div>
-<canvas id="bg" aria-hidden="true"></canvas>
-<header class="nav">
-  <a href="#home" class="brand">adnanzeros</a>
-  <button class="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span></button>
-  <nav class="menu">
-    <a href="#about">About</a><a href="#stack">Tech</a><a href="#projects">Projects</a><a href="#github">GitHub</a><a href="#contact">Contact</a>
-  </nav>
-</header>
+  <div id="bar"></div>
+  <canvas id="bg" aria-hidden="true"></canvas>
+  <header class="nav">
+    <a href="#home" class="brand">adnanzeros</a>
+    <button class="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span></button>
+    <nav class="menu">
+      <a href="#about">About</a><a href="#stack">Tech</a><a href="#projects">Projects</a><a href="#github">GitHub</a><a
+        href="#contact">Contact</a>
+    </nav>
+  </header>
 
-<main>
-<section id="home" class="hero">
-  <div class="hero-text">
-    <p class="hi">Hi, I'm Adnan Sami, online as</p>
-    <h1 class="logo">adnanzeros</h1>
-    <p class="role">Frontend developer and web designer building clean, practical websites and tools from Dhaka.</p>
-    <div class="cta"><a class="btn solid" href="#projects">See my work</a><a class="btn" href="#contact">Send a message</a></div>
-  </div>
-  <div class="photo" id="photo"><img src="assets/adnan.png" alt="Adnan Sami (adnanzeros)" onerror="this.style.display='none'"></div>
-</section>
-
-<section id="about" class="wrap">
-  <h2>About</h2>
-  <p class="lead">Doing something is better than doing nothing. I build responsive sites and React apps, design interfaces, and make Chrome extensions that solve small everyday problems. I learn by shipping real projects.</p>
-</section>
-
-<section id="stack" class="wrap">
-  <h2>Tech I use</h2>
-  <div class="grid3" id="techgrid"></div>
-</section>
-
-<section id="projects" class="wrap">
-  <h2>Projects</h2>
-  <div class="tabs" role="tablist"><button class="on" data-t="frontend">Frontend</button><button data-t="backend">Backend</button><button data-t="tools">Extensions</button></div>
-  <div class="grid3" id="projgrid"></div>
-</section>
-
-<section id="github" class="wrap">
-  <h2>GitHub stats</h2>
-  <div class="stats">
-    <img loading="lazy" onerror="this.style.display='none'" alt="GitHub stats for adnanzeros" src="profile/stats.svg">
-    <img loading="lazy" onerror="this.style.display='none'" alt="Top languages of adnanzeros" src="profile/top-langs.svg">
-  </div>
-  <a class="btn" href="https://github.com/adnanzeros" target="_blank" rel="noopener">github.com/adnanzeros</a>
-</section>
-
-<section id="contact" class="wrap">
-  <h2>Send me a message</h2>
-  <form id="form" class="form" method="post" action="#contact" novalidate>
-    <input name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
-    <label>Name<input name="name" required maxlength="80" autocomplete="name"></label>
-    <label>Your email<input name="email" type="email" required maxlength="120" autocomplete="email"></label>
-    <div class="field">
-      <label for="phone">WhatsApp number</label>
-      <div class="phone">
-        <select name="dialCode" id="dial" aria-label="Country code"><option value="880" selected>Bangladesh (+880)</option></select>
-        <input name="phone" id="phone" type="tel" inputmode="tel" required maxlength="18" autocomplete="tel-national" placeholder="1712 345678" aria-label="WhatsApp number">
+  <main>
+    <section id="home" class="hero">
+      <div class="hero-text">
+        <p class="hi">Hi, I'm Adnan Sami, online as</p>
+        <h1 class="logo">adnanzeros</h1>
+        <p class="role">Frontend developer and web designer building clean, practical websites and tools from Dhaka.</p>
+        <div class="cta"><a class="btn solid" href="#projects">See my work</a><a class="btn" href="#contact">Send a
+            message</a><a class="btn" href="cv.html">View CV</a></div>
       </div>
+      <div class="photo" id="photo"><img src="assets/adnan.png" alt="Adnan Sami (adnanzeros)"
+          onerror="this.style.display='none'"></div>
+    </section>
+
+    <section id="about" class="wrap">
+      <h2>About</h2>
+      <figure class="quote">
+        <span class="qmark" aria-hidden="true">&ldquo;</span>
+        <blockquote>
+          <p>Doing something is better than doing nothing.</p>
+        </blockquote>
+        <figcaption>Adnan Sami</figcaption>
+      </figure>
+      <p class="lead">I build responsive sites and React apps, design interfaces, and make Chrome extensions that solve
+        small everyday problems. I learn by shipping real projects.</p>
+    </section>
+
+    <section id="stack" class="wrap">
+      <h2>Tech I use</h2>
+      <div class="grid3" id="techgrid"></div>
+    </section>
+
+    <section id="projects" class="wrap">
+      <h2>Projects</h2>
+      <div class="tabs" role="tablist"><button class="on" data-t="frontend">Frontend</button><button
+          data-t="backend">Backend</button><button data-t="tools">Extensions</button></div>
+      <div class="grid3" id="projgrid"></div>
+    </section>
+
+    <section id="github" class="wrap">
+      <h2>GitHub stats</h2>
+      <div class="stats">
+        <img loading="lazy" onerror="this.style.display='none'" alt="GitHub stats for adnanzeros"
+          src="profile/stats.svg">
+        <img loading="lazy" onerror="this.style.display='none'" alt="Top languages of adnanzeros"
+          src="profile/top-langs.svg">
+      </div>
+      <a class="btn" href="https://github.com/adnanzeros" target="_blank" rel="noopener">github.com/adnanzeros</a>
+    </section>
+
+    <section id="contact" class="wrap">
+      <h2>Send me a message</h2>
+      <form id="form" class="form" method="post" action="#contact" novalidate>
+        <input name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <label>Name<input name="name" required maxlength="80" autocomplete="name"></label>
+        <label>Your email<input name="email" type="email" required maxlength="120" autocomplete="email"></label>
+        <div class="field">
+          <label for="phone">WhatsApp number</label>
+          <div class="phone">
+            <select name="dialCode" id="dial" aria-label="Country code">
+              <option value="880" selected>Bangladesh (+880)</option>
+            </select>
+            <input name="phone" id="phone" type="tel" inputmode="tel" required maxlength="18"
+              autocomplete="tel-national" placeholder="1712 345678" aria-label="WhatsApp number">
+          </div>
+        </div>
+        <label>Message<textarea name="message" rows="5" required maxlength="3000"></textarea></label>
+        <button class="btn solid" type="submit" id="send">Send message &rarr;</button>
+        <p id="status" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <a href="#home" class="brand">adnanzeros</a>
+    <p>Adnan Sami · Dhaka, Bangladesh</p>
+    <div class="social">
+      <a href="https://github.com/adnanzeros" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://www.linkedin.com/in/adnanzeros/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://www.facebook.com/adnansamidm" target="_blank" rel="noopener">Facebook</a>
+      <a href="https://www.instagram.com/adnanzeros" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://x.com/adnanzerosx" target="_blank" rel="noopener">X</a>
+      <a href="https://www.tiktok.com/@adnanzerosx" target="_blank" rel="noopener">TikTok</a>
+      <a href="https://www.reddit.com/user/adnanzeros/" target="_blank" rel="noopener">Reddit</a>
     </div>
-    <label>Message<textarea name="message" rows="5" required maxlength="3000"></textarea></label>
-    <button class="btn solid" type="submit" id="send">Send message &rarr;</button>
-    <p id="status" role="status" aria-live="polite"></p>
-  </form>
-</section>
-</main>
+    <small>© <span id="yr"></span> adnanzeros</small>
+  </footer>
 
-<footer class="foot">
-  <a href="#home" class="brand">adnanzeros</a>
-  <p>Adnan Sami · Dhaka, Bangladesh</p>
-  <div class="social">
-    <a href="https://github.com/adnanzeros" target="_blank" rel="noopener">GitHub</a>
-    <a href="https://www.linkedin.com/in/adnanzeros/" target="_blank" rel="noopener">LinkedIn</a>
-    <a href="https://www.facebook.com/adnansamidm" target="_blank" rel="noopener">Facebook</a>
-    <a href="https://www.instagram.com/adnanzeros" target="_blank" rel="noopener">Instagram</a>
-    <a href="https://x.com/adnanzerosx" target="_blank" rel="noopener">X</a>
-    <a href="https://www.tiktok.com/@adnanzerosx" target="_blank" rel="noopener">TikTok</a>
-    <a href="https://www.reddit.com/user/adnanzeros/" target="_blank" rel="noopener">Reddit</a>
-  </div>
-  <small>© <span id="yr"></span> adnanzeros</small>
-</footer>
-
-<script src="vendor/three.min.js"></script>
-<script src="vendor/gsap.min.js"></script>
-<script src="vendor/ScrollTrigger.min.js"></script>
-<script src="countries.js"></script>
-<script src="main.js"></script>
+  <script src="vendor/three.min.js"></script>
+  <script src="vendor/gsap.min.js"></script>
+  <script src="vendor/ScrollTrigger.min.js"></script>
+  <script src="countries.js"></script>
+  <script src="main.js"></script>
 </body>
+
 </html>

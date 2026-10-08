@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Adnan Sami — CV | adnanzeros</title>
+  <meta name="description"
+    content="Curriculum vitae of Adnan Sami (adnanzeros), junior full-stack developer, web designer and digital creator from Faridpur, Bangladesh.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* ---------- page around the CV (web only) ---------- */
+    :root {
+      --line: #262626;
+      --mut: #9a9a9a
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box
+    }
+
+    * {
+      margin: 0
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+      -webkit-tap-highlight-color: transparent
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(1200px 600px at 50% -10%, #1b1b1b, #000 70%) #000;
+      color: #fff;
+      font-family: 'Poppins', system-ui, sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none
+    }
+
+    :focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: 3px
+    }
+
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px max(5vw, env(safe-area-inset-left));
+      border-bottom: 1px solid var(--line)
+    }
+
+    .brand {
+      font-weight: 700;
+      font-size: 1.2rem;
+      letter-spacing: -.02em
+    }
+
+    .back {
+      color: var(--mut);
+      font-size: .9rem;
+      transition: color .2s
+    }
+
+    .stage {
+      padding: 36px max(4vw, env(safe-area-inset-left)) max(56px, env(safe-area-inset-bottom))
+    }
+
+    .stage h1 {
+      max-width: 794px;
+      margin: 0 auto 6px;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 700;
+      letter-spacing: -.03em
+    }
+
+    .stage .sub {
+      max-width: 794px;
+      margin: 0 auto 22px;
+      color: var(--mut);
+      font-size: .95rem
+    }
+
+    .fit {
+      position: relative;
+      width: min(210mm, 100%);
+      height: 297mm;
+      margin: 0 auto
+    }
+
+    .actions {
+      width: min(210mm, 100%);
+      margin: 26px auto 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 13px 28px;
+      border: 1px solid #fff;
+      border-radius: 999px;
+      font: 500 .95rem 'Poppins', sans-serif;
+      color: #fff;
+      background: transparent;
+      cursor: pointer;
+      transition: .25s
+    }
+
+    .btn.solid {
+      background: #fff;
+      color: #000
+    }
+
+    .btn svg {
+      width: 18px;
+      height: 18px
+    }
+
+    .btn:disabled {
+      opacity: .6;
+      cursor: wait
+    }
+
+    .note {
+      width: min(210mm, 100%);
+      margin: 12px auto 0;
+      min-height: 1.5em;
+      color: var(--mut);
+      font-size: .88rem
+    }
+
+    @media(hover:hover) {
+      .back:hover {
+        color: #fff
+      }
+
+      .btn:hover {
+        background: #fff;
+        color: #000
+      }
+
+      .btn.solid:hover {
+        background: transparent;
+        color: #fff
+      }
+    }
+
+    @media(max-width:480px) {
+      .actions .btn {
+        width: 100%
+      }
+
+      .stage {
+        padding-top: 24px
+      }
+    }
+
+    /* ---------- the CV sheet (A4) ---------- */
+    .sheet {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform-origin: 0 0;
+      width: 210mm;
+      height: 297mm;
+      overflow: hidden;
+      background: #fff;
+      color: #111;
+      padding: 14mm 15mm 12mm;
+      font: 400 12px/1.55 'Poppins', Arial, sans-serif;
+      box-shadow: 0 30px 80px rgba(255, 255, 255, .08), 0 0 0 1px #2a2a2a
+    }
+
+    .sheet a {
+      color: inherit
+    }
+
+    .sheet svg.i {
+      width: 12px;
+      height: 12px;
+      flex: none;
+      fill: none;
+      stroke: #111;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round
+    }
+
+    .head {
+      display: grid;
+      grid-template-columns: 1fr 126px;
+      gap: 24px;
+      align-items: center;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #111
+    }
+
+    .head h1 {
+      font-size: 40px;
+      font-weight: 700;
+      letter-spacing: -.02em;
+      line-height: 1.05;
+      margin: 0
+    }
+
+    .head .role {
+      margin-top: 7px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #333
+    }
+
+    .contact {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px 18px;
+      margin-top: 16px;
+      font-size: 11px
+    }
+
+    .contact span,
+    .contact a {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0
+    }
+
+    .contact b {
+      font-weight: 500;
+      word-break: break-all
+    }
+
+    .photo {
+      width: 126px;
+      height: 126px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: #e6e8ec;
+      border: 3px solid #111;
+      justify-self: end
+    }
+
+    .photo img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 50% 20%
+    }
+
+    .cols {
+      display: grid;
+      grid-template-columns: 1fr 228px;
+      gap: 30px;
+      margin-top: 24px
+    }
+
+    .sec {
+      margin-bottom: 24px
+    }
+
+    .sec h2 {
+      margin: 0 0 12px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #d2d2d2;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase
+    }
+
+    .sec p {
+      margin: 0;
+      color: #2a2a2a
+    }
+
+    .motto {
+      margin-top: 8px !important;
+      font-weight: 500;
+      font-style: italic;
+      color: #111 !important
+    }
+
+    .item {
+      margin-bottom: 15px
+    }
+
+    .item:last-child {
+      margin-bottom: 0
+    }
+
+    .item .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px
+    }
+
+    .item h3 {
+      margin: 0;
+      font-size: 13px;
+      font-weight: 700
+    }
+
+    .item .meta {
+      font-size: 10px;
+      font-weight: 500;
+      color: #666;
+      white-space: nowrap
+    }
+
+    .item p {
+      margin: 3px 0 0;
+      color: #2a2a2a;
+      font-size: 11.5px
+    }
+
+    .item .lnk {
+      margin-top: 3px;
+      font-size: 10.5px;
+      color: #555
+    }
+
+    .edu {
+      display: grid;
+      grid-template-columns: 104px 1fr;
+      gap: 14px;
+      align-items: start
+    }
+
+    .edu img {
+      display: block;
+      width: 104px;
+      height: auto;
+      border-radius: 8px
+    }
+
+    .edu .nologo {
+      width: 104px;
+      height: 42px;
+      border-radius: 8px;
+      border: 1px solid #d2d2d2;
+      display: grid;
+      place-items: center;
+      font-size: 9px;
+      font-weight: 700;
+      color: #555;
+      text-align: center;
+      line-height: 1.2
+    }
+
+    .skill {
+      margin-bottom: 13px
+    }
+
+    .skill:last-child {
+      margin-bottom: 0
+    }
+
+    .skill b {
+      display: block;
+      margin-bottom: 2px;
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: #666
+    }
+
+    .skill span {
+      font-size: 11.5px;
+      color: #222
+    }
+
+    .dl {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 8px 12px;
+      font-size: 11.5px;
+      margin: 0
+    }
+
+    .dl dt {
+      color: #666;
+      font-weight: 500
+    }
+
+    .dl dd {
+      margin: 0;
+      font-weight: 500
+    }
+
+    .foot {
+      margin-top: 6px;
+      color: #777;
+      font-size: 10.5px
+    }
+
+    @page {
+      size: A4;
+      margin: 0
+    }
+
+    @media print {
+
+      html,
+      body {
+        background: #fff !important
+      }
+
+      .ui {
+        display: none !important
+      }
+
+      .stage {
+        padding: 0 !important
+      }
+
+      .fit {
+        width: 210mm !important;
+        height: 297mm !important;
+        margin: 0 !important
+      }
+
+      .sheet {
+        transform: none !important;
+        box-shadow: none !important
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-mail" viewBox="0 0 24 24">
+      <path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" />
+      <polyline points="22,6 12,13 2,6" />
+    </symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24">
+      <path
+        d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+    </symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24">
+      <path
+        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+    </symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24">
+      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+      <circle cx="12" cy="10" r="3" />
+    </symbol>
+    <symbol id="i-github" viewBox="0 0 24 24">
+      <path
+        d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+    </symbol>
+    <symbol id="i-linkedin" viewBox="0 0 24 24">
+      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+      <rect x="2" y="9" width="4" height="12" />
+      <circle cx="4" cy="4" r="2" />
+    </symbol>
+    <symbol id="i-download" viewBox="0 0 24 24">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <polyline points="7 10 12 15 17 10" />
+      <line x1="12" y1="15" x2="12" y2="3" />
+    </symbol>
+    <symbol id="i-open" viewBox="0 0 24 24">
+      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+      <polyline points="15 3 21 3 21 9" />
+      <line x1="10" y1="14" x2="21" y2="3" />
+    </symbol>
+  </svg>
+
+  <header class="top ui">
+    <a href="index.html" class="brand">adnanzeros</a>
+    <a href="index.html" class="back">&larr; Back to portfolio</a>
+  </header>
+
+  <main class="stage">
+    <h1 class="ui">My CV</h1>
+    <p class="sub ui">Preview below. You can download the one-page PDF with the button under the CV.</p>
+
+    <div class="fit" id="fit">
+      <article class="sheet" id="sheet" aria-label="Curriculum vitae of Adnan Sami">
+
+        <header class="head">
+          <div>
+            <h1>Adnan Sami</h1>
+            <p class="role">Junior Frontend &amp; Backend Developer &middot; Web Designer &middot; Digital Creator</p>
+            <div class="contact">
+              <a href="mailto:adnanzeros@gmail.com"><svg class="i">
+                  <use href="#i-mail" />
+                </svg><b>adnanzeros@gmail.com</b></a>
+              <span><svg class="i">
+                  <use href="#i-pin" />
+                </svg><b>Faridpur, Dhaka Division, Bangladesh</b></span>
+              <a href="tel:+8801850492054"><svg class="i">
+                  <use href="#i-phone" />
+                </svg><b>+880 1850 492054</b></a>
+              <a href="https://wa.me/8801580327310"><svg class="i">
+                  <use href="#i-chat" />
+                </svg><b>WhatsApp +880 1580 327310</b></a>
+              <a href="https://github.com/adnanzeros"><svg class="i">
+                  <use href="#i-github" />
+                </svg><b>github.com/adnanzeros</b></a>
+              <a href="https://www.linkedin.com/in/adnanzeros/"><svg class="i">
+                  <use href="#i-linkedin" />
+                </svg><b>linkedin.com/in/adnanzeros</b></a>
+            </div>
+          </div>
+          <div class="photo"><img src="assets/adnan.png" alt="Adnan Sami"></div>
+        </header>
+
+        <div class="cols">
+          <div class="main">
+            <section class="sec">
+              <h2>Profile</h2>
+              <p>Junior full-stack web developer and web designer from Faridpur, Bangladesh. I build responsive websites
+                and React apps, design clean interfaces, and make Chrome extensions that solve small everyday problems.
+                I am currently training in AI-driven full-stack web engineering at Programming Hero and I learn by
+                shipping real projects.</p>
+              <p class="motto">&ldquo;Doing something is better than doing nothing.&rdquo;</p>
+            </section>
+
+            <section class="sec">
+              <h2>Projects</h2>
+              <div class="item">
+                <div class="row">
+                  <h3>TimeMate: Screen Time Coach</h3><span class="meta">JavaScript &middot; Chrome APIs</span>
+                </div>
+                <p>Chrome extension (Manifest V3) that tracks tab time, sends reminders, blocks distracting sites and
+                  includes a Focus Mode.</p>
+                <div class="lnk">github.com/adnanzeros/screen-time-coach</div>
+              </div>
+              <div class="item">
+                <div class="row">
+                  <h3>DevStack</h3><span class="meta">React &middot; Vite &middot; CSS</span>
+                </div>
+                <p>React tech stack builder where users explore technologies and compose their own stack.</p>
+                <div class="lnk">github.com/adnanzeros/Assignment-5</div>
+              </div>
+              <div class="item">
+                <div class="row">
+                  <h3>Shuru Kori Online</h3><span class="meta">Web &middot; Platform</span>
+                </div>
+                <p>Learning and guidance platform with live sessions and practical work.</p>
+                <div class="lnk">shurukori.online</div>
+              </div>
+              <div class="item">
+                <div class="row">
+                  <h3>Personal Portfolio (adnanzeros)</h3><span class="meta">Three.js &middot; GSAP &middot;
+                    Node.js</span>
+                </div>
+                <p>Responsive portfolio with a 3D animated background, scroll animations and a serverless contact API
+                  that emails messages through Resend.</p>
+                <div class="lnk">github.com/adnanzeros</div>
+              </div>
+            </section>
+
+            <section class="sec">
+              <h2>Education &amp; Training</h2>
+              <div class="item edu">
+                <img src="assets/course.png" alt="Programming Hero"
+                  onerror="this.outerHTML='<div class=&quot;nologo&quot;>Programming<br>Hero</div>'">
+                <div>
+                  <div class="row">
+                    <h3>AI-Driven Full Stack Web Engineering</h3><span class="meta">Ongoing</span>
+                  </div>
+                  <p>Programming Hero &middot; Batch 14<br>Student ID: <span
+                      style="white-space:nowrap">WEB14-0865</span></p>
+                </div>
+              </div>
+              <div class="item edu">
+                <div class="nologo">HSC</div>
+                <div>
+                  <div class="row">
+                    <h3>Higher Secondary Certificate (HSC)</h3><span class="meta">Completed</span>
+                  </div>
+                  <p>Government Yasin College, Faridpur, Bangladesh</p>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <aside class="side">
+            <section class="sec">
+              <h2>Skills</h2>
+              <div class="skill"><b>Languages</b><span>HTML5, CSS3, JavaScript, TypeScript, Python, PowerShell</span>
+              </div>
+              <div class="skill"><b>Frontend</b><span>React, Next.js, React Native, React Router, Vite, Tailwind CSS,
+                  WordPress, GSAP, Three.js</span></div>
+              <div class="skill"><b>Backend &amp; Cloud</b><span>Node.js, Vercel, Netlify, Firebase, Google Cloud,
+                  Resend</span></div>
+              <div class="skill"><b>Tools &amp; Design</b><span>Git, GitHub, npm, Figma, Canva, Adobe XD, Blender</span>
+              </div>
+            </section>
+
+            <section class="sec">
+              <h2>Personal Details</h2>
+              <dl class="dl">
+                <dt>Nationality</dt>
+                <dd>Bangladeshi</dd>
+                <dt>Religion</dt>
+                <dd>Muslim</dd>
+                <dt>Location</dt>
+                <dd>Faridpur, Bangladesh</dd>
+              </dl>
+            </section>
+
+            <p class="foot">References available on request.</p>
+          </aside>
+        </div>
+
+      </article>
+    </div>
+
+    <div class="actions ui">
+      <button class="btn solid" id="dl" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <use href="#i-download" />
+        </svg><span>Download CV (PDF)</span></button>
+      <button class="btn" id="pr" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <use href="#i-open" />
+        </svg><span>Print</span></button>
+    </div>
+    <p class="note ui" id="note" role="status" aria-live="polite"></p>
+  </main>
+
+  <script>
+    /* 1) scale the A4 sheet to fit any screen (preview only; print/PDF uses the real A4 size) */
+    (function () {
+      var fit = document.getElementById('fit'), sheet = document.getElementById('sheet');
+      function fitSheet() {
+        var s = Math.min(1, fit.clientWidth / sheet.offsetWidth);
+        sheet.style.transform = 'scale(' + s + ')';
+        fit.style.height = (sheet.offsetHeight * s) + 'px';
+      }
+      fitSheet();
+      addEventListener('resize', fitSheet);
+      addEventListener('load', fitSheet);
+    })();
+
+    /* 2) the PDF is made from THIS page (api/cv.js opens cv.html), so editing the CV above updates the PDF too.
+          If the server cannot make it, the browser's own "Save as PDF" print window opens instead. */
+    (function () {
+      var FILE = 'Adnan-Sami-CV';
+      var dl = document.getElementById('dl'), pr = document.getElementById('pr'), note = document.getElementById('note');
+      var say = function (t) { note.textContent = t || '' };
+      var oldTitle = document.title;
+      addEventListener('beforeprint', function () { oldTitle = document.title; document.title = FILE });   // default file name in the print window
+      addEventListener('afterprint', function () { document.title = oldTitle });
+
+      pr.addEventListener('click', function () { window.print() });
+
+      dl.addEventListener('click', async function () {
+        var label = dl.querySelector('span'), txt = label.textContent;
+        dl.disabled = true; label.textContent = 'Preparing PDF…'; say('');
+        try {
+          var r = await fetch('/api/cv', { cache: 'no-store' });
+          if (!r.ok || (r.headers.get('content-type') || '').indexOf('pdf') < 0) throw new Error('no pdf');
+          var url = URL.createObjectURL(await r.blob()), a = document.createElement('a');
+          a.href = url; a.download = FILE + '.pdf'; document.body.appendChild(a); a.click(); a.remove();
+          setTimeout(function () { URL.revokeObjectURL(url) }, 5000);
+          say('Your CV is downloading.');
+        } catch (e) {
+          say('Direct download is not available right now. In the print window choose "Save as PDF".');
+          window.print();
+        }
+        dl.disabled = false; label.textContent = txt;
+      });
+    })();
+  </script>
+</body>
+
+</html>
