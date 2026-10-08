@@ -7,6 +7,10 @@
   <title>Adnan Sami — CV | adnanzeros</title>
   <meta name="description"
     content="Curriculum vitae of Adnan Sami (adnanzeros), junior full-stack developer, web designer and digital creator from Faridpur, Bangladesh.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta name="theme-color" content="#000000">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
@@ -61,9 +65,21 @@
     }
 
     .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
       font-weight: 700;
       font-size: 1.2rem;
       letter-spacing: -.02em
+    }
+
+    .brand img {
+      display: block;
+      width: 26px;
+      height: 26px;
+      border-radius: 7px;
+      filter: invert(1)
+        /* white badge, black "a" */
     }
 
     .back {
@@ -167,6 +183,42 @@
 
       .stage {
         padding-top: 24px
+      }
+    }
+
+    /* ---------- compact header on mobile (brand left, small "Back" pill right, always one line) ---------- */
+    @media(max-width:480px) {
+      .top {
+        flex-wrap: nowrap;
+        gap: 8px;
+        padding: 9px max(4vw, env(safe-area-inset-left))
+      }
+
+      .brand {
+        font-size: .98rem;
+        gap: 7px;
+        white-space: nowrap;
+        min-width: 0
+      }
+
+      .brand img {
+        width: 22px;
+        height: 22px;
+        border-radius: 6px
+      }
+
+      .back {
+        flex: none;
+        white-space: nowrap;
+        font-size: .78rem;
+        line-height: 1;
+        padding: 7px 12px;
+        border: 1px solid var(--line);
+        border-radius: 999px
+      }
+
+      .back .long {
+        display: none
       }
     }
 
@@ -487,8 +539,8 @@
   </svg>
 
   <header class="top ui">
-    <a href="index.html" class="brand">adnanzeros</a>
-    <a href="index.html" class="back">&larr; Back to portfolio</a>
+    <a href="index.html" class="brand"><img src="favicon.svg" alt="" width="26" height="26">adnanzeros</a>
+    <a href="index.html" class="back">&larr; Back<span class="long"> to portfolio</span></a>
   </header>
 
   <main class="stage">
@@ -523,7 +575,7 @@
                 </svg><b>linkedin.com/in/adnanzeros</b></a>
             </div>
           </div>
-          <div class="photo"><img src="assets/adnan.png" alt="Adnan Sami"></div>
+          <div class="photo"><img src="assets/adnan.webp" alt="Adnan Sami" width="920" height="920"></div>
         </header>
 
         <div class="cols">
@@ -575,8 +627,7 @@
             <section class="sec">
               <h2>Education &amp; Training</h2>
               <div class="item edu">
-                <img src="assets/course.png" alt="Programming Hero"
-                  onerror="this.outerHTML='<div class=&quot;nologo&quot;>Programming<br>Hero</div>'">
+                <div class="nologo">Programming<br>Hero</div>
                 <div>
                   <div class="row">
                     <h3>AI-Driven Full Stack Web Engineering</h3><span class="meta">Ongoing</span>

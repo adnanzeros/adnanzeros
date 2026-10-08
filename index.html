@@ -7,10 +7,20 @@
   <title>adnanzeros — Adnan Sami, Frontend Developer</title>
   <meta name="description"
     content="Adnan Sami, known online as adnanzeros. Frontend developer and web designer from Dhaka.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta name="theme-color" content="#000000">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
-    rel="stylesheet">
+  <!-- font loads without blocking the first paint (system font shows instantly, Poppins swaps in) -->
+  <link rel="stylesheet" media="print" onload="this.media='all'"
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap">
+  <noscript>
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap">
+  </noscript>
+  <link rel="preload" as="image" href="assets/adnan.webp" type="image/webp" fetchpriority="high">
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -18,7 +28,7 @@
   <div id="bar"></div>
   <canvas id="bg" aria-hidden="true"></canvas>
   <header class="nav">
-    <a href="#home" class="brand">adnanzeros</a>
+    <a href="#home" class="brand"><img src="favicon.svg" alt="" width="28" height="28">adnanzeros</a>
     <button class="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span></button>
     <nav class="menu">
       <a href="#about">About</a><a href="#stack">Tech</a><a href="#projects">Projects</a><a href="#github">GitHub</a><a
@@ -31,12 +41,29 @@
       <div class="hero-text">
         <p class="hi">Hi, I'm Adnan Sami, online as</p>
         <h1 class="logo">adnanzeros</h1>
+        <script>
+          (function () {
+            var h = document.querySelector('.logo'), t = h.textContent;
+            h.setAttribute('data-t', t);
+            h.setAttribute('aria-label', t);
+            h.innerHTML = Array.from(t).map(function (c, i) {
+              return '<span aria-hidden="true" style="--i:' + i + '">' + c + '</span>';
+            }).join('');
+          })();
+        </script>
         <p class="role">Frontend developer and web designer building clean, practical websites and tools from Dhaka.</p>
         <div class="cta"><a class="btn solid" href="#projects">See my work</a><a class="btn" href="#contact">Send a
             message</a><a class="btn" href="cv.html">View CV</a></div>
       </div>
-      <div class="photo" id="photo"><img src="assets/adnan.png" alt="Adnan Sami (adnanzeros)"
-          onerror="this.style.display='none'"></div>
+      <div class="photo" id="photo">
+        <div class="photo-in">
+          <picture>
+            <source srcset="assets/adnan.webp" type="image/webp">
+            <img src="assets/adnan.png" alt="Adnan Sami (adnanzeros)" width="920" height="920" fetchpriority="high"
+              decoding="async" onerror="this.style.display='none'">
+          </picture>
+        </div>
+      </div>
     </section>
 
     <section id="about" class="wrap">
@@ -99,7 +126,7 @@
   </main>
 
   <footer class="foot">
-    <a href="#home" class="brand">adnanzeros</a>
+    <a href="#home" class="brand"><img src="favicon.svg" alt="" width="28" height="28">adnanzeros</a>
     <p>Adnan Sami · Dhaka, Bangladesh</p>
     <div class="social">
       <a href="https://github.com/adnanzeros" target="_blank" rel="noopener">GitHub</a>
@@ -113,11 +140,11 @@
     <small>© <span id="yr"></span> adnanzeros</small>
   </footer>
 
-  <script src="vendor/three.min.js"></script>
-  <script src="vendor/gsap.min.js"></script>
-  <script src="vendor/ScrollTrigger.min.js"></script>
-  <script src="countries.js"></script>
-  <script src="main.js"></script>
+  <!-- three.js (vendor/three.min.js) is loaded by main.js after the page is ready -->
+  <script defer src="vendor/gsap.min.js"></script>
+  <script defer src="vendor/ScrollTrigger.min.js"></script>
+  <script defer src="countries.js"></script>
+  <script defer src="main.js"></script>
 </body>
 
 </html>

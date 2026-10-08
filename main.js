@@ -3,8 +3,13 @@ const $ = (s, r = document) => r.querySelector(s),
 const reduce =
   matchMedia('(prefers-reduced-motion: reduce)').matches ||
   typeof gsap === 'undefined';
-if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined')
+if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
+  // phones: the address bar showing/hiding while you scroll must NOT trigger a full re-layout (main cause of scroll jank)
+  ScrollTrigger.config({ ignoreMobileResize: true });
+}
+// real mouse / trackpad only. touch screens skip tilt + parallax = lighter and smoother
+const canHover = matchMedia('(hover:hover) and (pointer:fine)').matches;
 $('#yr').textContent = new Date().getFullYear();
 
 /* ---------- contact form (runs first so nothing else can break it) ---------- */
@@ -143,7 +148,8 @@ $('#techgrid').innerHTML = Object.entries(TECH)
       `<div class="tgroup"><h3>${k}</h3><div class="tiles">${v.map(([n, f]) => `<div class="tile tilt"><img src="assets/tech/${f}.svg" alt="${n}" width="84" height="84" loading="lazy"><span>${n}</span></div>`).join('')}</div></div>`,
   )
   .join('');
-/* project cards: grid on tablet/desktop, 3D sticky stack on phones (<=480px) */
+
+/* project cards: grid on tablet/desktop, sticky stack on phones (<=480px) */
 let curTab = 'frontend',
   stackFx = [];
 const stackMQ = matchMedia('(max-width:480px)');
@@ -179,28 +185,29 @@ const buildStack = () => {
             trigger: c,
             start: 'top 100%',
             end: 'top 72%',
-            scrub: 0.4,
+            scrub: 0.2,
           },
         },
       ),
     );
     // 2) when the next card slides over it, this one sinks back and dims
+    //    (dimming = overlay opacity via --dim, much cheaper than a CSS filter)
     if (i < n - 1)
       stackFx.push(
         gsap.fromTo(
           c,
-          { scale: 1, rotateX: 0, filter: 'brightness(1)' },
+          { scale: 1, rotateX: 0, '--dim': 0 },
           {
             scale: 0.93,
             rotateX: 5,
-            filter: 'brightness(.5)',
+            '--dim': 0.55,
             ease: 'none',
             immediateRender: false,
             scrollTrigger: {
               trigger: cards[i + 1],
               start: 'top 88%',
               end: 'top ' + (stackTop(i + 1) + 10) + 'px',
-              scrub: 0.4,
+              scrub: 0.2,
             },
           },
         ),
@@ -224,15 +231,20 @@ const drawProj = t => {
   } else {
     bindTilt();
     if (!reduce)
-      gsap.from('#projgrid .card', {
-        y: 40,
-        rotateX: -40,
-        transformPerspective: 900,
-        opacity: 0,
-        stagger: 0.1,
-        duration: 0.7,
-        ease: 'power3.out',
-      });
+      stackFx.push(
+        gsap.from('#projgrid .card', {
+          y: 40,
+          rotateX: -40,
+          transformPerspective: 900,
+          opacity: 0,
+          stagger: 0.1,
+          duration: 0.7,
+          ease: 'power3.out',
+          clearProps: 'transform,opacity',
+          // plays when the grid scrolls into view (not at page load, where nobody can see it)
+          scrollTrigger: { trigger: '#projgrid', start: 'top 92%', once: true },
+        }),
+      );
   }
   if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
 };
@@ -257,9 +269,9 @@ const setMenu = o => {
 burger.onclick = () => setMenu(!menu.classList.contains('open'));
 $$('.menu a').forEach(a => (a.onclick = () => setMenu(false)));
 
-/* ---------- 3D tilt (cards + photo) ---------- */
+/* ---------- 3D tilt (cards + photo): mouse only ---------- */
 function bindTilt() {
-  if (reduce) return;
+  if (reduce || !canHover) return;
   $$('.tilt').forEach(el => {
     if (el._t) return;
     el._t = 1;
@@ -281,52 +293,24 @@ function bindTilt() {
   });
 }
 const img = $('#photo img');
-img.classList.add('tilt');
+if (img) img.classList.add('tilt');
 drawProj('frontend');
 bindTilt();
 
-/* ---------- hero intro (one orchestrated moment) ---------- */
-const logo = $('.logo');
-logo.innerHTML = [...logo.textContent].map(c => `<span>${c}</span>`).join('');
-if (typeof gsap !== 'undefined') gsap.registerPlugin(ScrollTrigger);
-if (!reduce) {
-  gsap
-    .timeline({ defaults: { ease: 'power4.out' } })
-    .from('.logo span', {
-      yPercent: 110,
-      rotateX: -90,
-      opacity: 0,
-      stagger: 0.05,
-      duration: 1.1,
-    })
-    .from(
-      '.hi,.role,.cta',
-      { y: 20, opacity: 0, stagger: 0.12, duration: 0.7 },
-      '-=.6',
-    )
-    .from(
-      '#photo img',
-      { rotateY: -60, opacity: 0, scale: 0.9, duration: 1.3 },
-      '-=1.2',
-    );
-  gsap.utils
-    .toArray('.wrap h2')
-    .forEach(h =>
-      gsap.from(h, {
-        scrollTrigger: { trigger: h, start: 'top 85%' },
-        x: -30,
-        opacity: 0,
-        duration: 0.8,
-      }),
-    );
-}
+/* hero intro is pure CSS now (see style.css) - it starts on the first paint, no JS needed */
 
-/* ---------- three.js background ---------- */
-try {
-  (() => {
-    const cv = $('#bg'),
-      R = new THREE.WebGLRenderer({ canvas: cv, alpha: true, antialias: true });
-    R.setPixelRatio(Math.min(devicePixelRatio, innerWidth <= 991 ? 1.5 : 2));
+/* ---------- three.js background (loaded AFTER the page, so first load stays fast) ---------- */
+const initBg = () => {
+  try {
+    const mobile = innerWidth <= 991,
+      cv = $('#bg'),
+      R = new THREE.WebGLRenderer({
+        canvas: cv,
+        alpha: true,
+        antialias: !mobile,
+        powerPreference: 'low-power',
+      });
+    R.setPixelRatio(Math.min(devicePixelRatio, mobile ? 1 : 1.5));
     const S = new THREE.Scene(),
       C = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
     C.position.z = 7;
@@ -346,7 +330,7 @@ try {
       }),
     );
     ring.rotation.x = 1.2;
-    const n = 700,
+    const n = mobile ? 350 : 700,
       pos = new Float32Array(n * 3);
     for (let i = 0; i < n * 3; i++) pos[i] = (Math.random() - 0.5) * 26;
     const pg = new THREE.BufferGeometry();
@@ -363,118 +347,201 @@ try {
     const g = new THREE.Group();
     g.add(core, ring);
     S.add(g, pts);
-    const size = () => {
-      R.setSize(innerWidth, innerHeight);
-      C.aspect = innerWidth / innerHeight;
+
+    let W = 0,
+      H = 0;
+    const size = force => {
+      const w = innerWidth,
+        h = innerHeight;
+      // ignore the small height changes of the phone address bar (resizing the canvas while scrolling = lag)
+      if (!force && w === W && Math.abs(h - H) < 150) return;
+      W = w;
+      H = h;
+      R.setSize(W, H, false); // false: CSS keeps the canvas at 100% x 100%
+      C.aspect = W / H;
       C.updateProjectionMatrix();
-      g.position.x = innerWidth > 991 ? 2.6 : 0;
+      g.position.x = W > 991 ? 2.6 : 0;
+      if (reduce) R.render(S, C);
     };
-    size();
-    addEventListener('resize', size);
+    size(true);
+    addEventListener('resize', () => size(false));
+    cv.classList.add('on'); // fade in
+
+    if (reduce) {
+      R.render(S, C);
+      return;
+    }
     let mx = 0,
-      my = 0;
-    addEventListener('pointermove', e => {
-      mx = e.clientX / innerWidth - 0.5;
-      my = e.clientY / innerHeight - 0.5;
-    });
-    let sc = 0;
+      my = 0,
+      sc = 0,
+      last = 0;
+    if (canHover)
+      addEventListener('pointermove', e => {
+        mx = e.clientX / innerWidth - 0.5;
+        my = e.clientY / innerHeight - 0.5;
+      });
     addEventListener('scroll', () => (sc = scrollY / innerHeight), {
       passive: true,
     });
-    (function loop() {
-      const t = performance.now() * 0.0003;
-      if (!reduce) {
-        core.rotation.y = t + sc * 0.8;
-        core.rotation.x = t * 0.6 + my * 0.6;
-        ring.rotation.z = t * 2;
-        pts.rotation.y = t * 0.3 + mx * 0.3;
-        g.position.y = -sc * 0.6;
-        C.position.x += (mx * 1.2 - C.position.x) * 0.04;
-      }
-      R.render(S, C);
-      requestAnimationFrame(loop);
-    })();
-  })();
-} catch (err) {
-  console.warn('3D background disabled:', err.message);
-}
+    let gap = mobile ? 1000 / 30 : 0; // phones: 30fps is plenty for a background
 
-/* ---------- scroll animations ---------- */
+    /* AUTO QUALITY: if the page starts to hitch (frames longer than 40ms), the background steps itself down so
+       scrolling never stutters (also if drawing a frame takes >14ms). level 1 = fewer pixels, level 2 = no star dots + 24fps,
+       level 3 = background switched off (the page itself stays smooth). Good devices never leave level 0. */
+    let level = 0,
+      slow = 0,
+      warm = 20,
+      alive = true,
+      prev = performance.now();
+    cv.dataset.q = 0; // current background quality level (0 = best); handy for debugging
+    const degrade = () => {
+      level++;
+      cv.dataset.q = level;
+      slow = 0;
+      warm = 20;
+      if (level === 1) {
+        R.setPixelRatio(1);
+        size(true);
+      } else if (level === 2) {
+        pts.visible = false;
+        gap = 1000 / 24;
+      } else {
+        alive = false;
+        cv.classList.remove('on');
+      }
+    };
+    const loop = now => {
+      if (!alive) return;
+      requestAnimationFrame(loop);
+      const raw = now - prev; // time since the previous animation frame = how busy the page is
+      prev = now;
+      if (document.hidden || raw > 250) return; // tab was in the background: do not count it
+      if (warm > 0)
+        warm--; // ignore the first frames (shader compile, page still loading)
+      else {
+        slow = raw > 40 ? slow + 1 : Math.max(0, slow - 0.1);
+        if (slow > 20) return degrade();
+      }
+      if (gap && now - last < gap) return;
+      last = now;
+      const t = now * 0.0003;
+      core.rotation.y = t + sc * 0.8;
+      core.rotation.x = t * 0.6 + my * 0.6;
+      ring.rotation.z = t * 2;
+      pts.rotation.y = t * 0.3 + mx * 0.3;
+      g.position.y = -sc * 0.6;
+      C.position.x += (mx * 1.2 - C.position.x) * 0.04;
+      const t0 = performance.now();
+      R.render(S, C);
+      // drawing one frame should take a few ms; if it blocks the page for >14ms the device is too weak
+      if (!warm && performance.now() - t0 > 14) slow += 1;
+    };
+    requestAnimationFrame(loop);
+  } catch (err) {
+    console.warn('3D background disabled:', err.message);
+  }
+};
+const loadThree = () => {
+  const s = document.createElement('script');
+  s.src = 'vendor/three.min.js';
+  s.onload = initBg;
+  s.onerror = () => console.warn('3D background disabled: three.js not found');
+  document.head.appendChild(s);
+};
+const whenIdle = cb =>
+  window.requestIdleCallback
+    ? requestIdleCallback(cb, { timeout: 2000 })
+    : setTimeout(cb, 300);
+if (document.readyState === 'complete') whenIdle(loadThree);
+else addEventListener('load', () => whenIdle(loadThree));
+
+/* ---------- scroll animations (all play ONCE, nothing is scrubbed back and forth) ---------- */
 if (!reduce) {
+  /* every section fades up once when it comes into view */
+  $$('.wrap').forEach(s =>
+    gsap.from(s, {
+      opacity: 0,
+      y: s.id === 'projects' ? 0 : 36, // no shift here: it holds the sticky card stack
+      duration: 0.8,
+      ease: 'power3.out',
+      clearProps: 'transform,opacity',
+      scrollTrigger: { trigger: s, start: 'top 92%', once: true },
+    }),
+  );
+  gsap.utils.toArray('.wrap h2').forEach(h =>
+    gsap.from(h, {
+      scrollTrigger: { trigger: h, start: 'top 88%', once: true },
+      x: -30,
+      opacity: 0,
+      duration: 0.8,
+      clearProps: 'transform,opacity',
+    }),
+  );
   $$('.tgroup').forEach(g => {
     gsap.from($$('.tile', g), {
-      scrollTrigger: { trigger: g, start: 'top 82%' },
-      y: 70,
-      z: -200,
-      rotateX: -80,
+      scrollTrigger: { trigger: g, start: 'top 86%', once: true },
+      y: 60,
+      z: -160,
+      rotateX: -70,
       transformPerspective: 900,
       opacity: 0,
-      stagger: 0.05,
-      duration: 0.9,
+      stagger: 0.04,
+      duration: 0.8,
       ease: 'back.out(1.4)',
+      clearProps: 'transform,opacity',
     });
     gsap.from($('h3', g), {
-      scrollTrigger: { trigger: g, start: 'top 88%' },
+      scrollTrigger: { trigger: g, start: 'top 90%', once: true },
       x: -30,
       opacity: 0,
       duration: 0.6,
+      clearProps: 'transform,opacity',
     });
   });
   gsap.from('#about .lead', {
-    scrollTrigger: { trigger: '#about', start: 'top 75%' },
+    scrollTrigger: { trigger: '#about', start: 'top 75%', once: true },
     y: 40,
     opacity: 0,
     duration: 1,
+    clearProps: 'transform,opacity',
   });
   gsap.from('#github .stats img', {
-    scrollTrigger: { trigger: '#github', start: 'top 75%' },
-    y: 60,
-    rotateX: -30,
-    transformPerspective: 900,
+    scrollTrigger: { trigger: '#github', start: 'top 78%', once: true },
+    y: 50,
     opacity: 0,
     stagger: 0.15,
     duration: 0.9,
+    clearProps: 'transform,opacity',
   });
   gsap.from('.foot > *', {
-    scrollTrigger: { trigger: '.foot', start: 'top 95%' },
+    scrollTrigger: { trigger: '.foot', start: 'top 97%', once: true },
     y: 20,
     opacity: 0,
     stagger: 0.08,
     duration: 0.6,
+    clearProps: 'transform,opacity',
   });
-  gsap.to('.photo', {
-    scrollTrigger: {
-      trigger: '.hero',
-      start: 'top top',
-      end: 'bottom top',
-      scrub: true,
-    },
-    y: -80,
-    rotateZ: 3,
-  });
-  gsap.to('.hero-text', {
-    scrollTrigger: {
-      trigger: '.hero',
-      start: 'top top',
-      end: 'bottom top',
-      scrub: true,
-    },
-    y: -60,
-    opacity: 0.2,
-  });
+  /* small hero parallax: mouse devices only, translate only (no fade, so the hero always looks complete when you scroll back up) */
+  if (canHover)
+    gsap.to('.photo', {
+      scrollTrigger: {
+        trigger: '.hero',
+        start: 'top top',
+        end: 'bottom top',
+        scrub: true,
+      },
+      y: -50,
+      ease: 'none',
+    });
 }
 if (typeof gsap !== 'undefined')
   gsap.to('#bar', {
     scaleX: 1,
     ease: 'none',
-    scrollTrigger: { start: 0, end: 'max', scrub: 0.3 },
+    scrollTrigger: { start: 0, end: 'max', scrub: true },
   });
 
-/* =====================================================================
-   v2 additions: smooth scroll, 3D section transitions, quote reveal
-   ===================================================================== */
-
-/* ---------- about quote: word-by-word 3D reveal + soft tilt ---------- */
+/* ---------- about quote: word-by-word 3D reveal (+ soft tilt on mouse devices) ---------- */
 (() => {
   const q = $('.quote'),
     p = $('.quote p');
@@ -486,23 +553,26 @@ if (typeof gsap !== 'undefined')
     .join(' ');
   if (reduce) return;
   gsap.from('.quote .w', {
-    scrollTrigger: { trigger: q, start: 'top 80%' },
-    y: 46,
+    scrollTrigger: { trigger: q, start: 'top 82%', once: true },
+    y: 40,
     rotateX: -80,
-    z: -120,
+    z: -100,
     transformPerspective: 800,
     opacity: 0,
-    stagger: 0.07,
-    duration: 0.9,
+    stagger: 0.06,
+    duration: 0.8,
     ease: 'back.out(1.5)',
+    clearProps: 'transform,opacity',
   });
   gsap.from('.quote .qmark', {
-    scrollTrigger: { trigger: q, start: 'top 85%' },
+    scrollTrigger: { trigger: q, start: 'top 85%', once: true },
     scale: 0.4,
     opacity: 0,
-    duration: 1.1,
+    duration: 1,
     ease: 'power3.out',
+    clearProps: 'transform,opacity',
   });
+  if (!canHover) return;
   q.addEventListener('mousemove', e => {
     const r = q.getBoundingClientRect(),
       x = (e.clientX - r.left) / r.width - 0.5,
@@ -520,200 +590,15 @@ if (typeof gsap !== 'undefined')
   );
 })();
 
-/* ---------- 3D section transitions (scrubbed by scroll) ---------- */
-if (!reduce) {
-  $$('.wrap').forEach(s => {
-    gsap.fromTo(
-      s,
-      {
-        opacity: 0,
-        y: innerWidth <= 480 ? 50 : 90,
-        rotateX: innerWidth <= 480 ? 10 : 16,
-        transformPerspective: 1400,
-        transformOrigin: '50% 0%',
-      },
-      {
-        opacity: 1,
-        y: 0,
-        rotateX: 0,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: s,
-          start: 'top 96%',
-          end: 'top 60%',
-          scrub: 0.6,
-        },
-      },
-    );
-  });
-  /* three.js scene follows the scroll a little more */
-  gsap.to('#bg', {
-    scrollTrigger: { start: 0, end: 'max', scrub: 1 },
-    rotateZ: 6,
-    scale: 1.08,
-    ease: 'none',
-  });
+/* ---------- keep trigger positions correct when things load late (fonts, stat images) ---------- */
+if (typeof ScrollTrigger !== 'undefined') {
+  let rt;
+  const refresh = () => {
+    clearTimeout(rt);
+    rt = setTimeout(() => ScrollTrigger.refresh(), 150);
+  };
+  addEventListener('load', refresh);
+  if (document.fonts && document.fonts.ready)
+    document.fonts.ready.then(refresh);
+  $$('#github .stats img').forEach(i => i.addEventListener('load', refresh));
 }
-
-/* ---------- smooth (inertia) scrolling for mouse / trackpad ---------- */
-const smooth = (() => {
-  if (reduce || !matchMedia('(hover:hover) and (pointer:fine)').matches)
-    return null; // touch devices keep native scrolling
-  const root = document.documentElement;
-  root.classList.add('smooth');
-  const max = () => Math.max(0, root.scrollHeight - innerHeight),
-    clamp = (v, a, b) => Math.min(b, Math.max(a, v));
-  let cur = scrollY,
-    target = scrollY,
-    running = false,
-    tween = null;
-  const apply = () => scrollTo({ top: cur, left: 0, behavior: 'instant' });
-  const tick = () => {
-    const d = target - cur;
-    if (Math.abs(d) < 0.4) {
-      cur = target;
-      apply();
-      running = false;
-      gsap.ticker.remove(tick);
-      return;
-    }
-    cur += d * 0.09;
-    apply();
-  };
-  const start = () => {
-    if (!running) {
-      running = true;
-      gsap.ticker.add(tick);
-    }
-  };
-  const stopTween = () => {
-    if (tween) {
-      tween.kill();
-      tween = null;
-    }
-  };
-  const nudge = d => {
-    stopTween();
-    target = clamp((tween ? cur : target) + d, 0, max());
-    start();
-  };
-  // layout position that ignores transforms (the 3D entrance animations move sections)
-  const layoutTop = el => {
-    let y = 0;
-    while (el) {
-      y += el.offsetTop;
-      el = el.offsetParent;
-    }
-    return y;
-  };
-  const goTo = y => {
-    y = clamp(y, 0, max());
-    stopTween();
-    running && ((running = false), gsap.ticker.remove(tick));
-    const o = { v: cur };
-    tween = gsap.to(o, {
-      v: y,
-      duration: clamp(0.8 + Math.abs(y - cur) / 3200, 0.8, 1.8),
-      ease: 'power3.inOut',
-      onUpdate: () => {
-        cur = target = o.v;
-        apply();
-      },
-      onComplete: () => {
-        tween = null;
-        cur = target = y;
-      },
-    });
-  };
-  // mouse wheel / trackpad
-  addEventListener(
-    'wheel',
-    e => {
-      if (e.ctrlKey || e.defaultPrevented || menu.classList.contains('open'))
-        return;
-      for (
-        let el = e.target;
-        el && el !== document.body && el !== root;
-        el = el.parentElement
-      ) {
-        // let textareas etc. scroll themselves
-        const oy = getComputedStyle(el).overflowY;
-        if (
-          (oy === 'auto' || oy === 'scroll') &&
-          el.scrollHeight > el.clientHeight
-        )
-          return;
-      }
-      e.preventDefault();
-      let dy = e.deltaY;
-      if (e.deltaMode === 1) dy *= 32;
-      else if (e.deltaMode === 2) dy *= innerHeight;
-      nudge(dy);
-    },
-    { passive: false },
-  );
-  // keyboard
-  addEventListener('keydown', e => {
-    if (e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey) return;
-    const t = e.target,
-      tag = t.tagName;
-    if (/^(INPUT|TEXTAREA|SELECT)$/.test(tag) || t.isContentEditable) return;
-    if (e.key === ' ' && /^(BUTTON|A)$/.test(tag)) return;
-    let d = 0;
-    switch (e.key) {
-      case 'ArrowDown':
-        d = 70;
-        break;
-      case 'ArrowUp':
-        d = -70;
-        break;
-      case 'PageDown':
-        d = innerHeight * 0.9;
-        break;
-      case 'PageUp':
-        d = -innerHeight * 0.9;
-        break;
-      case ' ':
-        d = (e.shiftKey ? -1 : 1) * innerHeight * 0.9;
-        break;
-      case 'Home':
-        e.preventDefault();
-        return goTo(0);
-      case 'End':
-        e.preventDefault();
-        return goTo(max());
-      default:
-        return;
-    }
-    e.preventDefault();
-    nudge(d);
-  });
-  // keep in sync when the page is scrolled by something else (scrollbar drag, find-in-page ...)
-  addEventListener(
-    'scroll',
-    () => {
-      if (!running && !tween) {
-        cur = target = scrollY;
-      }
-    },
-    { passive: true },
-  );
-  // menu / in-page links
-  document.addEventListener('click', e => {
-    const a = e.target.closest && e.target.closest('a[href^="#"]');
-    if (!a || e.defaultPrevented) return;
-    const id = a.getAttribute('href');
-    if (id.length < 2 && id !== '#') return;
-    const el = id === '#' ? null : document.querySelector(id);
-    if (id !== '#' && !el) return;
-    e.preventDefault();
-    const off = parseFloat(getComputedStyle(root).scrollPaddingTop) || 0;
-    goTo(el ? layoutTop(el) - off : 0);
-    if (el && location.hash !== id) history.pushState(null, '', id);
-  });
-  return { goTo };
-})();
-
-addEventListener('load', () => {
-  if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
-});

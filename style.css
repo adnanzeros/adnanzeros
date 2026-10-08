@@ -3,25 +3,31 @@
    Mobile-first-friendly, only two breakpoints:
      tablet  : max-width 991px
      mobile  : max-width 480px
+   Performance notes (why this file looks lean):
+     - no backdrop-filter on cards/tiles/quote (it is very heavy while scrolling)
+     - no permanent will-change layers
+     - hero intro is pure CSS, so it starts on the first paint (no waiting for JS)
+     - logo glow animates opacity only (compositor), not text-shadow (repaint)
    ===================================================================== */
 
 /* ---------- 1. tokens + base ---------- */
 :root{
-  --bg:#000;--fg:#fff;--mut:#9a9a9a;--line:#262626;--card:rgba(255,255,255,.04);
+  --bg:#000;--fg:#fff;--mut:#9a9a9a;--line:#262626;--card:rgba(255,255,255,.05);
   --gutter:5vw;            /* left/right page padding */
   --section-y:90px;        /* top/bottom padding of every section */
 }
 *,*::before,*::after{box-sizing:border-box}
 *{margin:0}
 html{scroll-behavior:smooth;scroll-padding-top:70px;-webkit-text-size-adjust:100%;text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
-html.smooth{scroll-behavior:auto}                 /* set by main.js when JS smooth scroll is active */
-body{min-width:320px;background:var(--bg);color:var(--fg);font-family:'Poppins',system-ui,sans-serif;line-height:1.6;overflow-x:hidden}
+body{min-width:320px;background:var(--bg);color:var(--fg);font-family:'Poppins',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;line-height:1.6;overflow-x:hidden}
 img,svg{max-width:100%}
 a{color:inherit;text-decoration:none}
 :focus-visible{outline:2px solid #fff;outline-offset:3px}
 .btn,.tabs button,.burger{touch-action:manipulation}
 
-#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0}
+/* background canvas fades in once three.js is ready (it loads after the page) */
+#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;opacity:0;transition:opacity 1.2s ease;pointer-events:none}
+#bg.on{opacity:1}
 #bar{position:fixed;top:0;left:0;right:0;height:3px;background:#fff;transform:scaleX(0);transform-origin:0 50%;z-index:40}
 main,.foot,.nav{position:relative;z-index:2}
 
@@ -29,8 +35,9 @@ main,.foot,.nav{position:relative;z-index:2}
 .nav{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:space-between;
   padding:14px max(var(--gutter),env(safe-area-inset-left)) 14px max(var(--gutter),env(safe-area-inset-right));border-bottom:1px solid var(--line)}
 /* blur lives on a pseudo-element: backdrop-filter on .nav itself traps the fixed mobile menu inside the nav bar */
-.nav::before{content:'';position:absolute;inset:0;z-index:-1;background:rgba(0,0,0,.65);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
-.brand{font-weight:700;font-size:1.25rem;letter-spacing:-.02em}
+.nav::before{content:'';position:absolute;inset:0;z-index:-1;background:rgba(0,0,0,.72);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.brand{display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:1.25rem;letter-spacing:-.02em}
+.brand img{display:block;width:28px;height:28px;flex:none;border-radius:8px;filter:invert(1);transition:transform .3s} /* white badge, black "a" */
 .menu{display:flex;gap:28px}
 .menu a{color:var(--mut);font-size:.92rem;transition:color .2s}
 .burger{display:none;background:none;border:0;width:40px;height:40px;position:relative;cursor:pointer}
@@ -45,53 +52,65 @@ main,.foot,.nav{position:relative;z-index:2}
   max-width:1300px;margin:auto;padding:110px var(--gutter) 60px}
 .hero-text{min-width:0;container-type:inline-size}
 .hi{color:var(--mut);margin-bottom:6px}
-.logo{font-size:clamp(2.2rem,9vw,7rem);font-weight:800;letter-spacing:-.05em;line-height:1;white-space:nowrap;animation:breathe 4s ease-in-out infinite}
+.logo{position:relative;font-size:clamp(2.2rem,9vw,7rem);font-weight:800;letter-spacing:-.05em;line-height:1;white-space:nowrap;font-kerning:none;
+  text-shadow:0 0 10px rgba(255,255,255,.18),0 0 34px rgba(255,255,255,.08)}
 @supports (font-size:1cqi){.logo{font-size:min(15cqi,7rem)}}
 .logo span{display:inline-block}
-@keyframes breathe{
-  0%,100%{text-shadow:0 0 10px rgba(255,255,255,.18),0 0 34px rgba(255,255,255,.08)}
-  50%{text-shadow:0 0 18px rgba(255,255,255,.85),0 0 60px rgba(255,255,255,.5),0 0 110px rgba(255,255,255,.25)}
-}
+/* strong glow: a copy of the text whose OPACITY breathes (cheap, runs on the GPU) */
+.logo::after{content:attr(data-t);position:absolute;left:0;right:0;top:0;text-align:inherit;white-space:nowrap;color:transparent;pointer-events:none;
+  text-shadow:0 0 18px rgba(255,255,255,.85),0 0 60px rgba(255,255,255,.5),0 0 110px rgba(255,255,255,.25);
+  opacity:0;animation:breathe 4s ease-in-out 1.2s infinite}
+@keyframes breathe{0%,100%{opacity:0}50%{opacity:1}}
 .role{max-width:46ch;color:#cfcfcf;margin:22px 0 30px}
 .cta{display:flex;gap:12px;flex-wrap:wrap}
 
-.btn{display:inline-block;padding:12px 26px;border:1px solid #fff;border-radius:999px;font:500 .95rem 'Poppins',sans-serif;color:#fff;background:transparent;cursor:pointer;transition:.25s}
+/* hero intro: pure CSS, starts immediately on first paint */
+.logo span{animation:letter .8s cubic-bezier(.2,.7,.2,1) backwards;animation-delay:calc(var(--i,0) * 35ms)}
+.hi,.role,.cta{animation:rise .7s ease-out backwards}
+.hi{animation-delay:.1s}
+.role{animation-delay:.3s}
+.cta{animation-delay:.42s}
+.photo-in{width:100%;height:100%;animation:photoIn 1s cubic-bezier(.2,.7,.2,1) .1s backwards}
+@keyframes letter{from{opacity:0;transform:perspective(600px) translateY(60%) rotateX(-70deg)}}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}}
+@keyframes photoIn{from{opacity:0;transform:perspective(900px) rotateY(-35deg) scale(.94)}}
+
+.btn{display:inline-block;padding:12px 26px;border:1px solid #fff;border-radius:999px;font:500 .95rem 'Poppins',system-ui,sans-serif;color:#fff;background:transparent;cursor:pointer;transition:.25s;white-space:nowrap}
 .btn.solid{background:#fff;color:#000}
 .btn:disabled{opacity:.6;cursor:wait}
 
 /* photo: transparent cut-out that melts into the 3D background */
 .photo{position:relative;perspective:900px;justify-self:center;width:min(460px,80vw);aspect-ratio:1/1}
+.photo picture{display:block;width:100%;height:100%}
 .photo img{position:relative;z-index:1;display:block;width:100%;height:100%;object-fit:contain;object-position:50% 100%;border:0;border-radius:0;box-shadow:none;
-  transform-style:preserve-3d;will-change:transform;
   -webkit-mask-image:radial-gradient(ellipse 72% 80% at 50% 40%,#000 58%,transparent 100%);
-  mask-image:radial-gradient(ellipse 72% 80% at 50% 40%,#000 58%,transparent 100%);
-  filter:contrast(1.05) brightness(1.05) drop-shadow(0 0 28px rgba(255,255,255,.10))}
+  mask-image:radial-gradient(ellipse 72% 80% at 50% 40%,#000 58%,transparent 100%)}
+/* (contrast/brightness is already baked into assets/adnan.webp, so no CSS filter is needed) */
 .photo::before{content:'';position:absolute;z-index:0;inset:8% 6% 2%;border-radius:50%;pointer-events:none;
   background:radial-gradient(closest-side,rgba(255,255,255,.24),rgba(255,255,255,.07) 55%,transparent 78%);
   filter:blur(26px);animation:glow 5s ease-in-out infinite}
 @keyframes glow{0%,100%{opacity:.55;transform:scale(.96)}50%{opacity:1;transform:scale(1.06)}}
 
 /* ---------- 4. sections ---------- */
-.wrap{max-width:1100px;margin:auto;padding:var(--section-y) var(--gutter);will-change:transform,opacity}
+.wrap{max-width:1100px;margin:auto;padding:var(--section-y) var(--gutter)}
 h2{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;letter-spacing:-.03em;margin-bottom:30px}
 .lead{font-size:1.15rem;color:#d8d8d8;max-width:62ch}
 
 /* about quote */
-.quote{position:relative;margin:0 0 34px;padding:34px clamp(22px,4vw,48px) 30px;border:1px solid var(--line);border-radius:22px;background:var(--card);
-  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);overflow:hidden;transform-style:preserve-3d;will-change:transform;transition:border-color .2s}
+.quote{position:relative;margin:0 0 34px;padding:34px clamp(22px,4vw,48px) 30px;border:1px solid var(--line);border-radius:22px;background:rgba(14,14,14,.82);
+  overflow:hidden;transition:border-color .2s}
 .quote::before{content:'';position:absolute;left:0;top:18%;bottom:18%;width:3px;border-radius:3px;background:#fff;box-shadow:0 0 18px rgba(255,255,255,.7)}
 .qmark{position:absolute;top:-4px;right:20px;font-size:8rem;line-height:1;font-weight:800;color:rgba(255,255,255,.08);pointer-events:none;user-select:none}
 .quote blockquote{position:relative;margin:0}
-.quote p{margin:0;font-size:clamp(1.35rem,3.6vw,2.4rem);font-weight:600;letter-spacing:-.02em;line-height:1.3;color:#fff;perspective:800px}
-.quote .w{display:inline-block;will-change:transform}
+.quote p{margin:0;font-size:clamp(1.35rem,3.6vw,2.4rem);font-weight:600;letter-spacing:-.02em;line-height:1.3;color:#fff}
+.quote .w{display:inline-block}
 .quote figcaption{position:relative;margin-top:16px;color:var(--mut);font-size:.9rem}
 .quote figcaption::before{content:'';display:inline-block;width:28px;height:1px;background:var(--mut);vertical-align:middle;margin-right:10px}
 #about .lead{margin-top:6px}
 
 /* cards */
 .grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;perspective:1000px}
-.card{display:block;padding:24px;border:1px solid var(--line);border-radius:18px;background:var(--card);
-  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);transform-style:preserve-3d;will-change:transform;transition:border-color .2s}
+.card{display:block;padding:24px;border:1px solid var(--line);border-radius:18px;background:rgba(14,14,14,.82);transition:border-color .2s}
 .card h3{font-size:1.1rem;margin-bottom:8px}
 .card p{color:var(--mut);font-size:.9rem}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
@@ -99,18 +118,18 @@ h2{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;letter-spacing:-.03em;marg
 
 /* tabs */
 .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
-.tabs button{background:none;border:1px solid var(--line);color:var(--mut);padding:8px 20px;border-radius:999px;font:500 .9rem 'Poppins',sans-serif;cursor:pointer}
+.tabs button{background:none;border:1px solid var(--line);color:var(--mut);padding:8px 20px;border-radius:999px;font:500 .9rem 'Poppins',system-ui,sans-serif;cursor:pointer}
 .tabs button.on{background:#fff;color:#000;border-color:#fff}
 
 /* tech tiles */
 #techgrid{display:block}
 .tgroup{margin-bottom:38px}
 .tgroup h3{font-size:1rem;font-weight:500;color:var(--mut);margin-bottom:14px;letter-spacing:.08em;text-transform:uppercase}
-.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:14px;perspective:1000px}
-.tile{display:grid;justify-items:center;gap:8px;padding:16px 8px 12px;border:1px solid #4a4a4a;border-radius:20px;background:rgba(255,255,255,.09);
-  box-shadow:0 0 22px rgba(255,255,255,.07);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);transform-style:preserve-3d;will-change:transform;transition:border-color .2s,box-shadow .2s}
-.tile img{width:76px;height:76px;transform:translateZ(30px);filter:brightness(1.25) saturate(1.3) drop-shadow(0 0 14px rgba(255,255,255,.35))}
-.tile span{font-size:.8rem;font-weight:500;color:#fff;text-align:center;transform:translateZ(14px)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:14px}
+.tile{display:grid;justify-items:center;gap:8px;padding:16px 8px 12px;border:1px solid #4a4a4a;border-radius:20px;background:rgba(32,32,32,.9);
+  box-shadow:0 0 22px rgba(255,255,255,.07);transition:border-color .2s,box-shadow .2s}
+.tile img{width:76px;height:76px;filter:brightness(1.25) saturate(1.3) drop-shadow(0 0 8px rgba(255,255,255,.3))}
+.tile span{font-size:.8rem;font-weight:500;color:#fff;text-align:center}
 
 /* github stats */
 .stats{display:flex;flex-wrap:wrap;gap:20px;margin-bottom:26px}
@@ -119,7 +138,7 @@ h2{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;letter-spacing:-.03em;marg
 /* contact form */
 .form{display:grid;gap:16px;max-width:560px}
 .form label,.field{display:grid;gap:6px;font-size:.9rem;color:var(--mut)}
-.form input,.form textarea,.form select{background:#0a0a0a;border:1px solid var(--line);border-radius:12px;padding:13px 15px;color:#fff;font:400 1rem 'Poppins',sans-serif}
+.form input,.form textarea,.form select{background:#0a0a0a;border:1px solid var(--line);border-radius:12px;padding:13px 15px;color:#fff;font:400 1rem 'Poppins',system-ui,sans-serif}
 .form textarea{resize:vertical}
 .form input:focus,.form textarea:focus,.form select:focus{outline:none;border-color:#fff}
 .form select{appearance:none;-webkit-appearance:none;cursor:pointer;text-overflow:ellipsis;padding-right:34px;
@@ -140,7 +159,7 @@ h2{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;letter-spacing:-.03em;marg
 .social{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 22px}
 .social a{color:#ddd;font-size:.92rem}
 
-/* hover effects only where a real hover exists (no sticky hover on touch screens) */
+/* hover devices only (mouse): hover effects + 3D depth for the tilt. Touch screens skip all of this = lighter */
 @media(hover:hover){
   .menu a:hover{color:#fff}
   .btn:hover{background:#fff;color:#000}
@@ -148,6 +167,12 @@ h2{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;letter-spacing:-.03em;marg
   .card:hover,.quote:hover{border-color:#fff}
   .tile:hover{border-color:#fff;box-shadow:0 0 30px rgba(255,255,255,.25)}
   .social a:hover{text-decoration:underline}
+  .brand:hover img{transform:rotate(-8deg) scale(1.08)}
+
+  .tile{transform-style:preserve-3d}
+  .tile img{transform:translateZ(30px)}
+  .tile span{transform:translateZ(14px)}
+  .photo img{will-change:transform}
 }
 
 /* =====================================================================
@@ -164,7 +189,7 @@ h2{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;letter-spacing:-.03em;marg
   .nav .brand{position:relative;z-index:30}
   .menu{position:fixed;inset:0;z-index:25;flex-direction:column;justify-content:flex-start;align-items:flex-end;gap:0;
     padding:78px max(var(--gutter),env(safe-area-inset-right)) max(40px,env(safe-area-inset-bottom));overflow-y:auto;
-    background:rgba(0,0,0,.9);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+    background:rgba(0,0,0,.94);
     opacity:0;visibility:hidden;pointer-events:none;transition:opacity .3s,visibility .3s;counter-reset:m}
   .menu.open{opacity:1;visibility:visible;pointer-events:auto}
   .menu a{width:min(260px,100%);padding:16px 0;border-bottom:1px solid var(--line);text-align:right;font-size:1.4rem;font-weight:600;color:#fff;
@@ -212,7 +237,8 @@ h2{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;letter-spacing:-.03em;marg
   html{scroll-padding-top:58px}
 
   .nav{padding-top:10px;padding-bottom:10px}
-  .brand{font-size:1.1rem}
+  .brand{font-size:1.1rem;gap:8px}
+  .brand img{width:24px;height:24px;border-radius:7px}
   .menu{padding-top:70px}
   .menu a{font-size:1.25rem;padding:14px 0}
 
@@ -222,8 +248,14 @@ h2{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;letter-spacing:-.03em;marg
   .hi{font-size:.85rem;margin-bottom:2px}
   .logo{font-size:min(15cqi,3rem)}
   .role{max-width:none;margin:10px auto 16px;font-size:.88rem}
-  .cta{gap:8px}
-  .btn{padding:10px 20px;font-size:.88rem}
+
+  /* hero buttons: one under another, centered, NOT full width.
+     each button is a little wider than the one above it. change the 3 widths here: */
+  .cta{flex-direction:column;align-items:center;flex-wrap:nowrap;gap:10px}
+  .cta .btn{width:var(--bw);max-width:100%;padding:11px 16px;font-size:.9rem;text-align:center}
+  .cta .btn:nth-child(1){--bw:190px}
+  .cta .btn:nth-child(2){--bw:215px}
+  .cta .btn:nth-child(3){--bw:240px}
 
   /* sections */
   h2{font-size:1.55rem;margin-bottom:14px}
@@ -238,11 +270,13 @@ h2{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;letter-spacing:-.03em;marg
   .chips{gap:6px;margin-top:9px}
   .chips span{font-size:.72rem;padding:2px 10px}
 
-  /* project cards: every new card slides in over the previous one (3D stack, driven by main.js) */
+  /* project cards: every new card slides in over the previous one (sticky stack, driven by main.js) */
   #projgrid.stack{display:flex;flex-direction:column;gap:30px;perspective:none;padding-bottom:12px}
   #projgrid.stack .card{position:sticky;top:calc(72px + var(--i,0) * 12px);min-height:176px;padding:20px 18px;border-radius:18px;
-    background:#0c0c0c;border-color:#3a3a3a;-webkit-backdrop-filter:none;backdrop-filter:none;transform-origin:50% 0%;will-change:transform,filter;
+    background:#0c0c0c;border-color:#3a3a3a;transform-origin:50% 0%;
     box-shadow:0 -14px 34px rgba(0,0,0,.75),0 0 22px rgba(255,255,255,.05)}
+  /* "sinks back and dims" overlay: only its opacity changes (much cheaper than a CSS filter) */
+  #projgrid.stack .card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:#000;opacity:var(--dim,0);pointer-events:none}
   #projgrid.stack .card h3{font-size:1.1rem;margin-bottom:6px}
   #projgrid.stack .card p{font-size:.88rem}
   #projgrid.stack .chips{margin-top:12px}
@@ -272,11 +306,12 @@ h2{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;letter-spacing:-.03em;marg
   .foot{gap:8px;padding:26px var(--gutter) max(16px,env(safe-area-inset-bottom))}
   .social{gap:6px 14px}
   .social a{font-size:.82rem}
+
 }
 
 /* ---------- reduced motion ---------- */
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
-  *{transition:none!important}
-  .logo,.photo::before{animation:none}
+  *,*::before,*::after{transition:none!important;animation:none!important}
+  .logo::after{opacity:0}
 }
