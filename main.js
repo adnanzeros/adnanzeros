@@ -11,14 +11,6 @@ if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
 // real mouse / trackpad only. touch screens skip tilt + parallax = lighter and smoother
 const canHover = matchMedia('(hover:hover) and (pointer:fine)').matches;
 $('#yr').textContent = new Date().getFullYear();
-// phones, data-saver and weak devices get a light static star background instead of the 3D one:
-// three.js (600 KB) is never even downloaded for them, so the page loads fast and scrolls smoothly
-const lite =
-  innerWidth <= 991 ||
-  !!(navigator.connection && navigator.connection.saveData) ||
-  (navigator.deviceMemory && navigator.deviceMemory <= 2) ||
-  (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2);
-if (lite) document.documentElement.classList.add('lite');
 
 /* ---------- contact form (runs first so nothing else can break it) ---------- */
 (() => {
@@ -236,76 +228,64 @@ const PROJ = {
 };
 /* the tech grid is plain HTML + inline SVG in index.html (on screen instantly, no JS and no image downloads) */
 
-/* project cards: ONE card on top of another on every screen size.
-   CSS (position:sticky) does the stacking; gsap only adds depth: a card rises in, and sinks back + dims when the next one covers it. */
-let curTab = 'frontend',
-  stackFx = [];
-const stackMQ = matchMedia('(max-width:480px)'); // phone gets slightly different offsets (see style.css), so rebuild when crossing it
-const clearStack = () => {
-  stackFx.forEach(t => {
-    t.scrollTrigger && t.scrollTrigger.kill();
-    t.kill();
-  });
-  stackFx = [];
-};
-const buildStack = () => {
-  const cards = $$('#projgrid .card'),
-    n = cards.length,
-    topOf = c => parseFloat(getComputedStyle(c).top) || 72; // the real sticky offset from CSS
+/* ---------- project cards: stacked, scroll-driven (works for ANY number of projects, both scroll directions) ----------
+   CSS (position:sticky) does the stacking: each new card slides over the previous one.
+   paintStack() below reads the scroll position and, for every card, measures how far the NEXT card has covered it:
+     0 = next card not touching yet  -> this card is full colour, full size
+     1 = next card is in its place   -> this card is dimmed + a bit smaller
+   Because it is calculated from the scroll position (not a one-way animation), scrolling back up simply plays it in reverse:
+   card 1 slowly comes back to full colour when card 2 slides away. The LAST card is always full colour. */
+let curTab = 'frontend';
+const MAX_DIM = 0.65; // how dark a covered card gets (0 = no dim, 1 = black)
+const MIN_SCALE = 0.94; // how small a covered card gets (1 = no scale)
+
+const paintStack = () => {
+  const cards = $$('#projgrid .card');
   cards.forEach((c, i) => {
-    // 1) rises into view as you scroll (opacity + translate only = cheap)
-    stackFx.push(
-      gsap.fromTo(
-        c,
-        { y: 70, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: c,
-            start: 'top 98%',
-            end: 'top 74%',
-            scrub: 0.2,
-          },
-        },
-      ),
-    );
-    // 2) the next card slides over this one: it sinks back and dims
-    if (i < n - 1)
-      stackFx.push(
-        gsap.fromTo(
-          c,
-          { scale: 1, '--dim': 0 },
-          {
-            scale: 0.94,
-            '--dim': 0.6,
-            ease: 'none',
-            immediateRender: false,
-            scrollTrigger: {
-              trigger: cards[i + 1],
-              start: 'top 90%',
-              end: 'top ' + (topOf(cards[i + 1]) + 8) + 'px',
-              scrub: 0.2,
-            },
-          },
-        ),
-      );
+    const next = cards[i + 1];
+    if (!next) {
+      // last card: always full colour
+      c.style.setProperty('--dim', 0);
+      c.style.transform = '';
+      return;
+    }
+    const topC = parseFloat(getComputedStyle(c).top) || 72; // sticky offset of this card
+    const topN = parseFloat(getComputedStyle(next).top) || topC; // sticky offset of the next card
+    const startY = topC + c.offsetHeight; // next card touches the bottom of this card: dimming starts
+    const endY = topN; // next card reached its resting place: dimming finished
+    const nowY = next.getBoundingClientRect().top;
+    const p = Math.min(1, Math.max(0, (startY - nowY) / (startY - endY || 1)));
+    c.style.setProperty('--dim', (p * MAX_DIM).toFixed(3));
+    c.style.transform = p
+      ? `scale(${(1 - p * (1 - MIN_SCALE)).toFixed(4)})`
+      : '';
   });
 };
+
+if (!reduce) {
+  let stackRaf = 0;
+  const onStack = () => {
+    if (!stackRaf)
+      stackRaf = requestAnimationFrame(() => {
+        stackRaf = 0;
+        paintStack();
+      });
+  };
+  addEventListener('scroll', onStack, { passive: true });
+  addEventListener('resize', onStack);
+}
+
 const drawProj = t => {
   curTab = t;
-  clearStack();
   $('#projgrid').innerHTML = PROJ[t]
     .map(
       (p, i) =>
         `<a class="card" style="--i:${i}" href="${p.u}" target="_blank" rel="noopener"><span class="num" aria-hidden="true">0${i + 1}</span><div class="cbody"><h3>${p.n}</h3><p>${p.d}</p><div class="chips">${p.t.map(x => `<span>${x}</span>`).join('')}</div></div><span class="go" aria-hidden="true">&#8599;</span></a>`,
     )
     .join('');
-  if (!reduce) buildStack();
+  if (!reduce) paintStack();
   if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
 };
-stackMQ.addEventListener('change', () => drawProj(curTab));
 $$('.tabs button').forEach(
   b =>
     (b.onclick = () => {
@@ -386,165 +366,6 @@ bindTilt();
 
 /* hero intro is pure CSS now (see style.css) - it starts on the first paint, no JS needed */
 
-/* ---------- three.js background (loaded AFTER the page, so first load stays fast) ---------- */
-const initBg = () => {
-  try {
-    const mobile = innerWidth <= 991,
-      cv = $('#bg'),
-      R = new THREE.WebGLRenderer({
-        canvas: cv,
-        alpha: true,
-        antialias: !mobile,
-        powerPreference: 'low-power',
-      });
-    R.setPixelRatio(Math.min(devicePixelRatio, mobile ? 1 : 1.5));
-    const S = new THREE.Scene(),
-      C = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
-    C.position.z = 7;
-    const mat = new THREE.MeshBasicMaterial({
-      color: 0xffffff,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.18,
-    });
-    const core = new THREE.Mesh(new THREE.IcosahedronGeometry(2.4, 1), mat);
-    const ring = new THREE.Mesh(
-      new THREE.TorusGeometry(3.6, 0.012, 8, 120),
-      new THREE.MeshBasicMaterial({
-        color: 0xffffff,
-        transparent: true,
-        opacity: 0.25,
-      }),
-    );
-    ring.rotation.x = 1.2;
-    const n = mobile ? 350 : 700,
-      pos = new Float32Array(n * 3);
-    for (let i = 0; i < n * 3; i++) pos[i] = (Math.random() - 0.5) * 26;
-    const pg = new THREE.BufferGeometry();
-    pg.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    const pts = new THREE.Points(
-      pg,
-      new THREE.PointsMaterial({
-        color: 0xffffff,
-        size: 0.035,
-        transparent: true,
-        opacity: 0.6,
-      }),
-    );
-    const g = new THREE.Group();
-    g.add(core, ring);
-    S.add(g, pts);
-
-    let W = 0,
-      H = 0;
-    const size = force => {
-      const w = innerWidth,
-        h = innerHeight;
-      // ignore the small height changes of the phone address bar (resizing the canvas while scrolling = lag)
-      if (!force && w === W && Math.abs(h - H) < 150) return;
-      W = w;
-      H = h;
-      R.setSize(W, H, false); // false: CSS keeps the canvas at 100% x 100%
-      C.aspect = W / H;
-      C.updateProjectionMatrix();
-      g.position.x = W > 991 ? 2.6 : 0;
-      if (reduce) R.render(S, C);
-    };
-    size(true);
-    addEventListener('resize', () => size(false));
-    cv.classList.add('on'); // fade in
-
-    if (reduce) {
-      R.render(S, C);
-      return;
-    }
-    let mx = 0,
-      my = 0,
-      sc = 0,
-      last = 0;
-    if (canHover)
-      addEventListener('pointermove', e => {
-        mx = e.clientX / innerWidth - 0.5;
-        my = e.clientY / innerHeight - 0.5;
-      });
-    addEventListener('scroll', () => (sc = scrollY / innerHeight), {
-      passive: true,
-    });
-    let gap = mobile ? 1000 / 30 : 0; // phones: 30fps is plenty for a background
-
-    /* AUTO QUALITY: if the page starts to hitch (frames longer than 40ms), the background steps itself down so
-       scrolling never stutters (also if drawing a frame takes >14ms). level 1 = fewer pixels, level 2 = no star dots + 24fps,
-       level 3 = background switched off (the page itself stays smooth). Good devices never leave level 0. */
-    let level = 0,
-      slow = 0,
-      warm = 20,
-      alive = true,
-      prev = performance.now();
-    cv.dataset.q = 0; // current background quality level (0 = best); handy for debugging
-    const degrade = () => {
-      level++;
-      cv.dataset.q = level;
-      slow = 0;
-      warm = 20;
-      if (level === 1) {
-        R.setPixelRatio(1);
-        size(true);
-      } else if (level === 2) {
-        pts.visible = false;
-        gap = 1000 / 24;
-      } else {
-        alive = false;
-        cv.classList.remove('on');
-      }
-    };
-    const loop = now => {
-      if (!alive) return;
-      requestAnimationFrame(loop);
-      const raw = now - prev; // time since the previous animation frame = how busy the page is
-      prev = now;
-      if (document.hidden || raw > 250) return; // tab was in the background: do not count it
-      if (!cv.offsetWidth) return; // canvas hidden (window shrunk to phone size): do not draw
-      if (warm > 0)
-        warm--; // ignore the first frames (shader compile, page still loading)
-      else {
-        slow = raw > 40 ? slow + 1 : Math.max(0, slow - 0.1);
-        if (slow > 20) return degrade();
-      }
-      if (gap && now - last < gap) return;
-      last = now;
-      const t = now * 0.0003;
-      core.rotation.y = t + sc * 0.8;
-      core.rotation.x = t * 0.6 + my * 0.6;
-      ring.rotation.z = t * 2;
-      pts.rotation.y = t * 0.3 + mx * 0.3;
-      g.position.y = -sc * 0.6;
-      C.position.x += (mx * 1.2 - C.position.x) * 0.04;
-      const t0 = performance.now();
-      R.render(S, C);
-      // drawing one frame should take a few ms; if it blocks the page for >14ms the device is too weak
-      if (!warm && performance.now() - t0 > 14) slow += 1;
-    };
-    requestAnimationFrame(loop);
-  } catch (err) {
-    console.warn('3D background disabled:', err.message);
-  }
-};
-const loadThree = () => {
-  const s = document.createElement('script');
-  s.src = 'vendor/three.min.js';
-  s.onload = initBg;
-  s.onerror = () => console.warn('3D background disabled: three.js not found');
-  document.head.appendChild(s);
-};
-const whenIdle = cb =>
-  window.requestIdleCallback
-    ? requestIdleCallback(cb, { timeout: 2000 })
-    : setTimeout(cb, 300);
-if (!lite) {
-  if (document.readyState === 'complete') whenIdle(loadThree);
-  else addEventListener('load', () => whenIdle(loadThree));
-}
-
 /* ---------- scroll animations (all play ONCE, nothing is scrubbed back and forth) ---------- */
 if (!reduce && typeof ScrollTrigger !== 'undefined') {
   /* every section (except About + Tech: those stay static) fades up once when it comes into view */
@@ -620,7 +441,10 @@ if (typeof ScrollTrigger !== 'undefined') {
   let rt;
   const refresh = () => {
     clearTimeout(rt);
-    rt = setTimeout(() => ScrollTrigger.refresh(), 150);
+    rt = setTimeout(() => {
+      ScrollTrigger.refresh();
+      if (!reduce) paintStack();
+    }, 150);
   };
   addEventListener('load', refresh);
   if (document.fonts && document.fonts.ready)

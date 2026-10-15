@@ -30,18 +30,13 @@
 *{margin:0}
 html{scroll-behavior:smooth;scroll-padding-top:70px;-webkit-text-size-adjust:100%;text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
 body{min-width:320px;background-color:var(--bg);color:var(--fg);font-family:'Poppins',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;line-height:1.6;overflow-x:hidden}
-@media(max-width:991px){body{background-image:var(--stars);background-size:360px 360px}#bg{display:none}}
-html.lite body{background-image:var(--stars);background-size:360px 360px}
-html.lite #bg{display:none}
+body{background-image:var(--stars);background-size:360px 360px} /* light static star field on every device (no WebGL, no JS) */
 img,svg{max-width:100%}
 a{color:inherit;text-decoration:none}
 ::selection{background:#fff;color:#000}
 :focus-visible{outline:2px solid #fff;outline-offset:3px}
 .btn,.tabs button,.burger{touch-action:manipulation}
 
-/* background canvas fades in once three.js is ready (it loads after the page) */
-#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;opacity:0;transition:opacity 1.2s ease;pointer-events:none}
-#bg.on{opacity:1}
 #bar{position:fixed;top:0;left:0;right:0;height:3px;background:#fff;transform:scaleX(0);transform-origin:0 50%;z-index:40}
 main,.foot,.nav{position:relative;z-index:2}
 main{z-index:3} /* the country list can hang over the footer, so main must paint above it */
@@ -63,7 +58,7 @@ main{z-index:3} /* the country list can hang over the footer, so main must paint
 .burger[aria-expanded=true] span:nth-child(2){top:19px;transform:rotate(-45deg)}
 
 /* ---------- 3. hero ---------- */
-.hero{position:relative;min-height:100vh;min-height:100svh;display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:40px;
+.hero{position:relative;overflow-x:clip;min-height:100vh;min-height:100svh;display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:40px;
   max-width:1300px;margin:auto;padding:110px var(--gutter) 70px}
 /* soft aurora behind the hero: plain gradients (no blur filter), so it costs nothing while scrolling */
 .hero::before{content:'';position:absolute;z-index:-1;inset:0;pointer-events:none;
