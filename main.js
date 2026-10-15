@@ -11,6 +11,14 @@ if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
 // real mouse / trackpad only. touch screens skip tilt + parallax = lighter and smoother
 const canHover = matchMedia('(hover:hover) and (pointer:fine)').matches;
 $('#yr').textContent = new Date().getFullYear();
+// phones, data-saver and weak devices get a light static star background instead of the 3D one:
+// three.js (600 KB) is never even downloaded for them, so the page loads fast and scrolls smoothly
+const lite =
+  innerWidth <= 991 ||
+  !!(navigator.connection && navigator.connection.saveData) ||
+  (navigator.deviceMemory && navigator.deviceMemory <= 2) ||
+  (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2);
+if (lite) document.documentElement.classList.add('lite');
 
 /* ---------- contact form (runs first so nothing else can break it) ---------- */
 (() => {
@@ -18,11 +26,130 @@ $('#yr').textContent = new Date().getFullYear();
     st = $('#status'),
     dial = $('#dial'),
     btn = $('button[type=submit]', f);
-  if (window.COUNTRIES && dial)
-    dial.innerHTML = COUNTRIES.map(
-      ([n, c], i) =>
-        `<option value="${c}"${i === 0 ? ' selected' : ''}>${n} (+${c})</option>`,
-    ).join('');
+  /* ---- country picker: closed = flag + short code (BD +880); open = search box + flag + full name ---- */
+  const ccBtn = $('#ccBtn'),
+    ccPop = $('#ccPop'),
+    ccList = $('#ccList'),
+    ccQ = $('#ccSearch');
+  let cur = null,
+    shown = [];
+  if (window.COUNTRIES && ccBtn) {
+    const ALIAS = {
+      GB: 'uk england britain',
+      US: 'usa america',
+      AE: 'uae emirates',
+      KR: 'korea',
+      KP: 'korea',
+      CZ: 'czech',
+      CD: 'congo',
+      CG: 'congo',
+    };
+    const C = COUNTRIES.map(([n, d, i]) => ({
+      n,
+      d,
+      i,
+      k: `${n} ${i} +${d} ${ALIAS[i] || ''}`.toLowerCase(),
+    }));
+    cur = C[0];
+    const flag = (i, w) => `https://flagcdn.com/w${w}/${i.toLowerCase()}.png`;
+    const esc = s => s.replace(/[&<>"']/g, ch => '&#' + ch.charCodeAt(0) + ';');
+    const apply = c => {
+      cur = c;
+      dial.value = c.d;
+      $('#ccFlag').src = flag(c.i, 40);
+      $('#ccFlag').srcset = `${flag(c.i, 40)} 1x, ${flag(c.i, 80)} 2x`;
+      $('#ccIso').textContent = c.i;
+      $('#ccDial').textContent = '+' + c.d;
+      ccBtn.setAttribute('aria-label', `Country code: ${c.n} +${c.d}`);
+    };
+    const row = c =>
+      `<li role="option" id="cc-${c.i}" data-i="${c.i}" aria-selected="${c === cur}"><img class="flag" src="${flag(c.i, 40)}" srcset="${flag(c.i, 40)} 1x, ${flag(c.i, 80)} 2x" width="24" height="18" alt="" loading="lazy" decoding="async"><span class="n">${esc(c.n)}</span><span class="d">+${c.d}</span></li>`;
+    let act = -1;
+    const items = () => [...ccList.querySelectorAll('[role=option]')];
+    const mark = i => {
+      const it = items();
+      if (!it.length) return;
+      act = (i + it.length) % it.length;
+      it.forEach((e, j) => e.classList.toggle('act', j === act));
+      it[act].scrollIntoView({ block: 'nearest' });
+      ccQ.setAttribute('aria-activedescendant', it[act].id);
+    };
+    const render = () => {
+      const q = ccQ.value.trim().toLowerCase().replace(/^\+/, '');
+      // best matches first: exact code/alias (uk, bd, usa), then names that start with it, then anything that contains it.
+      // digits only (44, +880) match the start of the dial code, so +44 never lists +244
+      const digits = /^\d+$/.test(q);
+      const score = c => {
+        if (!q) return 0;
+        if (digits) return c.d.startsWith(q) ? 0 : 9;
+        if (c.i.toLowerCase() === q || c.k.split(' ').includes(q)) return 0;
+        if (c.n.toLowerCase().startsWith(q)) return 1;
+        return c.k.includes(q) ? 2 : 9;
+      };
+      shown = C.map((c, i) => [score(c), i, c])
+        .filter(x => x[0] < 9)
+        .sort((a, b) => a[0] - b[0] || a[1] - b[1])
+        .map(x => x[2]);
+      ccList.innerHTML = shown.length
+        ? shown.map(row).join('')
+        : '<li class="cc-empty" role="presentation">No country found</li>';
+      act = -1;
+      ccQ.removeAttribute('aria-activedescendant');
+    };
+    const close = () => {
+      ccPop.hidden = true;
+      ccBtn.setAttribute('aria-expanded', 'false');
+    };
+    const open = () => {
+      ccQ.value = '';
+      render(); // the 194 rows are only built when the list is opened (keeps page load light)
+      ccPop.hidden = false;
+      ccBtn.setAttribute('aria-expanded', 'true');
+      const s = ccList.querySelector('[aria-selected=true]');
+      if (s) ccList.scrollTop = Math.max(0, s.offsetTop - 60);
+      ccQ.focus({ preventScroll: true });
+      ccPop.scrollIntoView({ block: 'nearest' });
+    };
+    const choose = c => {
+      apply(c);
+      close();
+      $('#phone').focus({ preventScroll: true });
+    };
+    ccBtn.addEventListener('click', () => (ccPop.hidden ? open() : close()));
+    ccQ.addEventListener('input', render);
+    ccQ.addEventListener('keydown', e => {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        mark(act + 1);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        mark(act - 1);
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        const c = shown[act < 0 ? 0 : act];
+        if (c) choose(c);
+      } else if (e.key === 'Escape') {
+        close();
+        ccBtn.focus();
+      }
+    });
+    ccList.addEventListener('click', e => {
+      const li = e.target.closest('[data-i]');
+      if (li) choose(COUNTRIES_BY_ISO(li.dataset.i));
+    });
+    ccList.addEventListener(
+      'error',
+      e => {
+        if (e.target.tagName === 'IMG') e.target.style.visibility = 'hidden';
+      },
+      true,
+    );
+    document.addEventListener('pointerdown', e => {
+      if (!ccPop.hidden && !$('#cc').contains(e.target)) close();
+    });
+    const COUNTRIES_BY_ISO = i => C.find(c => c.i === i);
+    f.__applyCountry = () => apply(cur);
+  }
   const say = (t, k = '') => {
     st.textContent = t;
     st.className = k;
@@ -52,10 +179,13 @@ $('#yr').textContent = new Date().getFullYear();
       if (!r.ok) throw new Error(d.error || 'Could not send. Try again later.');
       say('Message sent. I will reply soon.', 'ok');
       f.reset();
+      if (f.__applyCountry) f.__applyCountry(); // reset() puts the hidden code back to 880, keep the chosen country
     } catch (err) {
       say(
         err.message === 'Failed to fetch'
-          ? 'Cannot reach the server. Run npm run dev and open http://localhost:3000'
+          ? /^(localhost|127\.0\.0\.1)$/.test(location.hostname)
+            ? 'Cannot reach the server. Run npm run dev and open http://localhost:3000'
+            : 'Could not send right now. Please check your connection and try again.'
           : err.message,
         'err',
       );
@@ -65,44 +195,6 @@ $('#yr').textContent = new Date().getFullYear();
 })();
 
 /* ---------- content ---------- */
-const TECH = {
-  Languages: [
-    ['HTML5', 'html5'],
-    ['CSS3', 'css3'],
-    ['JavaScript', 'javascript'],
-    ['TypeScript', 'typescript'],
-    ['Python', 'python'],
-    ['PowerShell', 'powershell'],
-  ],
-  Frontend: [
-    ['React', 'react'],
-    ['Next.js', 'nextjs'],
-    ['React Native', 'react-native'],
-    ['React Router', 'react-router'],
-    ['Vite', 'vite'],
-    ['Tailwind CSS', 'tailwind'],
-    ['WordPress', 'wordpress'],
-    ['GSAP', 'gsap'],
-    ['Three.js', 'threejs'],
-  ],
-  'Backend & Cloud': [
-    ['Node.js', 'nodejs'],
-    ['Vercel', 'vercel'],
-    ['Netlify', 'netlify'],
-    ['Firebase', 'firebase'],
-    ['Google Cloud', 'google-cloud'],
-    ['Resend', 'resend'],
-  ],
-  'Tools & Design': [
-    ['Git', 'git'],
-    ['GitHub', 'github'],
-    ['npm', 'npm'],
-    ['Figma', 'figma'],
-    ['Canva', 'canva'],
-    ['Adobe XD', 'adobe-xd'],
-    ['Blender', 'blender'],
-  ],
-};
 const PROJ = {
   frontend: [
     {
@@ -142,17 +234,13 @@ const PROJ = {
     },
   ],
 };
-$('#techgrid').innerHTML = Object.entries(TECH)
-  .map(
-    ([k, v]) =>
-      `<div class="tgroup"><h3>${k}</h3><div class="tiles">${v.map(([n, f]) => `<div class="tile tilt"><img src="assets/tech/${f}.svg" alt="${n}" width="84" height="84" loading="lazy"><span>${n}</span></div>`).join('')}</div></div>`,
-  )
-  .join('');
+/* the tech grid is plain HTML + inline SVG in index.html (on screen instantly, no JS and no image downloads) */
 
-/* project cards: grid on tablet/desktop, sticky stack on phones (<=480px) */
+/* project cards: ONE card on top of another on every screen size.
+   CSS (position:sticky) does the stacking; gsap only adds depth: a card rises in, and sinks back + dims when the next one covers it. */
 let curTab = 'frontend',
   stackFx = [];
-const stackMQ = matchMedia('(max-width:480px)');
+const stackMQ = matchMedia('(max-width:480px)'); // phone gets slightly different offsets (see style.css), so rebuild when crossing it
 const clearStack = () => {
   stackFx.forEach(t => {
     t.scrollTrigger && t.scrollTrigger.kill();
@@ -160,53 +248,44 @@ const clearStack = () => {
   });
   stackFx = [];
 };
-const stackTop = i => 72 + i * 12; // keep in sync with  top:calc(72px + var(--i)*12px)  in style.css
 const buildStack = () => {
   const cards = $$('#projgrid .card'),
-    n = cards.length;
+    n = cards.length,
+    topOf = c => parseFloat(getComputedStyle(c).top) || 72; // the real sticky offset from CSS
   cards.forEach((c, i) => {
-    // 1) the card rises into view, tilted back like a card being dealt onto the pile
+    // 1) rises into view as you scroll (opacity + translate only = cheap)
     stackFx.push(
       gsap.fromTo(
         c,
-        {
-          y: 80,
-          rotateX: -30,
-          opacity: 0,
-          transformPerspective: 900,
-          transformOrigin: '50% 0%',
-        },
+        { y: 70, opacity: 0 },
         {
           y: 0,
-          rotateX: 0,
           opacity: 1,
           ease: 'none',
           scrollTrigger: {
             trigger: c,
-            start: 'top 100%',
-            end: 'top 72%',
+            start: 'top 98%',
+            end: 'top 74%',
             scrub: 0.2,
           },
         },
       ),
     );
-    // 2) when the next card slides over it, this one sinks back and dims
-    //    (dimming = overlay opacity via --dim, much cheaper than a CSS filter)
+    // 2) the next card slides over this one: it sinks back and dims
     if (i < n - 1)
       stackFx.push(
         gsap.fromTo(
           c,
-          { scale: 1, rotateX: 0, '--dim': 0 },
+          { scale: 1, '--dim': 0 },
           {
-            scale: 0.93,
-            rotateX: 5,
-            '--dim': 0.55,
+            scale: 0.94,
+            '--dim': 0.6,
             ease: 'none',
             immediateRender: false,
             scrollTrigger: {
               trigger: cards[i + 1],
-              start: 'top 88%',
-              end: 'top ' + (stackTop(i + 1) + 10) + 'px',
+              start: 'top 90%',
+              end: 'top ' + (topOf(cards[i + 1]) + 8) + 'px',
               scrub: 0.2,
             },
           },
@@ -217,35 +296,13 @@ const buildStack = () => {
 const drawProj = t => {
   curTab = t;
   clearStack();
-  const stack = stackMQ.matches,
-    g = $('#projgrid');
-  g.classList.toggle('stack', stack);
-  g.innerHTML = PROJ[t]
+  $('#projgrid').innerHTML = PROJ[t]
     .map(
       (p, i) =>
-        `<a class="card${stack ? '' : ' tilt'}" style="--i:${i}" href="${p.u}" target="_blank" rel="noopener"><h3>${p.n}</h3><p>${p.d}</p><div class="chips">${p.t.map(x => `<span>${x}</span>`).join('')}</div></a>`,
+        `<a class="card" style="--i:${i}" href="${p.u}" target="_blank" rel="noopener"><span class="num" aria-hidden="true">0${i + 1}</span><div class="cbody"><h3>${p.n}</h3><p>${p.d}</p><div class="chips">${p.t.map(x => `<span>${x}</span>`).join('')}</div></div><span class="go" aria-hidden="true">&#8599;</span></a>`,
     )
     .join('');
-  if (stack) {
-    if (!reduce) buildStack();
-  } else {
-    bindTilt();
-    if (!reduce)
-      stackFx.push(
-        gsap.from('#projgrid .card', {
-          y: 40,
-          rotateX: -40,
-          transformPerspective: 900,
-          opacity: 0,
-          stagger: 0.1,
-          duration: 0.7,
-          ease: 'power3.out',
-          clearProps: 'transform,opacity',
-          // plays when the grid scrolls into view (not at page load, where nobody can see it)
-          scrollTrigger: { trigger: '#projgrid', start: 'top 92%', once: true },
-        }),
-      );
-  }
+  if (!reduce) buildStack();
   if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
 };
 stackMQ.addEventListener('change', () => drawProj(curTab));
@@ -268,6 +325,16 @@ const setMenu = o => {
 };
 burger.onclick = () => setMenu(!menu.classList.contains('open'));
 $$('.menu a').forEach(a => (a.onclick = () => setMenu(false)));
+addEventListener('keydown', e => {
+  if (e.key === 'Escape' && menu.classList.contains('open')) {
+    setMenu(false);
+    burger.focus();
+  }
+});
+matchMedia('(min-width:992px)').addEventListener(
+  'change',
+  e => e.matches && setMenu(false),
+);
 
 /* ---------- 3D tilt (cards + photo): mouse only ---------- */
 function bindTilt() {
@@ -291,6 +358,26 @@ function bindTilt() {
       gsap.to(el, { rotateX: 0, rotateY: 0, duration: 0.6 }),
     );
   });
+}
+if (canHover) {
+  let spotRaf = 0,
+    spotEv = null;
+  const spot = () => {
+    spotRaf = 0;
+    const t = spotEv.target.closest && spotEv.target.closest('.tile,.card');
+    if (!t) return;
+    const r = t.getBoundingClientRect();
+    t.style.setProperty('--mx', spotEv.clientX - r.left + 'px');
+    t.style.setProperty('--my', spotEv.clientY - r.top + 'px');
+  };
+  addEventListener(
+    'pointermove',
+    e => {
+      spotEv = e;
+      if (!spotRaf) spotRaf = requestAnimationFrame(spot);
+    },
+    { passive: true },
+  );
 }
 const img = $('#photo img');
 if (img) img.classList.add('tilt');
@@ -416,6 +503,7 @@ const initBg = () => {
       const raw = now - prev; // time since the previous animation frame = how busy the page is
       prev = now;
       if (document.hidden || raw > 250) return; // tab was in the background: do not count it
+      if (!cv.offsetWidth) return; // canvas hidden (window shrunk to phone size): do not draw
       if (warm > 0)
         warm--; // ignore the first frames (shader compile, page still loading)
       else {
@@ -452,13 +540,15 @@ const whenIdle = cb =>
   window.requestIdleCallback
     ? requestIdleCallback(cb, { timeout: 2000 })
     : setTimeout(cb, 300);
-if (document.readyState === 'complete') whenIdle(loadThree);
-else addEventListener('load', () => whenIdle(loadThree));
+if (!lite) {
+  if (document.readyState === 'complete') whenIdle(loadThree);
+  else addEventListener('load', () => whenIdle(loadThree));
+}
 
 /* ---------- scroll animations (all play ONCE, nothing is scrubbed back and forth) ---------- */
-if (!reduce) {
-  /* every section fades up once when it comes into view */
-  $$('.wrap').forEach(s =>
+if (!reduce && typeof ScrollTrigger !== 'undefined') {
+  /* every section (except About + Tech: those stay static) fades up once when it comes into view */
+  $$('.wrap:not(#about):not(#stack)').forEach(s =>
     gsap.from(s, {
       opacity: 0,
       y: s.id === 'projects' ? 0 : 36, // no shift here: it holds the sticky card stack
@@ -468,7 +558,7 @@ if (!reduce) {
       scrollTrigger: { trigger: s, start: 'top 92%', once: true },
     }),
   );
-  gsap.utils.toArray('.wrap h2').forEach(h =>
+  gsap.utils.toArray('.wrap:not(#about):not(#stack) h2').forEach(h =>
     gsap.from(h, {
       scrollTrigger: { trigger: h, start: 'top 88%', once: true },
       x: -30,
@@ -477,34 +567,6 @@ if (!reduce) {
       clearProps: 'transform,opacity',
     }),
   );
-  $$('.tgroup').forEach(g => {
-    gsap.from($$('.tile', g), {
-      scrollTrigger: { trigger: g, start: 'top 86%', once: true },
-      y: 60,
-      z: -160,
-      rotateX: -70,
-      transformPerspective: 900,
-      opacity: 0,
-      stagger: 0.04,
-      duration: 0.8,
-      ease: 'back.out(1.4)',
-      clearProps: 'transform,opacity',
-    });
-    gsap.from($('h3', g), {
-      scrollTrigger: { trigger: g, start: 'top 90%', once: true },
-      x: -30,
-      opacity: 0,
-      duration: 0.6,
-      clearProps: 'transform,opacity',
-    });
-  });
-  gsap.from('#about .lead', {
-    scrollTrigger: { trigger: '#about', start: 'top 75%', once: true },
-    y: 40,
-    opacity: 0,
-    duration: 1,
-    clearProps: 'transform,opacity',
-  });
   gsap.from('#github .stats img', {
     scrollTrigger: { trigger: '#github', start: 'top 78%', once: true },
     y: 50,
@@ -533,62 +595,25 @@ if (!reduce) {
       y: -50,
       ease: 'none',
     });
+  /* hero text drifts up a little slower than the page: gives the hero some depth when you scroll */
+  if (canHover)
+    gsap.to('.hero-text', {
+      scrollTrigger: {
+        trigger: '.hero',
+        start: 'top top',
+        end: 'bottom top',
+        scrub: true,
+      },
+      y: -28,
+      ease: 'none',
+    });
 }
-if (typeof gsap !== 'undefined')
+if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined')
   gsap.to('#bar', {
     scaleX: 1,
     ease: 'none',
     scrollTrigger: { start: 0, end: 'max', scrub: true },
   });
-
-/* ---------- about quote: word-by-word 3D reveal (+ soft tilt on mouse devices) ---------- */
-(() => {
-  const q = $('.quote'),
-    p = $('.quote p');
-  if (!q || !p) return;
-  p.innerHTML = p.textContent
-    .trim()
-    .split(/\s+/)
-    .map(w => `<span class="w">${w}</span>`)
-    .join(' ');
-  if (reduce) return;
-  gsap.from('.quote .w', {
-    scrollTrigger: { trigger: q, start: 'top 82%', once: true },
-    y: 40,
-    rotateX: -80,
-    z: -100,
-    transformPerspective: 800,
-    opacity: 0,
-    stagger: 0.06,
-    duration: 0.8,
-    ease: 'back.out(1.5)',
-    clearProps: 'transform,opacity',
-  });
-  gsap.from('.quote .qmark', {
-    scrollTrigger: { trigger: q, start: 'top 85%', once: true },
-    scale: 0.4,
-    opacity: 0,
-    duration: 1,
-    ease: 'power3.out',
-    clearProps: 'transform,opacity',
-  });
-  if (!canHover) return;
-  q.addEventListener('mousemove', e => {
-    const r = q.getBoundingClientRect(),
-      x = (e.clientX - r.left) / r.width - 0.5,
-      y = (e.clientY - r.top) / r.height - 0.5;
-    gsap.to(q, {
-      transformPerspective: 1000,
-      rotateY: x * 5,
-      rotateX: -y * 5,
-      duration: 0.5,
-      ease: 'power2.out',
-    });
-  });
-  q.addEventListener('mouseleave', () =>
-    gsap.to(q, { rotateX: 0, rotateY: 0, duration: 0.7 }),
-  );
-})();
 
 /* ---------- keep trigger positions correct when things load late (fonts, stat images) ---------- */
 if (typeof ScrollTrigger !== 'undefined') {
