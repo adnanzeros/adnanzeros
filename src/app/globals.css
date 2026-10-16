@@ -1,3 +1,6 @@
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
 /* =====================================================================
    adnanzeros portfolio  -  style.css
    Mobile-first-friendly, only two breakpoints:
@@ -23,6 +26,24 @@
     radial-gradient(1.5px 1.5px at 233px 149px,rgba(255,255,255,.8),transparent),radial-gradient(1px 1px at 14px 167px,rgba(255,255,255,.5),transparent),
     radial-gradient(1px 1px at 197px 341px,#fff,transparent),radial-gradient(1px 1px at 349px 183px,rgba(255,255,255,.65),transparent),
     radial-gradient(1px 1px at 127px 19px,rgba(255,255,255,.5),transparent);
+}
+
+:root {
+  --border: oklch(0.92 0.004 286.32);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+}
+
+.dark {
+  --border: oklch(0.56 0.0195 267.65 / 0.2);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
 }
 /* lets the name's light-sweep animate smoothly (browsers without @property simply show the static chrome name) */
 @property --sh{syntax:'<length>';inherits:false;initial-value:-3000px}
@@ -405,4 +426,11 @@ h2::after{content:'';display:block;width:44px;height:3px;margin-top:12px;border-
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   *,*::before,*::after{transition:none!important;animation:none!important}
+}
+
+@theme inline {
+  --color-foreground:var(--fg);
+  --color-muted:var(--line);
+  --color-muted-foreground:var(--mut);
+  --color-chart-label:var(--mut);
 }
