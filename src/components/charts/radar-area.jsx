@@ -108,7 +108,7 @@ export const RadarArea = memo(function RadarArea({
     animationDelay,
     `${motionReplayKey}-${index}`
   );
-  const enterComplete = useEnterComplete(mountProgress);
+  const enterComplete = !animate || useEnterComplete(mountProgress);
 
   const animatedPositions = useTransform(mountProgress, (t) =>
     targetPositions.map((p) => ({ x: p.x * t, y: p.y * t }))

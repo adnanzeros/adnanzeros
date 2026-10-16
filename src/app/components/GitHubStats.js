@@ -1,12 +1,12 @@
-import GitHubStatImages from "./GitHubStatImages";
+import GitHubRadarChart from "./GitHubRadarChart";
 import LanguageRingChart from "./LanguageRingChart";
 
-export default function GitHubStats({ languages }) {
+export default function GitHubStats({ stats, languages }) {
   return (
     <section id="github" className="wrap">
       <h2>GitHub stats</h2>
       <div className="stats">
-        <GitHubStatImages />
+        <GitHubRadarChart stats={stats} />
         <LanguageRingChart languages={languages} />
       </div>
       <a

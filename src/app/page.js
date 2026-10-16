@@ -5,7 +5,7 @@ import PortfolioEffects from "./components/PortfolioEffects";
 import PortfolioHeader from "./components/PortfolioHeader";
 import Projects from "./components/Projects";
 import TechStack from "./components/TechStack";
-import { getGithubLanguages } from "../lib/github-stats";
+import { getGithubLanguages, getGithubStats } from "../lib/github-stats";
 
 const profiles = [
   ["GitHub", "https://github.com/adnanzeros"],
@@ -78,7 +78,10 @@ const structuredData = {
 };
 
 export default async function HomePage() {
-  const languages = await getGithubLanguages();
+  const [stats, languages] = await Promise.all([
+    getGithubStats(),
+    getGithubLanguages(),
+  ]);
 
   return (
     <>
@@ -111,7 +114,7 @@ export default async function HomePage() {
         </section>
         <TechStack />
         <Projects />
-        <GitHubStats languages={languages} />
+        <GitHubStats stats={stats} languages={languages} />
         <ContactForm />
       </main>
       <footer className="foot">
