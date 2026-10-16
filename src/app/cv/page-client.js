@@ -105,7 +105,7 @@ export default function CvPageClient() {
                 <div className="contact">
                   <a href="mailto:adnanzeros@gmail.com">
                     <svg className="i"><use href="#i-mail" /></svg>
-                    <b>adnanzeros@gmail.com</b>
+                    <b>asadnanzeros@gmail.com</b>
                   </a>
                   <span>
                     <svg className="i"><use href="#i-pin" /></svg>
