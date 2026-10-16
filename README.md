@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="./profile/gitprofile.png" width="100%" alt="Adnan Sami Profile Banner" />
+<img src="./public/profile/gitprofile.png" width="100%" alt="Adnan Sami Profile Banner" />
 
 <br>
 
@@ -255,7 +255,7 @@ It tracks time spent on browser tabs and websites and provides reminders to help
 
 ## 🖼️ Preview
 
-![TimeMate — Screen Time Coach](./profile/timematess.png)
+![TimeMate — Screen Time Coach](./public/profile/timematess.png)
 
 ---
 
@@ -295,13 +295,12 @@ I also experiment with browser extensions and small digital tools that solve pra
 
 # 📊 GitHub Statistics
 
-<div align="center">
-
-<img src="./public/profile/stats.svg" height="170" alt="GitHub Statistics" />
-
-<img src="./public/profile/top-langs.svg" height="170" alt="Top Languages" />
-
-</div>
+The Next.js site uses the generated `public/profile/stats.svg` and
+`public/profile/top-langs.svg` files as build-time data sources for its
+interactive radar and language ring charts. It does not display these files as
+chart images. To refresh the data, open **Actions → Update GitHub Profile Stats
+→ Run workflow**. Repository Actions permissions must allow workflow write
+access.
 
 ---
 

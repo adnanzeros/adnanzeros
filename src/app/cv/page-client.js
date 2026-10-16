@@ -103,7 +103,7 @@ export default function CvPageClient() {
                   &middot; Digital Creator
                 </p>
                 <div className="contact">
-                  <a href="mailto:adnanzeros@gmail.com">
+                  <a href="mailto:asadnanzeros@gmail.com">
                     <svg className="i"><use href="#i-mail" /></svg>
                     <b>asadnanzeros@gmail.com</b>
                   </a>
@@ -111,13 +111,9 @@ export default function CvPageClient() {
                     <svg className="i"><use href="#i-pin" /></svg>
                     <b>Faridpur, Dhaka Division, Bangladesh</b>
                   </span>
-                  <a href="tel:+8801580327310">
-                    <svg className="i"><use href="#i-phone" /></svg>
-                    <b>+880 1580 327310</b>
-                  </a>
                   <a href="https://wa.me/8801580327310">
                     <svg className="i"><use href="#i-chat" /></svg>
-                    <b>WhatsApp +880 1580 327310</b>
+                    <b>+880 1580 327310 (WhatsApp)</b>
                   </a>
                   <a href="https://github.com/adnanzeros">
                     <svg className="i"><use href="#i-github" /></svg>
@@ -140,150 +136,151 @@ export default function CvPageClient() {
             </header>
 
             <div className="cols">
-              <div className="main">
-                <section className="sec">
-                  <h2>Profile</h2>
+              <section className="sec profile-section">
+                <h2>Profile</h2>
+                <p>
+                  Junior full-stack web developer and web designer from
+                  Faridpur, Bangladesh. I build responsive websites and React
+                  apps, design clean interfaces, and make Chrome extensions
+                  that solve small everyday problems. I am currently training
+                  in AI-driven full-stack web engineering at Programming Hero
+                  and I learn by shipping real projects.
+                </p>
+                <p className="motto">
+                  &ldquo;Doing something is better than doing
+                  nothing.&rdquo;
+                </p>
+              </section>
+
+              <section className="sec skills-section">
+                <h2>Skills</h2>
+                <div className="skill">
+                  <b>Languages</b>
+                  <span>
+                    HTML5, CSS3, JavaScript, TypeScript, Python, PowerShell
+                  </span>
+                </div>
+                <div className="skill">
+                  <b>Frontend</b>
+                  <span>
+                    React, Next.js, React Native, React Router, Vite, Tailwind
+                    CSS, WordPress, GSAP, Three.js
+                  </span>
+                </div>
+                <div className="skill">
+                  <b>Backend &amp; Cloud</b>
+                  <span>
+                    Node.js, Vercel, Netlify, Firebase, Google Cloud, Resend
+                  </span>
+                </div>
+                <div className="skill">
+                  <b>Tools &amp; Design</b>
+                  <span>Git, GitHub, npm, Figma, Canva, Adobe XD, Blender</span>
+                </div>
+              </section>
+
+              <section className="sec projects-section">
+                <h2>Projects</h2>
+                <div className="item">
+                  <div className="row">
+                    <h3>TimeMate: Screen Time Coach</h3>
+                    <span className="meta">JavaScript &middot; Chrome APIs</span>
+                  </div>
                   <p>
-                    Junior full-stack web developer and web designer from
-                    Faridpur, Bangladesh. I build responsive websites and React
-                    apps, design clean interfaces, and make Chrome extensions
-                    that solve small everyday problems. I am currently training
-                    in AI-driven full-stack web engineering at Programming Hero
-                    and I learn by shipping real projects.
+                    Tracks tab time, blocks sites, sends reminders; includes
+                    Focus Mode.
                   </p>
-                  <p className="motto">
-                    &ldquo;Doing something is better than doing
-                    nothing.&rdquo;
+                  <a
+                    className="lnk"
+                    href="https://github.com/adnanzeros/screen-time-coach"
+                  >
+                    github.com/adnanzeros/screen-time-coach
+                  </a>
+                </div>
+                <div className="item">
+                  <div className="row">
+                    <h3>DevStack</h3>
+                    <span className="meta">React &middot; Vite &middot; CSS</span>
+                  </div>
+                  <p>
+                    Explore technologies and compose a personalized React tech
+                    stack.
                   </p>
-                </section>
+                  <a
+                    className="lnk"
+                    href="https://github.com/adnanzeros/Assignment-5"
+                  >
+                    github.com/adnanzeros/Assignment-5
+                  </a>
+                </div>
+                <div className="item">
+                  <div className="row">
+                    <h3>Shuru Kori Online</h3>
+                    <span className="meta">Web &middot; Platform</span>
+                  </div>
+                  <p>
+                    Learning platform featuring live sessions and practical
+                    work.
+                  </p>
+                  <a className="lnk" href="https://shurukori.online/">
+                    shurukori.online
+                  </a>
+                </div>
+                <div className="item">
+                  <div className="row">
+                    <h3>Personal Portfolio (adnanzeros)</h3>
+                    <span className="meta">
+                      Next.js &middot; GSAP &middot; Resend
+                    </span>
+                  </div>
+                  <p>
+                    Next.js portfolio with GSAP scroll animations; Resend
+                    contact API.
+                  </p>
+                  <a className="lnk" href="https://github.com/adnanzeros">
+                    github.com/adnanzeros
+                  </a>
+                </div>
+              </section>
 
-                <section className="sec">
-                  <h2>Projects</h2>
-                  <div className="item">
+              <section className="sec education-section">
+                <h2>Education &amp; Training</h2>
+                <div className="item edu">
+                  <div>
                     <div className="row">
-                      <h3>TimeMate: Screen Time Coach</h3>
-                      <span className="meta">JavaScript &middot; Chrome APIs</span>
+                      <h3>AI-Driven Full Stack Web Engineering</h3>
+                      <span className="meta">Ongoing</span>
                     </div>
                     <p>
-                      Chrome extension (Manifest V3) that tracks tab time,
-                      sends reminders, blocks distracting sites and includes a
-                      Focus Mode.
-                    </p>
-                    <div className="lnk">
-                      github.com/adnanzeros/screen-time-coach
-                    </div>
-                  </div>
-                  <div className="item">
-                    <div className="row">
-                      <h3>DevStack</h3>
-                      <span className="meta">React &middot; Vite &middot; CSS</span>
-                    </div>
-                    <p>
-                      React tech stack builder where users explore technologies
-                      and compose their own stack.
-                    </p>
-                    <div className="lnk">github.com/adnanzeros/Assignment-5</div>
-                  </div>
-                  <div className="item">
-                    <div className="row">
-                      <h3>Shuru Kori Online</h3>
-                      <span className="meta">Web &middot; Platform</span>
-                    </div>
-                    <p>
-                      Learning and guidance platform with live sessions and
-                      practical work.
-                    </p>
-                    <div className="lnk">shurukori.online</div>
-                  </div>
-                  <div className="item">
-                    <div className="row">
-                      <h3>Personal Portfolio (adnanzeros)</h3>
-                      <span className="meta">
-                        Three.js &middot; GSAP &middot; Node.js
-                      </span>
-                    </div>
-                    <p>
-                      Responsive portfolio with a 3D animated background,
-                      scroll animations and a serverless contact API that emails
-                      messages through Resend.
-                    </p>
-                    <div className="lnk">github.com/adnanzeros</div>
-                  </div>
-                </section>
-
-                <section className="sec">
-                  <h2>Education &amp; Training</h2>
-                  <div className="item edu">
-                    <div className="nologo">
-                      Programming
+                      Programming Hero &middot; Batch 14
                       <br />
-                      Hero
+                      Student ID:{" "}
+                      <span style={{ whiteSpace: "nowrap" }}>WEB14-0865</span>
+                    </p>
+                  </div>
+                </div>
+                <div className="item edu">
+                  <div>
+                    <div className="row">
+                      <h3>Higher Secondary Certificate (HSC)</h3>
+                      <span className="meta">Completed</span>
                     </div>
-                    <div>
-                      <div className="row">
-                        <h3>AI-Driven Full Stack Web Engineering</h3>
-                        <span className="meta">Ongoing</span>
-                      </div>
-                      <p>
-                        Programming Hero &middot; Batch 14
-                        <br />
-                        Student ID: <span style={{ whiteSpace: "nowrap" }}>WEB14-0865</span>
-                      </p>
-                    </div>
+                    <p>Government Yasin College, Faridpur, Bangladesh</p>
                   </div>
-                  <div className="item edu">
-                    <div className="nologo">HSC</div>
-                    <div>
-                      <div className="row">
-                        <h3>Higher Secondary Certificate (HSC)</h3>
-                        <span className="meta">Completed</span>
-                      </div>
-                      <p>Government Yasin College, Faridpur, Bangladesh</p>
-                    </div>
-                  </div>
-                </section>
-              </div>
+                </div>
+              </section>
 
-              <aside className="side">
-                <section className="sec">
-                  <h2>Skills</h2>
-                  <div className="skill">
-                    <b>Languages</b>
-                    <span>HTML5, CSS3, JavaScript, TypeScript, Python, PowerShell</span>
-                  </div>
-                  <div className="skill">
-                    <b>Frontend</b>
-                    <span>
-                      React, Next.js, React Native, React Router, Vite, Tailwind
-                      CSS, WordPress, GSAP, Three.js
-                    </span>
-                  </div>
-                  <div className="skill">
-                    <b>Backend &amp; Cloud</b>
-                    <span>
-                      Node.js, Vercel, Netlify, Firebase, Google Cloud, Resend
-                    </span>
-                  </div>
-                  <div className="skill">
-                    <b>Tools &amp; Design</b>
-                    <span>Git, GitHub, npm, Figma, Canva, Adobe XD, Blender</span>
-                  </div>
-                </section>
-
-                <section className="sec">
-                  <h2>Personal Details</h2>
-                  <dl className="dl">
-                    <dt>Nationality</dt>
-                    <dd>Bangladeshi</dd>
-                    <dt>Religion</dt>
-                    <dd>Muslim</dd>
-                    <dt>Location</dt>
-                    <dd>Faridpur, Bangladesh</dd>
-                  </dl>
-                </section>
-
-                <p className="foot">References available on request.</p>
-              </aside>
+              <section className="sec personal-section">
+                <h2>Personal Details</h2>
+                <dl className="dl">
+                  <dt>Nationality</dt>
+                  <dd>Bangladeshi</dd>
+                  <dt>Religion</dt>
+                  <dd>Muslim</dd>
+                  <dt>Location</dt>
+                  <dd>Faridpur, Bangladesh</dd>
+                </dl>
+              </section>
             </div>
           </article>
         </div>

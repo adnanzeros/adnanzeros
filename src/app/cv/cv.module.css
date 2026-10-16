@@ -1,6 +1,6 @@
 .page {
-  --cv-line: #262626;
-  --cv-muted: #9a9a9a;
+  --cv-line: #d7dedf;
+  --cv-muted: #59666b;
   min-height: 100vh;
   background: radial-gradient(1200px 600px at 50% -10%, #1b1b1b, #000 70%) #000;
   color: #fff;
@@ -35,7 +35,7 @@
   justify-content: space-between;
   gap: 12px;
   padding: 14px max(5vw, env(safe-area-inset-left));
-  border-bottom: 1px solid var(--cv-line);
+  border-bottom: 1px solid #262626;
 }
 
 .page :global(.brand) {
@@ -56,7 +56,7 @@
 }
 
 .page :global(.back) {
-  color: var(--cv-muted);
+  color: #9a9a9a;
   font-size: .9rem;
   transition: color .2s;
 }
@@ -76,7 +76,7 @@
 .page :global(.stage .sub) {
   max-width: 794px;
   margin: 0 auto 22px;
-  color: var(--cv-muted);
+  color: #9a9a9a;
   font-size: .95rem;
 }
 
@@ -129,23 +129,26 @@
   width: min(210mm, 100%);
   min-height: 1.5em;
   margin: 12px auto 0;
-  color: var(--cv-muted);
+  color: #9a9a9a;
   font-size: .88rem;
 }
 
 .page :global(.sheet) {
+  --cv-accent: #176b67;
   position: absolute;
   top: 0;
   left: 0;
   width: 210mm;
   height: 297mm;
   overflow: hidden;
-  padding: 14mm 15mm 12mm;
+  padding: 13mm 15mm 12mm;
   transform-origin: 0 0;
   background: #fff;
-  color: #111;
-  font: 400 12px/1.55 "Poppins", Arial, sans-serif;
+  color: #172326;
+  font: 400 12px/1.5 "Poppins", Arial, sans-serif;
   box-shadow: 0 30px 80px rgba(255, 255, 255, .08), 0 0 0 1px #2a2a2a;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
 }
 
 .page :global(.sheet a) {
@@ -153,11 +156,11 @@
 }
 
 .page :global(.sheet svg.i) {
-  width: 12px;
-  height: 12px;
+  width: 11px;
+  height: 11px;
   flex: none;
   fill: none;
-  stroke: #111;
+  stroke: #176b67;
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -165,55 +168,56 @@
 
 .page :global(.head) {
   display: grid;
-  grid-template-columns: 1fr 126px;
+  grid-template-columns: minmax(0, 1fr) 26mm;
   align-items: center;
-  gap: 24px;
-  padding-bottom: 20px;
-  border-bottom: 2px solid #111;
+  gap: 8mm;
+  padding-bottom: 5mm;
+  border-bottom: 1.5px solid #176b67;
 }
 
 .page :global(.head h1) {
   margin: 0;
-  font-size: 40px;
+  color: #172326;
+  font-size: 29pt;
   font-weight: 700;
-  letter-spacing: -.02em;
-  line-height: 1.05;
+  letter-spacing: -.035em;
+  line-height: 1;
 }
 
 .page :global(.head .role) {
-  margin-top: 7px;
-  color: #333;
-  font-size: 14px;
+  margin-top: 2mm;
+  color: #405155;
+  font-size: 10pt;
   font-weight: 500;
 }
 
 .page :global(.contact) {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 7px 18px;
-  margin-top: 16px;
-  font-size: 11px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1.6mm 4mm;
+  margin-top: 4mm;
+  font-size: 8pt;
 }
 
 .page :global(.contact span),
 .page :global(.contact a) {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 1.5mm;
   min-width: 0;
 }
 
 .page :global(.contact b) {
   font-weight: 500;
-  word-break: break-all;
+  overflow-wrap: anywhere;
 }
 
 .page :global(.photo) {
   justify-self: end;
-  width: 126px;
-  height: 126px;
+  width: 26mm;
+  height: 26mm;
   overflow: hidden;
-  border: 3px solid #111;
+  border: 1.5px solid #176b67;
   border-radius: 50%;
   background: #e6e8ec;
 }
@@ -228,39 +232,72 @@
 
 .page :global(.cols) {
   display: grid;
-  grid-template-columns: 1fr 228px;
-  gap: 30px;
-  margin-top: 24px;
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, .88fr);
+  grid-template-areas:
+    "profile skills"
+    "projects education"
+    "projects personal";
+  column-gap: 6mm;
+  row-gap: 5mm;
+  margin-top: 5mm;
+  height: 218mm;
 }
 
-.page :global(.sec) {
-  margin-bottom: 24px;
+.page :global(.profile-section) {
+  grid-area: profile;
+}
+
+.page :global(.skills-section) {
+  grid-area: skills;
+}
+
+.page :global(.projects-section) {
+  grid-area: projects;
+}
+
+.page :global(.education-section) {
+  grid-area: education;
+}
+
+.page :global(.personal-section) {
+  grid-area: personal;
+  align-self: end;
+}
+
+.page :global(.profile-section),
+.page :global(.skills-section),
+.page :global(.projects-section),
+.page :global(.education-section) {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .page :global(.sec h2) {
-  margin: 0 0 12px;
-  padding-bottom: 6px;
-  border-bottom: 1px solid #d2d2d2;
-  font-size: 11px;
+  margin: 0 0 3mm;
+  padding-bottom: 1.5mm;
+  border-bottom: 1px solid #a9c8c5;
+  color: #176b67;
+  font-size: 9pt;
   font-weight: 700;
-  letter-spacing: .16em;
+  letter-spacing: .13em;
   text-transform: uppercase;
 }
 
 .page :global(.sec p) {
   margin: 0;
-  color: #2a2a2a;
+  color: #263539;
 }
 
 .page :global(.motto) {
-  margin-top: 8px !important;
-  color: #111 !important;
+  margin-top: 2.5mm !important;
+  color: #405155 !important;
   font-weight: 500;
   font-style: italic;
 }
 
 .page :global(.item) {
-  margin-bottom: 15px;
+  margin-bottom: 5mm;
 }
 
 .page :global(.item:last-child) {
@@ -271,64 +308,83 @@
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  gap: 10px;
+  gap: 2mm;
 }
 
 .page :global(.item h3) {
   margin: 0;
-  font-size: 13px;
+  font-size: 9.3pt;
   font-weight: 700;
+  line-height: 1.25;
 }
 
 .page :global(.item .meta) {
-  color: #666;
-  font-size: 10px;
+  flex: none;
+  color: #526166;
+  font-size: 7.2pt;
   font-weight: 500;
   white-space: nowrap;
 }
 
 .page :global(.item p) {
-  margin: 3px 0 0;
-  color: #2a2a2a;
-  font-size: 11.5px;
+  margin: 1mm 0 0;
+  color: #263539;
+  font-size: 8pt;
+  line-height: 1.35;
+}
+
+.page :global(.projects-section .item p) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .page :global(.item .lnk) {
-  margin-top: 3px;
-  color: #555;
-  font-size: 10.5px;
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  margin-top: .8mm;
+  color: #315d5a;
+  font-size: 7.7pt;
+  text-decoration: underline;
+  text-underline-offset: 1px;
+  overflow-wrap: anywhere;
 }
 
 .page :global(.edu) {
-  display: grid;
-  grid-template-columns: 104px 1fr;
-  align-items: start;
-  gap: 14px;
+  position: relative;
+  margin-left: 1mm;
+  padding-left: 3mm;
+  border-left: 1.5px solid #a9c8c5;
 }
 
-.page :global(.edu img) {
+.page :global(.edu::before) {
+  position: absolute;
+  top: 1.1mm;
+  left: -1.25mm;
+  width: 2mm;
+  height: 2mm;
+  border: 1px solid #fff;
+  border-radius: 50%;
+  background: #176b67;
+  content: "";
+}
+
+.page :global(.edu + .edu) {
+  margin-top: 3mm;
+}
+
+.page :global(.edu .row) {
   display: block;
-  width: 104px;
-  height: auto;
-  border-radius: 8px;
 }
 
-.page :global(.edu .nologo) {
-  display: grid;
-  place-items: center;
-  width: 104px;
-  height: 42px;
-  border: 1px solid #d2d2d2;
-  border-radius: 8px;
-  color: #555;
-  font-size: 9px;
-  font-weight: 700;
-  line-height: 1.2;
-  text-align: center;
+.page :global(.edu .meta) {
+  display: block;
+  margin-top: .5mm;
 }
 
 .page :global(.skill) {
-  margin-bottom: 13px;
+  margin-bottom: 3.2mm;
 }
 
 .page :global(.skill:last-child) {
@@ -337,41 +393,37 @@
 
 .page :global(.skill b) {
   display: block;
-  margin-bottom: 2px;
-  color: #666;
-  font-size: 9.5px;
+  margin-bottom: .5mm;
+  color: #526166;
+  font-size: 7.2pt;
   font-weight: 700;
-  letter-spacing: .1em;
+  letter-spacing: .08em;
   text-transform: uppercase;
 }
 
 .page :global(.skill span) {
-  color: #222;
-  font-size: 11.5px;
+  color: #263539;
+  font-size: 9pt;
+  line-height: 1.4;
 }
 
 .page :global(.dl) {
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 8px 12px;
+  gap: 1mm 3mm;
   margin: 0;
-  font-size: 11.5px;
+  color: #405155;
+  font-size: 8.5pt;
 }
 
 .page :global(.dl dt) {
-  color: #666;
   font-weight: 500;
 }
 
 .page :global(.dl dd) {
   margin: 0;
+  color: #263539;
   font-weight: 500;
-}
-
-.page :global(.foot) {
-  margin-top: 6px;
-  color: #777;
-  font-size: 10.5px;
 }
 
 @media (hover: hover) {
@@ -421,7 +473,7 @@
   .page :global(.back) {
     flex: none;
     padding: 7px 12px;
-    border: 1px solid var(--cv-line);
+    border: 1px solid #262626;
     border-radius: 999px;
     font-size: .78rem;
     line-height: 1;

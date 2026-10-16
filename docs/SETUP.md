@@ -44,7 +44,8 @@ above in the Vercel project settings before deploying.
 ## GitHub profile statistics
 
 The daily workflow writes `public/profile/stats.svg` and
-`public/profile/top-langs.svg`. Those files power the website's GitHub cards
-and language chart. To run it manually, open **Actions → Update GitHub Profile
-Stats → Run workflow**. Repository Actions permissions must allow workflow
-write access.
+`public/profile/top-langs.svg`. The Next.js home page reads these files at
+build time and renders interactive charts from their data; the SVG cards are
+not displayed as images. To run the workflow manually, open
+**Actions → Update GitHub Profile Stats → Run workflow**. Repository Actions
+permissions must allow workflow write access.
