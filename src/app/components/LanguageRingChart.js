@@ -14,9 +14,9 @@ export default function LanguageRingChart({ languages }) {
   const animate = prefersReducedMotion === false;
 
   return (
-    <article className="github-chart-card language-card">
+    <article className="github-chart-card">
       <h3>Most used languages</h3>
-      <div className="language-chart">
+      <div className="github-language-chart">
         <MotionConfig reducedMotion="user">
           <RingChart data={languages}>
             {languages.map((language, index) => (
@@ -30,10 +30,10 @@ export default function LanguageRingChart({ languages }) {
           </RingChart>
         </MotionConfig>
       </div>
-      <ul className="language-legend" aria-label="Most used languages">
+      <ul className="github-language-legend" aria-label="Most used languages">
         {languages.map((language) => (
           <li key={language.label}>
-            <span className="language-key">
+            <span className="github-language-key">
               <i
                 style={{ "--language-color": language.color }}
                 aria-hidden="true"

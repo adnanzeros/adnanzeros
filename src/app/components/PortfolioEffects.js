@@ -38,7 +38,7 @@ export default function PortfolioEffects() {
             clearProps: "transform,opacity",
           }),
         );
-        gsap.from("#github .stats img", {
+        gsap.from("#github .stats > *", {
           scrollTrigger: { trigger: "#github", start: "top 78%", once: true },
           y: 50,
           opacity: 0,
@@ -140,18 +140,30 @@ export default function PortfolioEffects() {
       clearTimeout(refreshTimer);
       refreshTimer = window.setTimeout(() => ScrollTrigger.refresh(), 150);
     };
-    const images = [...document.querySelectorAll("#github .stats img")];
+    const chartGrid = document.querySelector("#github .stats");
+    const chartCards = chartGrid ? [...chartGrid.children] : [];
+    const chartMutationObserver = chartGrid
+      ? new MutationObserver(refresh)
+      : null;
+    const chartResizeObserver =
+      typeof ResizeObserver === "undefined" ? null : new ResizeObserver(refresh);
+    chartMutationObserver?.observe(chartGrid, {
+      childList: true,
+      subtree: true,
+    });
+    chartCards.forEach(card => chartResizeObserver?.observe(card));
     window.addEventListener("load", refresh);
     document.fonts?.ready.then(refresh);
-    images.forEach(image => image.addEventListener("load", refresh));
+    refresh();
 
     return () => {
       disposed = true;
       clearTimeout(refreshTimer);
       cancelAnimationFrame(spotlightFrame);
+      chartMutationObserver?.disconnect();
+      chartResizeObserver?.disconnect();
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("load", refresh);
-      images.forEach(image => image.removeEventListener("load", refresh));
       photo?.removeEventListener("mousemove", onPhotoMove);
       photo?.removeEventListener("mouseleave", onPhotoLeave);
       context.revert();

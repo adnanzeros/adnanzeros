@@ -11,8 +11,7 @@
   margin-bottom: 26px;
 }
 
-.github-chart-card,
-.language-card {
+.github-chart-card {
   width: 100%;
   min-width: 0;
   padding: 18px;
@@ -90,19 +89,19 @@
   font-variant-numeric: tabular-nums;
 }
 
-.language-chart {
+.github-language-chart {
   width: min(100%, 300px);
   aspect-ratio: 1;
   margin: 0 auto 14px;
 }
 
-.language-chart svg {
+.github-language-chart svg {
   display: block;
   width: 100%;
   overflow: visible;
 }
 
-.language-legend {
+.github-language-legend {
   display: grid;
   gap: 7px;
   padding: 0;
@@ -110,23 +109,23 @@
   font-size: 0.82rem;
 }
 
-.language-legend li,
-.language-key {
+.github-language-legend li,
+.github-language-key {
   display: flex;
   align-items: center;
 }
 
-.language-legend li {
+.github-language-legend li {
   justify-content: space-between;
   gap: 12px;
 }
 
-.language-key {
+.github-language-key {
   min-width: 0;
   gap: 8px;
 }
 
-.language-key i {
+.github-language-key i {
   width: 9px;
   height: 9px;
   flex: none;
