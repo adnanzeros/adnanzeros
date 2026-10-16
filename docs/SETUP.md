@@ -1,9 +1,30 @@
 # adnanzeros portfolio
 
 ## Run locally
+Install the existing dependencies, then run the Next.js App Router app:
+
+    npm install
     npm run dev        ->  http://localhost:3000
-Needs Node 18 or newer. No `npm install` required (zero dependencies).
-Put your photo at `assets/adnan.png`.
+
+Use Node.js 22.x, as declared in `package.json`. The original static site and
+local API server are still present and can be run separately with
+`node server.js` (stop the Next.js server first if both use port 3000).
+The migrated app serves its preserved static assets from `public/`; the
+original files remain in the repository root. The original page is available
+as `/legacy.html` when running Next.js.
+
+The original Resend and Puppeteer handlers are reused through the new
+`/api/next/contact` and `/api/next/cv` routes. The original `/api/contact` and
+`/api/cv` handlers are unchanged. The CV download route needs Chrome/Edge
+locally (set `CHROME_PATH` in `.env.local` if it is not found). The existing
+Vercel config is unchanged; `next.config.mjs` adds the supported
+`outputFileTracingIncludes` rule for the new Next.js PDF route so Chromium's
+binary files are traced into its deployment bundle.
+
+GitHub language ring-chart values are read from the generated
+`profile/top-langs.svg`; the existing stats cards remain. This project did not
+have a shadcn/Tailwind setup, so the chart is a dependency-free SVG component
+rather than the shadcn registry component.
 
 ## Contact form (Resend)
 Keys live in `.env.local` (git-ignored):
@@ -19,7 +40,9 @@ If sending fails locally, the exact Resend error is shown under the form and in 
 
 ## Deploy (GitHub + Vercel)
 1. `git init && git add . && git commit -m "portfolio"`; push to a GitHub repo.
-2. vercel.com > Add New > Project > import the repo. Framework: Other. No build command.
+2. Import the repo in Vercel and use the Next.js framework preset and the default
+   Next.js build command (`npm run build`). Keep the existing `vercel.json`;
+   its headers and original `/api/cv` function configuration are still needed.
 3. Environment Variables: RESEND_API_KEY and CONTACT_TO. Then Deploy.
 4. Changed env vars later? Deployments > Redeploy.
 
