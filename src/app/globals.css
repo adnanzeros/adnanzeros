@@ -1,0 +1,431 @@
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+/* =====================================================================
+   adnanzeros portfolio  -  style.css
+   Mobile-first-friendly, only two breakpoints:
+     tablet  : max-width 991px
+     mobile  : max-width 480px
+   Performance notes (why this file looks lean):
+     - no backdrop-filter on cards/tiles/quote (it is very heavy while scrolling)
+     - no permanent will-change layers
+     - hero intro is pure CSS, so it starts on the first paint (no waiting for JS)
+     - logo glow animates opacity only (compositor), not text-shadow (repaint)
+   ===================================================================== */
+
+/* ---------- 1. tokens + base ---------- */
+:root{
+  --bg:#000;--fg:#fff;--mut:#9a9a9a;--line:#262626;--card:rgba(255,255,255,.05);
+  --line2:rgba(255,255,255,.14);--acc1:#8ea2ff;--acc2:#5ee7ff;color-scheme:dark;
+  --gutter:5vw;            /* left/right page padding */
+  --section-y:90px;        /* top/bottom padding of every section */
+  /* tiny static star tile: the light-weight background used on phones and weak devices (no WebGL, no JS) */
+  --stars:radial-gradient(1px 1px at 23px 41px,#fff,transparent),radial-gradient(1px 1px at 171px 87px,rgba(255,255,255,.7),transparent),
+    radial-gradient(1.5px 1.5px at 109px 203px,#fff,transparent),radial-gradient(1px 1px at 287px 247px,rgba(255,255,255,.55),transparent),
+    radial-gradient(1px 1px at 61px 311px,#fff,transparent),radial-gradient(1px 1px at 331px 29px,rgba(255,255,255,.6),transparent),
+    radial-gradient(1.5px 1.5px at 233px 149px,rgba(255,255,255,.8),transparent),radial-gradient(1px 1px at 14px 167px,rgba(255,255,255,.5),transparent),
+    radial-gradient(1px 1px at 197px 341px,#fff,transparent),radial-gradient(1px 1px at 349px 183px,rgba(255,255,255,.65),transparent),
+    radial-gradient(1px 1px at 127px 19px,rgba(255,255,255,.5),transparent);
+}
+
+:root {
+  --border: oklch(0.92 0.004 286.32);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+}
+
+.dark {
+  --border: oklch(0.56 0.0195 267.65 / 0.2);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+}
+/* lets the name's light-sweep animate smoothly (browsers without @property simply show the static chrome name) */
+@property --sh{syntax:'<length>';inherits:false;initial-value:-3000px}
+*,*::before,*::after{box-sizing:border-box}
+*{margin:0}
+html{scroll-behavior:smooth;scroll-padding-top:70px;-webkit-text-size-adjust:100%;text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
+body{min-width:320px;background-color:var(--bg);color:var(--fg);font-family:'Poppins',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;line-height:1.6;overflow-x:hidden}
+body{background-image:var(--stars);background-size:360px 360px} /* light static star field on every device (no WebGL, no JS) */
+img,svg{max-width:100%}
+a{color:inherit;text-decoration:none}
+::selection{background:#fff;color:#000}
+:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.btn,.tabs button,.burger{touch-action:manipulation}
+
+#bar{position:fixed;top:0;left:0;right:0;height:3px;background:#fff;transform:scaleX(0);transform-origin:0 50%;z-index:40}
+main,.foot,.nav{position:relative;z-index:2}
+main{z-index:3} /* the country list can hang over the footer, so main must paint above it */
+
+/* ---------- 2. navigation ---------- */
+.nav{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:space-between;
+  padding:14px max(var(--gutter),env(safe-area-inset-left)) 14px max(var(--gutter),env(safe-area-inset-right));border-bottom:1px solid var(--line)}
+/* solid dark bar (no backdrop blur: blur over the moving 3D background makes scrolling heavy) */
+.nav::before{content:'';position:absolute;inset:0;z-index:-1;background:rgba(0,0,0,.88)}
+.brand{display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:1.25rem;letter-spacing:-.02em}
+.brand img{display:block;width:28px;height:28px;flex:none;border-radius:8px;filter:invert(1);transition:transform .3s} /* white badge, black "a" */
+.menu{display:flex;gap:28px}
+.menu a{color:var(--mut);font-size:.92rem;transition:color .2s}
+.burger{display:none;background:none;border:0;width:40px;height:40px;position:relative;cursor:pointer}
+.burger span{position:absolute;left:8px;right:8px;height:2px;background:#fff;transition:.3s}
+.burger span:nth-child(1){top:15px}
+.burger span:nth-child(2){top:23px}
+.burger[aria-expanded=true] span:nth-child(1){top:19px;transform:rotate(45deg)}
+.burger[aria-expanded=true] span:nth-child(2){top:19px;transform:rotate(-45deg)}
+
+/* ---------- 3. hero ---------- */
+.hero{position:relative;overflow-x:clip;min-height:100vh;min-height:100svh;display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:40px;
+  max-width:1300px;margin:auto;padding:110px var(--gutter) 70px}
+/* soft aurora behind the hero: plain gradients (no blur filter), so it costs nothing while scrolling */
+.hero::before{content:'';position:absolute;z-index:-1;inset:0;pointer-events:none;
+  background:radial-gradient(40% 50% at 30% 40%,rgba(110,130,255,.17),transparent 70%),radial-gradient(34% 44% at 72% 60%,rgba(94,231,255,.11),transparent 70%)}
+.hero-text{min-width:0;container-type:inline-size}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;margin-bottom:16px;padding:6px 16px 6px 12px;border:1px solid var(--line2);border-radius:999px;
+  background:rgba(255,255,255,.045);color:#dcdcdc;font-size:.84rem;font-weight:500;letter-spacing:.01em}
+.dot{position:relative;width:8px;height:8px;border-radius:50%;background:var(--acc2);flex:none}
+.dot::after{content:'';position:absolute;inset:0;border-radius:50%;background:var(--acc2);animation:ping 2.4s ease-out infinite}
+@keyframes ping{0%{transform:scale(1);opacity:.7}80%,100%{transform:scale(3.2);opacity:0}}
+
+.logo{position:relative;font-size:clamp(2.2rem,9vw,7rem);font-weight:800;letter-spacing:-.05em;line-height:1;white-space:nowrap;font-kerning:none;color:#fff;margin-bottom:.34em}
+/* the extra padding + negative margin = same layout, but the gradient is not cut at the letter edges */
+.logo span{display:inline-block;padding:.1em .06em;margin:-.1em -.06em}
+/* NAME DESIGN: cool chrome fill (white at the top, soft blue-silver at the bottom) + a light sweep that glides across the whole word
+   every few seconds. main.js-free: the inline script in index.html only gives each letter its slice of one shared gradient (--w / --x). */
+.logo.gx span{color:transparent;-webkit-text-fill-color:transparent;-webkit-background-clip:text;background-clip:text;background-repeat:no-repeat;
+  background-size:calc(var(--w,600px) * 2.2) 100%,var(--w,600px) 100%;
+  background-position:calc(var(--sh) - var(--x,0px)) 0,calc(var(--x,0px) * -1) 0;
+  background-image:
+    linear-gradient(105deg,rgba(255,255,255,0) 40%,rgba(255,255,255,1) 50%,rgba(255,255,255,0) 60%),
+    linear-gradient(to bottom,#fff 0%,#f1f3ff 36%,#aeb8dc 70%,#7480a8 100%)}
+/* gradient accent bar under the name; draws itself in on load */
+.logo::after{content:'';position:absolute;left:0;top:calc(100% + .14em);width:clamp(54px,11cqi,110px);height:3px;border-radius:3px;transform-origin:0 50%;
+  background:linear-gradient(90deg,#fff,var(--acc1) 55%,transparent);pointer-events:none;animation:bar .9s .55s cubic-bezier(.2,.7,.2,1) backwards}
+@supports (font-size:1cqi){.logo{font-size:min(15cqi,7rem)}}
+
+.alias{margin:.5rem 0 1rem;color:var(--mut);font-size:.92rem}
+.alias strong{color:#fff;font-weight:600}
+.role{max-width:46ch;color:#cfcfcf;margin:0 0 30px}
+.cta{display:flex;gap:12px;flex-wrap:wrap}
+
+/* hero intro: pure CSS, starts immediately on first paint */
+.logo span{animation:letter .8s cubic-bezier(.2,.7,.2,1) backwards calc(var(--i,0) * 35ms),sheen 7s ease-in-out 1.7s infinite}
+.eyebrow,.alias,.role,.cta{animation:rise .7s ease-out backwards}
+.eyebrow{animation-delay:.05s}
+.alias{animation-delay:.25s}
+.role{animation-delay:.32s}
+.cta{animation-delay:.44s}
+.photo-in{position:relative;width:100%;height:100%;opacity:0}
+.photo-in.ready{opacity:1;animation:photoIn .9s cubic-bezier(.2,.7,.2,1) backwards}
+@keyframes letter{from{opacity:0;transform:perspective(600px) translateY(60%) rotateX(-70deg)}}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}}
+@keyframes bar{from{transform:scaleX(0)}}
+@keyframes photoIn{from{opacity:0;transform:perspective(900px) rotateY(-35deg) scale(.94)}}
+/* the sweep: moves across during the first ~25% of the cycle, then rests */
+@keyframes sheen{0%{--sh:calc(var(--w) * -1.5)}26%,100%{--sh:calc(var(--w) * .3)}}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 26px;border:1px solid rgba(255,255,255,.55);border-radius:999px;font:500 .95rem 'Poppins',system-ui,sans-serif;color:#fff;background:rgba(255,255,255,.03);cursor:pointer;
+  transition:background .25s,color .25s,border-color .25s,transform .25s,box-shadow .25s;white-space:nowrap}
+.btn.solid{background:#fff;border-color:#fff;color:#000;box-shadow:0 8px 30px -8px rgba(255,255,255,.45)}
+.btn:disabled{opacity:.6;cursor:wait}
+.btn .arr{display:inline-block;transition:transform .25s}
+
+/* photo: clean transparent cut-out that melts into the background (soft glow behind it, nothing else) */
+.photo{position:relative;perspective:900px;justify-self:center;width:min(460px,80vw);aspect-ratio:1/1}
+.photo picture{display:block;width:100%;height:100%}
+.photo img{position:relative;z-index:1;display:block;width:100%;height:100%;object-fit:contain;object-position:50% 100%;border:0;border-radius:0;box-shadow:none;
+  /* sides melt with the radial fade, bottom melts with a linear fade so there is no hard cut line */
+  -webkit-mask-image:radial-gradient(ellipse 72% 80% at 50% 40%,#000 58%,transparent 100%),linear-gradient(to bottom,#000 0,#000 62%,transparent 98%);
+  -webkit-mask-composite:source-in;
+  mask-image:radial-gradient(ellipse 72% 80% at 50% 40%,#000 58%,transparent 100%),linear-gradient(to bottom,#000 0,#000 62%,transparent 98%);
+  mask-composite:intersect}
+/* (contrast/brightness is already baked into adnan2.webp, so no CSS filter is needed) */
+.photo::before{content:'';position:absolute;z-index:0;inset:8% 6% 2%;border-radius:50%;pointer-events:none;
+  background:radial-gradient(closest-side,rgba(142,162,255,.26),rgba(255,255,255,.06) 55%,transparent 78%);
+  filter:blur(26px)}
+/* small animated mouse under the hero (desktop only) */
+.scroll-cue{position:absolute;left:50%;bottom:22px;translate:-50% 0;width:24px;height:38px;border:1.5px solid rgba(255,255,255,.4);border-radius:14px;opacity:.8}
+.scroll-cue i{position:absolute;left:50%;top:7px;width:3px;height:7px;margin-left:-1.5px;border-radius:3px;background:#fff;animation:wheel 1.9s ease-in-out infinite}
+@keyframes wheel{0%{transform:translateY(0);opacity:1}70%,100%{transform:translateY(12px);opacity:0}}
+
+/* ---------- 4. sections ---------- */
+.wrap{max-width:1100px;margin:auto;padding:var(--section-y) var(--gutter)}
+h2{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;letter-spacing:-.03em;margin-bottom:30px}
+h2::after{content:'';display:block;width:44px;height:3px;margin-top:12px;border-radius:3px;background:linear-gradient(90deg,#fff,var(--acc1) 60%,transparent)}
+.lead{font-size:1.15rem;color:#d8d8d8;max-width:62ch}
+
+/* about quote */
+.quote{position:relative;margin:0 0 34px;padding:34px clamp(22px,4vw,48px) 30px;border:1px solid var(--line);border-radius:22px;background:rgba(14,14,14,.82);
+  overflow:hidden}
+.quote::before{content:'';position:absolute;left:0;top:18%;bottom:18%;width:3px;border-radius:3px;background:#fff;box-shadow:0 0 18px rgba(255,255,255,.7)}
+.qmark{position:absolute;top:-4px;right:20px;font-size:8rem;line-height:1;font-weight:800;color:rgba(255,255,255,.08);pointer-events:none;user-select:none}
+.quote blockquote{position:relative;margin:0}
+.quote p{margin:0;font-size:clamp(1.35rem,3.6vw,2.4rem);font-weight:600;letter-spacing:-.02em;line-height:1.3;color:#fff}
+.quote figcaption{position:relative;margin-top:16px;color:var(--mut);font-size:.9rem}
+.quote figcaption::before{content:'';display:inline-block;width:28px;height:1px;background:var(--mut);vertical-align:middle;margin-right:10px}
+#about .lead{margin-top:6px}
+
+/* cards */
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;perspective:1000px}
+.card{position:relative;display:block;padding:24px;border:1px solid var(--line);border-radius:18px;background:rgba(14,14,14,.82);transition:border-color .25s;overflow:hidden}
+/* mouse spotlight (main.js sets --mx / --my on hover devices) */
+.card::before,.tile::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .3s;
+  background:radial-gradient(240px circle at var(--mx,50%) var(--my,0%),rgba(255,255,255,.11),transparent 65%)}
+.card h3{font-size:1.1rem;margin-bottom:8px}
+.card p{color:var(--mut);font-size:.9rem}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chips span,.tag{border:1px solid var(--line);border-radius:999px;padding:3px 12px;font-size:.8rem;color:#ddd}
+
+/* PROJECT CARDS: one card slides over the previous one, on every screen size.
+   position:sticky does the stacking (works even without JS); main.js only adds the depth effect (previous card sinks back + dims). */
+#projgrid{display:flex;flex-direction:column;gap:26px;perspective:none;padding-bottom:24px}
+#projgrid .card{--top:88px;position:sticky;top:calc(var(--top) + var(--i,0) * 14px);display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:start;gap:8px 30px;min-height:230px;
+  padding:34px 38px;border-radius:24px;border-color:#2c2c2c;background:linear-gradient(160deg,#151515,#0a0a0a);transform-origin:50% 0;
+  box-shadow:0 -18px 40px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.05)}
+/* the \"sinks back and dims\" overlay: only its opacity changes (much cheaper than a CSS filter) */
+#projgrid .card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:#000;opacity:var(--dim,0);pointer-events:none}
+.num{font-size:clamp(2.4rem,5vw,4rem);font-weight:800;letter-spacing:-.05em;line-height:1;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.3)}
+.cbody{min-width:0}
+.cbody h3{font-size:clamp(1.25rem,2.4vw,1.7rem);letter-spacing:-.02em;margin-bottom:10px}
+.cbody p{max-width:56ch;font-size:1rem}
+.cbody .chips{margin-top:18px}
+.go{display:grid;place-items:center;width:46px;height:46px;border:1px solid rgba(255,255,255,.25);border-radius:50%;font-size:1.15rem;transition:background .25s,color .25s,transform .25s}
+
+/* tabs */
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.tabs button{background:none;border:1px solid var(--line);color:var(--mut);padding:8px 20px;border-radius:999px;font:500 .9rem 'Poppins',system-ui,sans-serif;cursor:pointer}
+.tabs button.on{background:#fff;color:#000;border-color:#fff}
+
+/* tech tiles: plain HTML + inline SVG, so they are on screen with the first paint (no image requests at all) */
+#techgrid{display:block}
+.tgroup{margin-bottom:38px}
+.tgroup h3{font-size:1rem;font-weight:500;color:var(--mut);margin-bottom:14px;letter-spacing:.08em;text-transform:uppercase}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:14px}
+.tile{--c:#fff;position:relative;display:grid;justify-items:center;align-content:start;gap:12px;padding:18px 8px 14px;border:1px solid rgba(255,255,255,.1);border-radius:20px;overflow:hidden;
+  background:linear-gradient(165deg,rgba(255,255,255,.075),rgba(255,255,255,.02)),rgba(14,14,14,.86);transition:transform .3s,border-color .3s,box-shadow .3s}
+/* brand-coloured glow from the top of each tile */
+.tile::before{content:'';position:absolute;inset:0;pointer-events:none;opacity:.5;transition:opacity .3s;
+  background:radial-gradient(110% 80% at 50% -10%,var(--c),transparent 65%);mix-blend-mode:soft-light}
+.ic{position:relative;display:grid;place-items:center;width:58px;height:58px;border-radius:17px;color:var(--c);background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.18);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 10px 24px -10px var(--c)}
+.ic svg{width:34px;height:34px;display:block}
+.ic b{font-size:1.28rem;font-weight:800;letter-spacing:-.04em;line-height:1}
+.ic b.l{font-size:1.7rem}
+.ic b.s{font-size:1rem;letter-spacing:-.02em}
+.nm{position:relative;font-size:.8rem;font-weight:500;color:#fff;text-align:center;line-height:1.25}
+
+/* github stats */
+
+/* contact form */
+.form{display:grid;gap:16px;max-width:560px}
+.form label,.field{display:grid;gap:6px;font-size:.9rem;color:var(--mut)}
+.form input,.form textarea{background:#0a0a0a;border:1px solid var(--line);border-radius:12px;padding:13px 15px;color:#fff;font:400 1rem 'Poppins',system-ui,sans-serif}
+.form textarea{resize:vertical}
+.form input:focus,.form textarea:focus{outline:none;border-color:#fff}
+.phone{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:stretch}
+.phone>input{min-width:0}
+.cc{position:relative;height:100%}
+.cc-btn{display:flex;align-items:center;gap:8px;height:100%;min-width:124px;padding:0 12px;background:#0a0a0a;border:1px solid var(--line);border-radius:12px;
+  color:#fff;font:500 .95rem 'Poppins',system-ui,sans-serif;white-space:nowrap;cursor:pointer;touch-action:manipulation}
+.cc-btn:focus-visible,.cc-btn[aria-expanded=true]{outline:none;border-color:#fff}
+.cc-dial{color:var(--mut);font-weight:400}
+.caret{margin-left:auto;width:6px;height:6px;border-right:1.5px solid #9a9a9a;border-bottom:1.5px solid #9a9a9a;transform:rotate(45deg) translateY(-2px)}
+.flag{display:block;width:24px;height:18px;flex:none;border-radius:3px;object-fit:cover;background:#1b1b1b}
+.cc-pop{position:absolute;z-index:30;top:calc(100% + 8px);left:0;width:min(340px,calc(100vw - 2 * var(--gutter)));background:#0d0d0d;border:1px solid #333;border-radius:14px;
+  box-shadow:0 18px 50px rgba(0,0,0,.75);overflow:hidden}
+.form .cc-pop input{width:100%;border:0;border-bottom:1px solid var(--line);border-radius:0;padding:13px 15px;background:#121212}
+.cc-list{list-style:none;margin:0;padding:6px;max-height:min(280px,46vh);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.cc-list li{display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:9px;color:#eee;font-size:.92rem;cursor:pointer}
+.cc-list li .n{flex:1;min-width:0}
+.cc-list li .d{color:var(--mut);font-size:.85rem}
+.cc-list li[aria-selected=true]{background:#1c1c1c}
+.cc-list li.act{background:#2a2a2a}
+.cc-list li.cc-empty{justify-content:center;color:var(--mut);cursor:default}
+.form .btn{width:100%;padding:15px 26px;font-size:1rem;text-align:center}
+.hp{position:absolute!important;left:-9999px}
+#status{min-height:1.5em;font-size:.92rem}
+#status.ok{color:#7dffb0}
+#status.err{color:#ff8f8f}
+
+/* footer */
+.foot{display:grid;gap:14px;justify-items:center;text-align:center;padding:50px var(--gutter) 30px;border-top:1px solid var(--line);background:rgba(0,0,0,.85)}
+.foot p,.foot small{color:var(--mut)}
+.social{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 22px}
+.social a{color:#ddd;font-size:.92rem}
+
+/* hover devices only (mouse): hover effects + 3D depth for the tilt. Touch screens skip all of this = lighter */
+@media(hover:hover){
+  .menu a:hover{color:#fff}
+  .cc-list li:hover{background:#242424}
+  .btn:hover{background:#fff;color:#000}
+  .btn.solid:hover{background:transparent;color:#fff}
+  .card:hover,.quote:hover{border-color:#fff}
+  .card:hover::before,.tile:hover::after{opacity:1}
+  .card:hover .go{background:#fff;color:#000;transform:rotate(45deg)}
+  .tile:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.55);box-shadow:0 16px 36px -14px var(--c)}
+  .tile:hover::before{opacity:.9}
+  .btn.solid:hover{box-shadow:0 10px 36px -6px rgba(255,255,255,.2)}
+  .btn:hover{transform:translateY(-2px)}
+  .btn:hover .arr{transform:translateX(4px)}
+  .social a:hover{text-decoration:underline}
+  .brand:hover img{transform:rotate(-8deg) scale(1.08)}
+
+}
+
+/* =====================================================================
+   TABLET  -  up to 991px
+   single-column hero, full-screen burger menu, 2-column cards
+   ===================================================================== */
+@media(max-width:991px){
+  :root{--gutter:4vw;--section-y:clamp(44px,7vw,64px)}
+  html{scroll-padding-top:64px}
+
+  /* nav + full-screen menu */
+  .nav{padding-top:12px;padding-bottom:12px}
+  .burger{display:block;z-index:30}
+  .nav .brand{position:relative;z-index:30}
+  .menu{position:fixed;inset:0;z-index:25;flex-direction:column;justify-content:flex-start;align-items:flex-end;gap:0;
+    padding:78px max(var(--gutter),env(safe-area-inset-right)) max(40px,env(safe-area-inset-bottom));overflow-y:auto;
+    background:rgba(0,0,0,.94);
+    opacity:0;visibility:hidden;pointer-events:none;transition:opacity .3s,visibility .3s;counter-reset:m}
+  .menu.open{opacity:1;visibility:visible;pointer-events:auto}
+  .menu a{width:min(260px,100%);padding:16px 0;border-bottom:1px solid var(--line);text-align:right;font-size:1.4rem;font-weight:600;color:#fff;
+    opacity:0;transform:translateX(24px);transition:opacity .4s,transform .4s,color .2s}
+  .menu a:last-child{border-bottom:0}
+  .menu a[href="#about"]{display:none}
+  .menu a:not([href="#about"]){counter-increment:m}
+  .menu a::before{content:"0" counter(m);margin-right:14px;vertical-align:middle;font-size:.7rem;font-weight:500;letter-spacing:.08em;color:var(--mut)}
+  .menu.open a{opacity:1;transform:none}
+  .menu.open a:nth-child(2){transition-delay:.05s}
+  .menu.open a:nth-child(3){transition-delay:.10s}
+  .menu.open a:nth-child(4){transition-delay:.15s}
+  .menu.open a:nth-child(5){transition-delay:.20s}
+
+  /* hero */
+  .hero{grid-template-columns:1fr;min-height:auto;gap:20px;padding:84px var(--gutter) 44px}
+  .scroll-cue{display:none}
+  .hero-text{text-align:center}
+  .logo::after{left:50%;translate:-50% 0;transform-origin:50% 50%}
+  .role{margin:0 auto 22px;font-size:.95rem}
+
+  .cta{justify-content:center}
+  .photo{order:-1;width:min(300px,64vw)}
+
+  /* sections */
+  h2{margin-bottom:20px}
+  .lead{font-size:1.02rem}
+  .quote{margin-bottom:26px}
+  .grid3{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+  #projgrid{--top:76px}
+  #projgrid .card{padding:26px 26px;min-height:210px}
+  .tabs{margin-bottom:16px}
+  .tgroup{margin-bottom:24px}
+  .tgroup h3{margin-bottom:10px}
+  .tiles{grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px}
+  .tile{padding:14px 6px 11px;gap:10px;border-radius:16px}
+  .ic{width:50px;height:50px;border-radius:15px}
+  .ic svg{width:29px;height:29px}
+  .ic b{font-size:1.1rem}
+  .ic b.l{font-size:1.45rem}
+  .ic b.s{font-size:.86rem}
+  .nm{font-size:.74rem}
+  .form{max-width:100%;gap:12px}
+  .foot{padding-top:36px;padding-bottom:22px;gap:10px}
+}
+
+/* =====================================================================
+   MOBILE  -  up to 480px
+   ===================================================================== */
+@media(max-width:480px){
+  :root{--gutter:5vw;--section-y:38px}
+  html{scroll-padding-top:58px}
+
+  .nav{padding-top:10px;padding-bottom:10px}
+  .brand{font-size:1.1rem;gap:8px}
+  .brand img{width:24px;height:24px;border-radius:7px}
+  .menu{padding-top:70px}
+  .menu a{font-size:1.25rem;padding:14px 0}
+
+  /* hero */
+  .hero{gap:12px;padding:70px var(--gutter) 18px}
+  .photo{width:min(240px,66vw)}
+  .eyebrow{font-size:.78rem;padding:5px 13px 5px 10px;margin-bottom:12px}
+  .alias{font-size:.82rem;margin:.35rem 0 .7rem}
+  .logo{font-size:min(15cqi,3rem)}
+  .role{max-width:none;margin:0 auto 16px;font-size:.88rem}
+
+  /* hero buttons: one under another, centered, NOT full width.
+     each button is a little wider than the one above it. change the 3 widths here: */
+  .cta{flex-direction:column;align-items:center;flex-wrap:nowrap;gap:10px}
+  .cta .btn{width:var(--bw);max-width:100%;padding:11px 16px;font-size:.9rem;text-align:center}
+  .cta .btn:nth-child(1){--bw:190px}
+  .cta .btn:nth-child(2){--bw:215px}
+  .cta .btn:nth-child(3){--bw:240px}
+
+  /* sections */
+  h2{font-size:1.55rem;margin-bottom:14px}
+  .lead{font-size:.93rem;line-height:1.55}
+  .quote{margin-bottom:22px;padding:24px 20px 20px;border-radius:16px}
+  .qmark{right:14px;font-size:5.5rem}
+
+  .grid3{grid-template-columns:1fr;gap:10px}
+  .card{padding:15px;border-radius:14px}
+  .card h3{font-size:1rem;margin-bottom:5px}
+  .card p{font-size:.84rem}
+  .chips{gap:6px;margin-top:9px}
+  .chips span{font-size:.72rem;padding:2px 10px}
+
+  /* project cards (phone) */
+  #projgrid{--top:68px;gap:22px}
+  #projgrid .card{top:calc(var(--top) + var(--i,0) * 12px);grid-template-columns:auto 1fr;gap:6px 16px;min-height:190px;padding:20px 18px;border-radius:18px}
+  #projgrid .go{display:none}
+  .num{font-size:2rem}
+  .cbody h3{font-size:1.1rem;margin-bottom:6px}
+  .cbody p{font-size:.88rem}
+
+  .tabs{gap:6px;margin-bottom:14px}
+  .tabs button{padding:6px 14px;font-size:.82rem}
+  .tgroup{margin-bottom:16px}
+  .tgroup h3{font-size:.76rem;margin-bottom:8px}
+  .tiles{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+  .tile{padding:10px 3px 8px;gap:6px;border-radius:14px}
+  .ic{width:42px;height:42px;border-radius:13px}
+  .ic svg{width:25px;height:25px}
+  .ic b{font-size:.95rem}
+  .ic b.l{font-size:1.25rem}
+  .ic b.s{font-size:.74rem}
+  .nm{font-size:.62rem}
+
+
+  /* form: 16px inputs so iOS does not zoom the page on focus */
+  .form{gap:10px}
+  .form label,.field{font-size:.8rem;gap:4px}
+  .form input,.form textarea{padding:10px 12px;font-size:1rem;border-radius:10px}
+  .form textarea{height:110px}
+  .phone{gap:8px}
+  .cc-btn{min-width:108px;padding:0 10px;gap:6px;font-size:.9rem;border-radius:10px}
+  .form .btn{min-height:46px;padding:12px 20px;font-size:.95rem}
+  #status{font-size:.85rem}
+
+  .foot{gap:8px;padding:26px var(--gutter) max(16px,env(safe-area-inset-bottom))}
+  .social{gap:6px 14px}
+  .social a{font-size:.82rem}
+
+}
+
+/* ---------- reduced motion ---------- */
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{transition:none!important;animation:none!important}
+}
+
+@theme inline {
+  --color-foreground:var(--fg);
+  --color-muted:var(--line);
+  --color-muted-foreground:var(--mut);
+  --color-chart-label:var(--mut);
+}

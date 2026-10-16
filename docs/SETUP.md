@@ -1,42 +1,51 @@
-# adnanzeros portfolio
+# Next.js setup
 
 ## Run locally
-    npm run dev        ->  http://localhost:3000
-Needs Node 18 or newer. No `npm install` required (zero dependencies).
-Put your photo at `assets/adnan.png`.
 
-## Contact form (Resend)
-Keys live in `.env.local` (git-ignored):
+Requirements: Node.js 22.x and npm.
 
-    RESEND_API_KEY=re_xxx
-    CONTACT_TO=asadnanzeros@gmail.com
+```powershell
+npm install
+Copy-Item .env.example .env.local
+npm run dev
+```
 
-The form collects name, email, WhatsApp number (country code dropdown, Bangladesh default, 194 countries) and message.
-Mail is sent from `onboarding@resend.dev`. With that sender, Resend only delivers to the email you
-registered your Resend account with. To send to any inbox, verify your own domain at resend.com/domains
-and change `from` in `api/contact.js`.
-If sending fails locally, the exact Resend error is shown under the form and in the terminal.
+Open `http://localhost:3000`. For a production build, run `npm run build`, then
+`npm run start`.
 
-## Deploy (GitHub + Vercel)
-1. `git init && git add . && git commit -m "portfolio"`; push to a GitHub repo.
-2. vercel.com > Add New > Project > import the repo. Framework: Other. No build command.
-3. Environment Variables: RESEND_API_KEY and CONTACT_TO. Then Deploy.
-4. Changed env vars later? Deployments > Redeploy.
+## Environment variables
 
-## One repo = website + GitHub profile
-Repo name must be exactly `adnanzeros`. Push this whole folder to it.
-- Root `README.md` = GitHub profile. Vercel deploys the same repo as the website.
-- `.github/workflows/stats.yml` writes `profile/stats.svg` and `profile/top-langs.svg` daily.
-  README and website both read those local files.
-- Add `profile/gitprofile.png` and `profile/timematess.png` yourself (VS Code).
-- First run: Actions > Update GitHub Profile Stats > Run workflow.
-  Settings > Actions > General > Workflow permissions: Read and write.
+Set these in `.env.local` for local development and in the deployment platform
+for hosted deployments:
 
-## Contact form on Vercel: checklist
-1. Vercel > Project > Settings > Environment Variables: `RESEND_API_KEY` (paste the key only, no spaces/quotes) and
-   `CONTACT_TO`. Enable Production, Preview and Development. Then Deployments > Redeploy.
-2. With the default sender `onboarding@resend.dev`, Resend delivers ONLY to the email your Resend account was
-   created with. `CONTACT_TO` must be that email. To send anywhere, verify a domain at resend.com/domains and set
-   `CONTACT_FROM` (example: `Portfolio <hello@yourdomain.com>`).
-3. Failing in production? Vercel > Project > Logs, filter `/api/contact` to see the exact Resend error.
-4. Never put the real key in `.env.example` (it is committed). Real key lives only in `.env.local` and Vercel.
+| Variable | Purpose |
+| --- | --- |
+| `RESEND_API_KEY` | Resend API key used to send contact form messages. |
+| `CONTACT_TO` | Inbox that receives contact messages. |
+| `CONTACT_FROM` | Optional sender address; verify its domain in Resend. |
+| `SITE_URL` | Optional public origin used by the CV PDF renderer. |
+| `CHROME_PATH` | Optional local Chrome/Edge executable path for CV PDF generation. |
+
+`CONTACT_FROM` defaults to Resend's `Portfolio <onboarding@resend.dev>` sender.
+With that default, Resend only delivers to the address registered to your
+Resend account. To send to another inbox, verify a domain and set
+`CONTACT_FROM`. `SITE_URL` defaults to the local Next.js origin or the Vercel
+deployment URL when available. On Windows, `CHROME_PATH` can be set to a path
+such as `C:\Program Files\Google\Chrome\Application\chrome.exe`.
+
+Never put a real key in `.env.example` or commit `.env.local`.
+
+## Deploy
+
+Import the repository into Vercel using the Next.js framework preset. Use
+`npm run build` as the build command and configure the environment variables
+above in the Vercel project settings before deploying.
+
+## GitHub profile statistics
+
+The daily workflow writes `public/profile/stats.svg` and
+`public/profile/top-langs.svg`. The Next.js home page reads these files at
+build time and renders interactive charts from their data; the SVG cards are
+not displayed as images. To run the workflow manually, open
+**Actions → Update GitHub Profile Stats → Run workflow**. Repository Actions
+permissions must allow workflow write access.
