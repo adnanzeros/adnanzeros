@@ -56,6 +56,19 @@ Building clean, practical, and user-focused digital experiences from **Dhaka, Ba
 
 </div>
 
+## Run locally
+
+Use Node.js 22.x and npm:
+
+    npm install
+    npm run dev
+
+Open http://localhost:3000. For contact delivery and local CV PDF generation,
+copy `.env.example` to `.env.local` and set `RESEND_API_KEY`, `CONTACT_TO`,
+`CONTACT_FROM`, `SITE_URL`, and `CHROME_PATH` as needed. `CHROME_PATH` can point
+to Chrome or Edge; for example,
+`C:\Program Files\Google\Chrome\Application\chrome.exe`.
+
 ---
 
 ## 💬 Personal Quote

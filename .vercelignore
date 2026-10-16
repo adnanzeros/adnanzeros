@@ -1,8 +1,5 @@
-.github
-docs
-server.js
+.github/
+docs/
+profile/
 README.md
-.env.example
-profile/gitprofile.png
-profile/timematess.png
-.env.local
+.env*
