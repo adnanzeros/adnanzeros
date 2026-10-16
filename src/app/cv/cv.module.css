@@ -214,6 +214,7 @@
 
 .page :global(.photo) {
   justify-self: end;
+  order: 0;
   width: 26mm;
   height: 26mm;
   overflow: hidden;
