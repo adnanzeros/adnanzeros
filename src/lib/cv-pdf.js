@@ -69,7 +69,7 @@ export async function renderCvPdf() {
   const browser = await launchBrowser();
   try {
     const page = await browser.newPage();
-    await page.goto(`${siteOrigin()}/cv.html`, {
+    await page.goto(`${siteOrigin()}/cv`, {
       waitUntil: "load",
       timeout: 25000,
     });
