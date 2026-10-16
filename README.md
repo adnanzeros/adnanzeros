@@ -284,9 +284,9 @@ I also experiment with browser extensions and small digital tools that solve pra
 
 <div align="center">
 
-<img src="./profile/stats.svg" height="170" alt="GitHub Statistics" />
+<img src="./public/profile/stats.svg" height="170" alt="GitHub Statistics" />
 
-<img src="./profile/top-langs.svg" height="170" alt="Top Languages" />
+<img src="./public/profile/top-langs.svg" height="170" alt="Top Languages" />
 
 </div>
 

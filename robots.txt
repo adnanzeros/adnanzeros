@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://adnanzeros.vercel.app/sitemap.xml

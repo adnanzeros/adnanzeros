@@ -23,7 +23,12 @@ function decodeEntities(value) {
 }
 
 export async function getGithubLanguages() {
-  const source = path.join(process.cwd(), "profile", "top-langs.svg");
+  const source = path.join(
+    process.cwd(),
+    "public",
+    "profile",
+    "top-langs.svg",
+  );
   const svg = await readFile(source, "utf8");
   const entries = [];
 
