@@ -1,6 +1,6 @@
 const nextConfig = {
   outputFileTracingIncludes: {
-    "/api/next/cv": ["./node_modules/@sparticuz/chromium/bin/**"],
+    "/api/cv": ["./node_modules/@sparticuz/chromium/bin/**"],
   },
 };
 

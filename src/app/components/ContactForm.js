@@ -124,7 +124,7 @@ export default function ContactForm() {
     setSending(true);
     setStatus({ message: "Sending…", kind: "" });
     try {
-      const response = await fetch("/api/next/contact", {
+      const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
