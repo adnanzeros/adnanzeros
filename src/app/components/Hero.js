@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import Link from "next/link";
 
 const name = "adnanzeros";
 
@@ -89,9 +90,9 @@ export default function Hero() {
           <a className="btn" href="#contact">
             Send a message
           </a>
-          <a className="btn" href="/cv.html">
+          <Link className="btn" href="/cv">
             View CV
-          </a>
+          </Link>
         </div>
       </div>
       <div className="photo tilt" id="photo">

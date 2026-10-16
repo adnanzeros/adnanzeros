@@ -98,17 +98,6 @@ export default function Projects() {
     };
   }, [category]);
 
-  function tiltCard(event) {
-    if (!matchMedia("(hover:hover) and (pointer:fine)").matches) return;
-    const card = event.currentTarget;
-    const bounds = card.getBoundingClientRect();
-    const x = (event.clientX - bounds.left) / bounds.width - 0.5;
-    const y = (event.clientY - bounds.top) / bounds.height - 0.5;
-    card.style.transform = `perspective(900px) rotateY(${x * 16}deg) rotateX(${-y * 16}deg)`;
-    card.style.setProperty("--mx", `${event.clientX - bounds.left}px`);
-    card.style.setProperty("--my", `${event.clientY - bounds.top}px`);
-  }
-
   return (
     <section id="projects" className="wrap">
       <h2>Projects</h2>
@@ -135,10 +124,6 @@ export default function Projects() {
             href={project.url}
             target="_blank"
             rel="noopener"
-            onPointerMove={tiltCard}
-            onPointerLeave={event => {
-              event.currentTarget.style.transform = "";
-            }}
           >
             <span className="num" aria-hidden="true">
               0{index + 1}

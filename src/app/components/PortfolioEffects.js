@@ -1,63 +1,21 @@
 "use client";
 
 import { useEffect } from "react";
-
-function loadScript(source) {
-  return new Promise((resolve, reject) => {
-    const existing = document.querySelector(`script[data-portfolio="${source}"]`);
-    if (existing?.dataset.loaded === "true") return resolve();
-    const script = existing || document.createElement("script");
-    if (!existing) {
-      script.src = source;
-      script.async = true;
-      script.dataset.portfolio = source;
-      document.body.appendChild(script);
-    }
-    script.addEventListener(
-      "load",
-      () => {
-        script.dataset.loaded = "true";
-        resolve();
-      },
-      { once: true },
-    );
-    script.addEventListener(
-      "error",
-      () => reject(new Error(`Could not load animation library ${source}.`)),
-      { once: true },
-    );
-    if (existing && window.gsap && source.includes("gsap.min.js")) resolve();
-    if (existing && window.ScrollTrigger && source.includes("ScrollTrigger.min.js"))
-      resolve();
-  });
-}
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 export default function PortfolioEffects() {
   useEffect(() => {
-    let cancelled = false;
-    let cleanup;
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const canHover = window.matchMedia(
+      "(hover:hover) and (pointer:fine)",
+    ).matches;
+    gsap.registerPlugin(ScrollTrigger);
+    ScrollTrigger.config({ ignoreMobileResize: true });
 
-    async function initialize() {
-      try {
-        await loadScript("/vendor/gsap.min.js");
-        await loadScript("/vendor/ScrollTrigger.min.js");
-      } catch (error) {
-        console.error("Portfolio animations could not be initialized.", error);
-        return;
-      }
-      if (cancelled) return;
-
-      const { gsap, ScrollTrigger } = window;
-      if (!gsap || !ScrollTrigger) {
-        console.error("Portfolio animation libraries did not expose their expected APIs.");
-        return;
-      }
-
-      const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const canHover = matchMedia("(hover:hover) and (pointer:fine)").matches;
-      gsap.registerPlugin(ScrollTrigger);
-      ScrollTrigger.config({ ignoreMobileResize: true });
-
+    const context = gsap.context(() => {
       if (!reduceMotion) {
         document
           .querySelectorAll(".wrap:not(#about):not(#stack)")
@@ -118,34 +76,85 @@ export default function PortfolioEffects() {
             ease: "none",
           });
         }
+        gsap.to("#bar", {
+          scaleX: 1,
+          ease: "none",
+          scrollTrigger: { start: 0, end: "max", scrub: true },
+        });
       }
-      gsap.to("#bar", {
-        scaleX: 1,
-        ease: "none",
-        scrollTrigger: { start: 0, end: "max", scrub: true },
-      });
+    }, document);
 
-      let refreshTimer;
-      const refresh = () => {
-        clearTimeout(refreshTimer);
-        refreshTimer = setTimeout(() => ScrollTrigger.refresh(), 150);
-      };
-      window.addEventListener("load", refresh);
-      document.fonts?.ready.then(refresh);
-      document.querySelectorAll("#github .stats img").forEach(image => {
-        image.addEventListener("load", refresh);
-      });
-      cleanup = () => {
-        clearTimeout(refreshTimer);
-        window.removeEventListener("load", refresh);
-        ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-      };
+    let spotlightFrame = 0;
+    let spotlightEvent;
+    const updateSpotlight = () => {
+      spotlightFrame = 0;
+      const target = spotlightEvent?.target;
+      if (!(target instanceof Element)) return;
+      const element = target.closest(".tile, .card");
+      if (!element) return;
+      const bounds = element.getBoundingClientRect();
+      element.style.setProperty("--mx", `${spotlightEvent.clientX - bounds.left}px`);
+      element.style.setProperty("--my", `${spotlightEvent.clientY - bounds.top}px`);
+    };
+    const onPointerMove = event => {
+      spotlightEvent = event;
+      if (!spotlightFrame) spotlightFrame = requestAnimationFrame(updateSpotlight);
+    };
+
+    if (canHover && !reduceMotion) {
+      window.addEventListener("pointermove", onPointerMove, { passive: true });
     }
 
-    initialize();
+    const photo = canHover && !reduceMotion
+      ? document.querySelector(".photo.tilt")
+      : null;
+    const onPhotoMove = event => {
+      const bounds = photo.getBoundingClientRect();
+      const x = (event.clientX - bounds.left) / bounds.width - 0.5;
+      const y = (event.clientY - bounds.top) / bounds.height - 0.5;
+      gsap.to(photo, {
+        transformPerspective: 900,
+        rotateY: x * 16,
+        rotateX: -y * 16,
+        duration: 0.4,
+        ease: "power2.out",
+        overwrite: "auto",
+      });
+    };
+    const onPhotoLeave = () => {
+      gsap.to(photo, {
+        rotateX: 0,
+        rotateY: 0,
+        duration: 0.6,
+        ease: "power2.out",
+        overwrite: "auto",
+      });
+    };
+    photo?.addEventListener("mousemove", onPhotoMove);
+    photo?.addEventListener("mouseleave", onPhotoLeave);
+
+    let refreshTimer;
+    let disposed = false;
+    const refresh = () => {
+      if (disposed) return;
+      clearTimeout(refreshTimer);
+      refreshTimer = window.setTimeout(() => ScrollTrigger.refresh(), 150);
+    };
+    const images = [...document.querySelectorAll("#github .stats img")];
+    window.addEventListener("load", refresh);
+    document.fonts?.ready.then(refresh);
+    images.forEach(image => image.addEventListener("load", refresh));
+
     return () => {
-      cancelled = true;
-      cleanup?.();
+      disposed = true;
+      clearTimeout(refreshTimer);
+      cancelAnimationFrame(spotlightFrame);
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("load", refresh);
+      images.forEach(image => image.removeEventListener("load", refresh));
+      photo?.removeEventListener("mousemove", onPhotoMove);
+      photo?.removeEventListener("mouseleave", onPhotoLeave);
+      context.revert();
     };
   }, []);
 
