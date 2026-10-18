@@ -15,6 +15,7 @@
     "@number-flow/react": "^0.6.2",
     "@sparticuz/chromium": "^153.0.0",
     "@tailwindcss/postcss": "^4.3.3",
+    "@vercel/analytics": "^2.0.1",
     "@visx/group": "^4.0.0",
     "@visx/responsive": "^4.0.0",
     "@visx/scale": "^4.0.0",

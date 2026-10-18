@@ -4,8 +4,22 @@ import { gsap } from "gsap";
 import { useLayoutEffect, useRef, useState } from "react";
 import styles from "./IntroOverlay.module.css";
 
+const SESSION_KEY = "adnanzeros-intro-completed-v5";
 const HERO_ONLY_CLASS = "introHeroOnly";
-const WORDS = ["I", "LOVE", "CODING", "I BUILD","WEBSITE","WELCOME", "TO", "ADNAN ZEROS"];
+const WORDS = [
+  "I",
+  "LOVE",
+  "CODING",
+  "I BUILD",
+  "WEBSITE",
+  "WELCOME",
+  "TO",
+  "ADNAN ZEROS",
+];
+const WORD_DURATION = 0.29;
+const WELCOME_START = WORDS.length * WORD_DURATION;
+const EXIT_START = 3.05;
+const INTRO_DURATION = 3.5;
 
 export default function IntroOverlay() {
   const rootRef = useRef(null);
@@ -14,6 +28,18 @@ export default function IntroOverlay() {
   useLayoutEffect(() => {
     const overlay = rootRef.current;
     if (!overlay) return;
+
+    try {
+      if (
+        document.documentElement.hasAttribute("data-intro-completed") ||
+        window.sessionStorage.getItem(SESSION_KEY)
+      ) {
+        setFinished(true);
+        return;
+      }
+    } catch (error) {
+      console.warn("Intro session storage is unavailable; the intro will play.", error);
+    }
 
     const words = gsap.utils.toArray("[data-intro-word]", overlay);
     const indicators = gsap.utils.toArray("[data-intro-indicator]", overlay);
@@ -33,146 +59,144 @@ export default function IntroOverlay() {
           element.tagName !== "SCRIPT",
       ),
       ...Array.from(document.querySelector("main")?.children ?? []).filter(
-        (element) => element.id !== "home",
+        (element) => element.id !== "home" && element.tagName !== "SCRIPT",
       ),
     ];
+    const completeIntro = () => {
+      page.classList.remove(HERO_ONLY_CLASS);
+      document.documentElement.setAttribute("data-intro-completed", "");
+      try {
+        window.sessionStorage.setItem(SESSION_KEY, "played");
+      } catch (error) {
+        console.warn("Intro completion could not be saved for this tab.", error);
+      }
+      setFinished(true);
+    };
+
+    if (reducedMotion) {
+      completeIntro();
+      return;
+    }
 
     const context = gsap.context(() => {
-      const float = gsap.to(robot, {
-        y: -7,
-        duration: 2.6,
-        delay: 0.9,
+      const timeline = gsap.timeline({
+        paused: true,
+        defaults: { ease: "power2.inOut" },
+        onComplete: completeIntro,
+      });
+
+      gsap.to(robot, {
+        y: -6,
+        duration: 0.6,
+        delay: 0.45,
+        ease: "sine.inOut",
+        repeat: -1,
+        yoyo: true,
+      });
+      gsap.to(eyes, {
+        scaleY: 0.08,
+        duration: 0.09,
+        repeat: -1,
+        repeatDelay: 1.15,
+        yoyo: true,
+        transformOrigin: "50% 50%",
+      });
+      gsap.to(glow, {
+        scale: 1.08,
+        opacity: 0.65,
+        duration: 1,
         ease: "sine.inOut",
         repeat: -1,
         yoyo: true,
       });
 
-      gsap.to(eyes, {
-        scaleY: reducedMotion ? 1 : 0.08,
-        duration: reducedMotion ? 0 : 0.09,
-        repeat: reducedMotion ? 0 : -1,
-        repeatDelay: 3.4,
-        yoyo: !reducedMotion,
-        transformOrigin: "50% 50%",
-      });
-      gsap.to(glow, {
-        scale: reducedMotion ? 1 : 1.08,
-        opacity: reducedMotion ? 0.45 : 0.65,
-        duration: reducedMotion ? 0 : 2.4,
-        ease: "sine.inOut",
-        repeat: reducedMotion ? 0 : -1,
-        yoyo: !reducedMotion,
-      });
+      timeline.fromTo(
+        robot,
+        { autoAlpha: 0, scale: 0.9, y: 16 },
+        { autoAlpha: 1, scale: 1, y: 0, duration: 0.42 },
+        0,
+      );
 
-      const fadeTime = reducedMotion ? 0.12 : 0.42;
-      const timeline = gsap.timeline({
-        defaults: { ease: "power2.inOut" },
-        onComplete: () => {
-          page.classList.remove(HERO_ONLY_CLASS);
-          setFinished(true);
-        },
-      });
-
-      timeline
-        .fromTo(
-          robot,
-          { autoAlpha: 0, scale: 0.9, y: 18 },
-          {
-            autoAlpha: 1,
-            scale: 1,
-            y: 0,
-            duration: reducedMotion ? 0.18 : 0.8,
-          },
-        )
-        .fromTo(
-          words[0],
-          { autoAlpha: 0, y: 16, filter: "blur(5px)" },
-          { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: fadeTime },
-          "-=0.28",
-        )
-        .fromTo(
-          indicators[0],
-          { autoAlpha: 0.35, scale: 0.8 },
-          { autoAlpha: 1, scale: 1.35, duration: 0.2 },
-          "<",
-        )
-        .call(() => overlay.setAttribute("aria-label", WORDS[0]));
-
-      for (let index = 1; index < words.length; index += 1) {
+      words.forEach((word, index) => {
+        const start = index * WORD_DURATION;
         timeline
-          .to(
-            words[index - 1],
-            {
-              autoAlpha: 0,
-              y: -13,
-              filter: "blur(3px)",
-              duration: fadeTime,
-            },
-            `+=${reducedMotion ? 0.04 : 0.38}`,
-          )
-          .to(
-            indicators[index - 1],
-            { autoAlpha: 0.35, scale: 0.8, duration: 0.16 },
-            "<",
-          )
           .fromTo(
-            words[index],
-            { autoAlpha: 0, y: 15, filter: "blur(4px)" },
-            { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: fadeTime },
+            word,
+            { autoAlpha: 0, y: 12, filter: "blur(4px)" },
+            { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 0.09 },
+            start,
+          )
+          .to(
+            word,
+            { autoAlpha: 0, y: -9, filter: "blur(2px)", duration: 0.08 },
+            start + 0.21,
           )
           .fromTo(
             indicators[index],
             { autoAlpha: 0.35, scale: 0.8 },
-            { autoAlpha: 1, scale: 1.35, duration: 0.2 },
-            "<",
+            { autoAlpha: 1, scale: 1.35, duration: 0.1 },
+            start,
           )
-          .call(() => overlay.setAttribute("aria-label", WORDS[index]));
-      }
+          .to(
+            indicators[index],
+            { autoAlpha: 0.35, scale: 0.8, duration: 0.08 },
+            start + 0.21,
+          )
+          .call(
+            () => overlay.setAttribute("aria-label", WORDS[index]),
+            [],
+            start,
+          );
+      });
 
       timeline
-        .to(
-          words[words.length - 1],
-          {
-            autoAlpha: 0,
-            y: -12,
-            filter: "blur(3px)",
-            duration: fadeTime,
-          },
-          `+=${reducedMotion ? 0.08 : 0.52}`,
-        )
         .fromTo(
           welcome,
-          { autoAlpha: 0, y: 16, filter: "blur(5px)" },
-          { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: fadeTime },
+          { autoAlpha: 0, y: 14, filter: "blur(4px)" },
+          { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 0.18 },
+          WELCOME_START,
         )
-        .call(() =>
-          overlay.setAttribute("aria-label", "WELCOME TO MY WORLD"),
+        .call(
+          () => overlay.setAttribute("aria-label", "WELCOME TO MY WORLD"),
+          [],
+          WELCOME_START,
         )
-        .to({}, { duration: reducedMotion ? 0.25 : 1.3 })
-        .call(() => page.classList.add(HERO_ONLY_CLASS))
-        .to(overlay, {
-          autoAlpha: 0,
-          duration: reducedMotion ? 0.18 : 0.72,
-          ease: "power2.inOut",
-        })
-        .to({}, { duration: reducedMotion ? 0.12 : 0.65 })
-        .call(() => {
-          gsap.set(revealTargets, { autoAlpha: 0 });
-          page.classList.remove(HERO_ONLY_CLASS);
-        })
-        .to(revealTargets, {
-          autoAlpha: 1,
-          duration: reducedMotion ? 0.18 : 0.7,
-          ease: "power2.out",
-          stagger: reducedMotion ? 0 : 0.06,
-          overwrite: true,
-        });
+        .call(
+          () => {
+            page.classList.add(HERO_ONLY_CLASS);
+            overlay.style.pointerEvents = "none";
+          },
+          [],
+          EXIT_START,
+        )
+        .to(
+          overlay,
+          { autoAlpha: 0, duration: INTRO_DURATION - EXIT_START },
+          EXIT_START,
+        )
+        .set(revealTargets, { autoAlpha: 0 }, EXIT_START)
+        .to(
+          revealTargets,
+          {
+            autoAlpha: 1,
+            duration: INTRO_DURATION - EXIT_START,
+            ease: "power2.out",
+            overwrite: true,
+          },
+          EXIT_START,
+        );
 
-      if (reducedMotion) float.kill();
+      const elapsed = performance.now() / 1000;
+      if (elapsed >= INTRO_DURATION) {
+        completeIntro();
+      } else {
+        timeline.timeScale(INTRO_DURATION / (INTRO_DURATION - elapsed)).play(0);
+      }
     }, overlay);
 
     return () => {
       page.classList.remove(HERO_ONLY_CLASS);
+      overlay.style.pointerEvents = "";
       context.revert();
     };
   }, []);
@@ -186,7 +210,7 @@ export default function IntroOverlay() {
       data-intro-overlay
       role="status"
       aria-live="polite"
-      aria-label="Welcome to Adnan Zeros"
+      aria-label="I"
     >
       <div className={styles.content}>
         <div className={styles.robot} data-intro-robot aria-hidden="true">

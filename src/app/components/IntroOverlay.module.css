@@ -12,6 +12,10 @@
   color: #f5f5f5;
 }
 
+:global(html[data-intro-completed]) .intro {
+  display: none;
+}
+
 .content {
   display: flex;
   align-items: center;

@@ -1,6 +1,8 @@
 import './globals.css';
 import './migration.css';
+import Script from 'next/script';
 import IntroOverlay from './components/IntroOverlay';
+import { Analytics } from '@vercel/analytics/next';
 
 export const metadata = {
   title:
@@ -64,8 +66,13 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="dark" suppressHydrationWarning>
       <head>
+        <Script
+          id="intro-session-bootstrap"
+          src="/intro-session-bootstrap.js"
+          strategy="beforeInteractive"
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
@@ -81,6 +88,7 @@ export default function RootLayout({ children }) {
       <body>
         <IntroOverlay />
         {children}
+        <Analytics />
       </body>
     </html>
   );
