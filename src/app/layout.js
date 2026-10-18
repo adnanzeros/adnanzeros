@@ -1,60 +1,64 @@
-import "./globals.css";
-import "./migration.css";
+import './globals.css';
+import './migration.css';
+import IntroOverlay from './components/IntroOverlay';
 
 export const metadata = {
-  title: "adnanzeros (Adnan Sami) | Web Designer & Frontend Developer, Bangladesh",
+  title:
+    'adnanzeros (Adnan Sami) | Web Designer & Frontend Developer, Bangladesh',
   description:
-    "adnanzeros (adnan zeros) is Adnan Sami, a web designer and frontend developer from Dhaka, Bangladesh. Official portfolio, projects and contact.",
+    'adnanzeros (adnan zeros) is Adnan Sami, a web designer and frontend developer from Dhaka, Bangladesh. Official portfolio, projects and contact.',
   keywords: [
-    "adnanzeros",
-    "adnan zeros",
-    "adnan sami",
-    "web designer Bangladesh",
-    "frontend developer Dhaka",
+    'adnanzeros',
+    'adnan zeros',
+    'adnan sami',
+    'web designer Bangladesh',
+    'frontend developer Dhaka',
   ],
-  authors: [{ name: "Adnan Sami" }],
-  metadataBase: new URL("https://adnanzeros.vercel.app"),
-  alternates: { canonical: "/" },
+  authors: [{ name: 'Adnan Sami' }],
+  metadataBase: new URL('https://adnanzeros.vercel.app'),
+  alternates: { canonical: '/' },
   openGraph: {
-    type: "profile",
-    locale: "en_US",
-    siteName: "adnanzeros",
-    title: "adnanzeros (Adnan Sami) | Web Designer & Frontend Developer, Bangladesh",
+    type: 'profile',
+    locale: 'en_US',
+    siteName: 'adnanzeros',
+    title:
+      'adnanzeros (Adnan Sami) | Web Designer & Frontend Developer, Bangladesh',
     description:
-      "adnanzeros (adnan zeros) is Adnan Sami, a web designer and frontend developer from Dhaka, Bangladesh.",
-    url: "https://adnanzeros.vercel.app/",
+      'adnanzeros (adnan zeros) is Adnan Sami, a web designer and frontend developer from Dhaka, Bangladesh.',
+    url: 'https://adnanzeros.vercel.app/',
     images: [
       {
-        url: "/adnan2.webp",
+        url: '/adnan2.webp',
         width: 920,
         height: 920,
-        alt: "Adnan Sami (adnanzeros), web designer from Bangladesh",
+        alt: 'Adnan Sami (adnanzeros), web designer from Bangladesh',
       },
     ],
-    firstName: "Adnan",
-    lastName: "Sami",
-    username: "adnanzeros",
+    firstName: 'Adnan',
+    lastName: 'Sami',
+    username: 'adnanzeros',
   },
   twitter: {
-    card: "summary_large_image",
-    site: "@adnanzerosx",
-    creator: "@adnanzerosx",
-    title: "adnanzeros (Adnan Sami) | Web Designer & Frontend Developer, Bangladesh",
+    card: 'summary_large_image',
+    site: '@adnanzerosx',
+    creator: '@adnanzerosx',
+    title:
+      'adnanzeros (Adnan Sami) | Web Designer & Frontend Developer, Bangladesh',
     description:
-      "adnanzeros (adnan zeros) is Adnan Sami, a web designer and frontend developer from Dhaka, Bangladesh.",
-    images: ["/adnan2.webp"],
+      'adnanzeros (adnan zeros) is Adnan Sami, a web designer and frontend developer from Dhaka, Bangladesh.',
+    images: ['/adnan2.webp'],
   },
   icons: {
     icon: [
-      { url: "/favicon.svg", type: "image/svg+xml" },
-      { url: "/favicon.ico", sizes: "48x48" },
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico', sizes: '48x48' },
     ],
-    apple: "/apple-touch-icon.png",
+    apple: '/apple-touch-icon.png',
   },
   other: {
-    "geo.region": "BD",
-    "geo.placename": "Dhaka, Bangladesh",
-    "theme-color": "#000000",
+    'geo.region': 'BD',
+    'geo.placename': 'Dhaka, Bangladesh',
+    'theme-color': '#000000',
   },
 };
 
@@ -73,7 +77,11 @@ export default function RootLayout({ children }) {
           href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
         />
       </head>
-      <body>{children}</body>
+
+      <body>
+        <IntroOverlay />
+        {children}
+      </body>
     </html>
   );
 }
