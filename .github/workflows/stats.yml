@@ -15,12 +15,14 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Generate GitHub Stats
         uses: stats-organization/github-readme-stats-action@v2
         with:
           card: stats
-          options: username=${{ github.repository_owner }}&show_icons=true&hide_border=true&rank_icon=github
+          options: username=${{ github.repository_owner }}&show_icons=true&hide_border=true&rank_icon=github&include_all_commits=true
           path: public/profile/stats.svg
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -28,7 +30,7 @@ jobs:
         uses: stats-organization/github-readme-stats-action@v2
         with:
           card: top-langs
-          options: username=${{ github.repository_owner }}&layout=compact&langs_count=6&hide_border=true
+          options: username=${{ github.repository_owner }}&layout=compact&langs_count=20&hide_border=true
           path: public/profile/top-langs.svg
           token: ${{ secrets.GITHUB_TOKEN }}
 
