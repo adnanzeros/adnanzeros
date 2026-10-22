@@ -15,8 +15,8 @@
 
 /* ---------- 1. tokens + base ---------- */
 :root{
-  --bg:#000;--fg:#fff;--mut:#9a9a9a;--line:#262626;--card:rgba(255,255,255,.05);
-  --line2:rgba(255,255,255,.14);--acc1:#8ea2ff;--acc2:#5ee7ff;color-scheme:dark;
+  --bg:#0A0A0A;--fg:#fff;--mut:#9a9a9a;--line:rgba(0,123,167,.22);--card:rgba(255,255,255,.05);
+  --line2:rgba(0,123,167,.4);--acc1:#FF2D95;--acc2:#007BA7;color-scheme:dark;
   --gutter:5vw;            /* left/right page padding */
   --section-y:90px;        /* top/bottom padding of every section */
   /* tiny static star tile: the light-weight background used on phones and weak devices (no WebGL, no JS) */
@@ -29,21 +29,21 @@
 }
 
 :root {
-  --border: oklch(0.92 0.004 286.32);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
+  --border: rgba(0,123,167,.22);
+  --chart-1: #007BA7;
+  --chart-2: #FF2D95;
+  --chart-3: #007BA7;
+  --chart-4: #FF2D95;
+  --chart-5: #007BA7;
 }
 
 .dark {
-  --border: oklch(0.56 0.0195 267.65 / 0.2);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
+  --border: rgba(0,123,167,.22);
+  --chart-1: #007BA7;
+  --chart-2: #FF2D95;
+  --chart-3: #007BA7;
+  --chart-4: #FF2D95;
+  --chart-5: #007BA7;
 }
 /* lets the name's light-sweep animate smoothly (browsers without @property simply show the static chrome name) */
 @property --sh{syntax:'<length>';inherits:false;initial-value:-3000px}
@@ -54,11 +54,11 @@ body{min-width:320px;background-color:var(--bg);color:var(--fg);font-family:'Pop
 body{background-image:var(--stars);background-size:360px 360px} /* light static star field on every device (no WebGL, no JS) */
 img,svg{max-width:100%}
 a{color:inherit;text-decoration:none}
-::selection{background:#fff;color:#000}
-:focus-visible{outline:2px solid #fff;outline-offset:3px}
+::selection{background:#007BA7;color:#fff}
+:focus-visible{outline:2px solid #007BA7;outline-offset:3px}
 .btn,.tabs button,.burger{touch-action:manipulation}
 
-#bar{position:fixed;top:0;left:0;right:0;height:3px;background:#fff;transform:scaleX(0);transform-origin:0 50%;z-index:40}
+#bar{position:fixed;top:0;left:0;right:0;height:3px;background:#007BA7;transform:scaleX(0);transform-origin:0 50%;z-index:40}
 main,.foot,.nav{position:relative;z-index:2}
 main{z-index:3} /* the country list can hang over the footer, so main must paint above it */
 
@@ -70,9 +70,9 @@ main{z-index:3} /* the country list can hang over the footer, so main must paint
 .brand{display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:1.25rem;letter-spacing:-.02em}
 .brand img{display:block;width:28px;height:28px;flex:none;border-radius:8px;filter:invert(1);transition:transform .3s} /* white badge, black "a" */
 .menu{display:flex;gap:28px}
-.menu a{color:var(--mut);font-size:.92rem;transition:color .2s}
+.menu a{color:#007BA7;font-size:.92rem;transition:color .2s}
 .burger{display:none;background:none;border:0;width:40px;height:40px;position:relative;cursor:pointer}
-.burger span{position:absolute;left:8px;right:8px;height:2px;background:#fff;transition:.3s}
+.burger span{position:absolute;left:8px;right:8px;height:2px;background:#007BA7;transition:.3s}
 .burger span:nth-child(1){top:15px}
 .burger span:nth-child(2){top:23px}
 .burger[aria-expanded=true] span:nth-child(1){top:19px;transform:rotate(45deg)}
@@ -83,7 +83,7 @@ main{z-index:3} /* the country list can hang over the footer, so main must paint
   max-width:1300px;margin:auto;padding:110px var(--gutter) 70px}
 /* soft aurora behind the hero: plain gradients (no blur filter), so it costs nothing while scrolling */
 .hero::before{content:'';position:absolute;z-index:-1;inset:0;pointer-events:none;
-  background:radial-gradient(40% 50% at 30% 40%,rgba(110,130,255,.17),transparent 70%),radial-gradient(34% 44% at 72% 60%,rgba(94,231,255,.11),transparent 70%)}
+  background:radial-gradient(40% 50% at 30% 40%,rgba(255,45,149,.17),transparent 70%),radial-gradient(34% 44% at 72% 60%,rgba(0,123,167,.11),transparent 70%)}
 .hero-text{min-width:0;container-type:inline-size}
 .eyebrow{display:inline-flex;align-items:center;gap:10px;margin-bottom:16px;padding:6px 16px 6px 12px;border:1px solid var(--line2);border-radius:999px;
   background:rgba(255,255,255,.045);color:#dcdcdc;font-size:.84rem;font-weight:500;letter-spacing:.01em}
@@ -101,7 +101,7 @@ main{z-index:3} /* the country list can hang over the footer, so main must paint
   background-position:calc(var(--sh) - var(--x,0px)) 0,calc(var(--x,0px) * -1) 0;
   background-image:
     linear-gradient(105deg,rgba(255,255,255,0) 40%,rgba(255,255,255,1) 50%,rgba(255,255,255,0) 60%),
-    linear-gradient(to bottom,#fff 0%,#f1f3ff 36%,#aeb8dc 70%,#7480a8 100%)}
+    linear-gradient(to bottom,#fff 0%,#f9e7f0 36%,#ff8fc5 70%,#007ba7 100%)}
 /* gradient accent bar under the name; draws itself in on load */
 .logo::after{content:'';position:absolute;left:0;top:calc(100% + .14em);width:clamp(54px,11cqi,110px);height:3px;border-radius:3px;transform-origin:0 50%;
   background:linear-gradient(90deg,#fff,var(--acc1) 55%,transparent);pointer-events:none;animation:bar .9s .55s cubic-bezier(.2,.7,.2,1) backwards}
@@ -128,9 +128,9 @@ main{z-index:3} /* the country list can hang over the footer, so main must paint
 /* the sweep: moves across during the first ~25% of the cycle, then rests */
 @keyframes sheen{0%{--sh:calc(var(--w) * -1.5)}26%,100%{--sh:calc(var(--w) * .3)}}
 
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 26px;border:1px solid rgba(255,255,255,.55);border-radius:999px;font:500 .95rem 'Poppins',system-ui,sans-serif;color:#fff;background:rgba(255,255,255,.03);cursor:pointer;
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 26px;border:1px solid rgba(0,123,167,.75);border-radius:999px;font:500 .95rem 'Poppins',system-ui,sans-serif;color:#fff;background:rgba(0,123,167,.08);cursor:pointer;
   transition:background .25s,color .25s,border-color .25s,transform .25s,box-shadow .25s;white-space:nowrap}
-.btn.solid{background:#fff;border-color:#fff;color:#000;box-shadow:0 8px 30px -8px rgba(255,255,255,.45)}
+.btn.solid{background:#007BA7;border-color:#007BA7;color:#fff;box-shadow:0 8px 30px -8px rgba(0,123,167,.45)}
 .btn:disabled{opacity:.6;cursor:wait}
 .btn .arr{display:inline-block;transition:transform .25s}
 
@@ -145,11 +145,11 @@ main{z-index:3} /* the country list can hang over the footer, so main must paint
   mask-composite:intersect}
 /* (contrast/brightness is already baked into adnan2.webp, so no CSS filter is needed) */
 .photo::before{content:'';position:absolute;z-index:0;inset:8% 6% 2%;border-radius:50%;pointer-events:none;
-  background:radial-gradient(closest-side,rgba(142,162,255,.26),rgba(255,255,255,.06) 55%,transparent 78%);
+  background:radial-gradient(closest-side,rgba(0,123,167,.26),rgba(255,45,149,.08) 55%,transparent 78%);
   filter:blur(26px)}
 /* small animated mouse under the hero (desktop only) */
-.scroll-cue{position:absolute;left:50%;bottom:22px;translate:-50% 0;width:24px;height:38px;border:1.5px solid rgba(255,255,255,.4);border-radius:14px;opacity:.8}
-.scroll-cue i{position:absolute;left:50%;top:7px;width:3px;height:7px;margin-left:-1.5px;border-radius:3px;background:#fff;animation:wheel 1.9s ease-in-out infinite}
+.scroll-cue{position:absolute;left:50%;bottom:22px;translate:-50% 0;width:24px;height:38px;border:1.5px solid rgba(0,123,167,.6);border-radius:14px;opacity:.8}
+.scroll-cue i{position:absolute;left:50%;top:7px;width:3px;height:7px;margin-left:-1.5px;border-radius:3px;background:#FF2D95;animation:wheel 1.9s ease-in-out infinite}
 @keyframes wheel{0%{transform:translateY(0);opacity:1}70%,100%{transform:translateY(12px);opacity:0}}
 
 /* ---------- 4. sections ---------- */
@@ -161,7 +161,7 @@ h2::after{content:'';display:block;width:44px;height:3px;margin-top:12px;border-
 /* about quote */
 .quote{position:relative;margin:0 0 34px;padding:34px clamp(22px,4vw,48px) 30px;border:1px solid var(--line);border-radius:22px;background:rgba(14,14,14,.82);
   overflow:hidden}
-.quote::before{content:'';position:absolute;left:0;top:18%;bottom:18%;width:3px;border-radius:3px;background:#fff;box-shadow:0 0 18px rgba(255,255,255,.7)}
+.quote::before{content:'';position:absolute;left:0;top:18%;bottom:18%;width:3px;border-radius:3px;background:#FF2D95;box-shadow:0 0 18px rgba(255,45,149,.7)}
 .qmark{position:absolute;top:-4px;right:20px;font-size:8rem;line-height:1;font-weight:800;color:rgba(255,255,255,.08);pointer-events:none;user-select:none}
 .quote blockquote{position:relative;margin:0}
 .quote p{margin:0;font-size:clamp(1.35rem,3.6vw,2.4rem);font-weight:600;letter-spacing:-.02em;line-height:1.3;color:#fff}
@@ -174,7 +174,7 @@ h2::after{content:'';display:block;width:44px;height:3px;margin-top:12px;border-
 .card{position:relative;display:block;padding:24px;border:1px solid var(--line);border-radius:18px;background:rgba(14,14,14,.82);transition:border-color .25s;overflow:hidden}
 /* mouse spotlight (main.js sets --mx / --my on hover devices) */
 .card::before,.tile::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .3s;
-  background:radial-gradient(240px circle at var(--mx,50%) var(--my,0%),rgba(255,255,255,.11),transparent 65%)}
+  background:radial-gradient(240px circle at var(--mx,50%) var(--my,0%),rgba(255,45,149,.11),transparent 65%)}
 .card h3{font-size:1.1rem;margin-bottom:8px}
 .card p{color:var(--mut);font-size:.9rem}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
@@ -184,7 +184,7 @@ h2::after{content:'';display:block;width:44px;height:3px;margin-top:12px;border-
    position:sticky does the stacking (works even without JS); main.js only adds the depth effect (previous card sinks back + dims). */
 #projgrid{display:flex;flex-direction:column;gap:26px;perspective:none;padding-bottom:24px}
 #projgrid .card{--top:88px;position:sticky;top:calc(var(--top) + var(--i,0) * 14px);display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:start;gap:8px 30px;min-height:230px;
-  padding:34px 38px;border-radius:24px;border-color:#2c2c2c;background:linear-gradient(160deg,#151515,#0a0a0a);transform-origin:50% 0;
+  padding:34px 38px;border-radius:24px;border-color:rgba(0,123,167,.28);background:linear-gradient(160deg,#151515,#0a0a0a);transform-origin:50% 0;
   box-shadow:0 -18px 40px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.05)}
 /* the \"sinks back and dims\" overlay: only its opacity changes (much cheaper than a CSS filter) */
 #projgrid .card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:#000;opacity:var(--dim,0);pointer-events:none}
@@ -193,25 +193,25 @@ h2::after{content:'';display:block;width:44px;height:3px;margin-top:12px;border-
 .cbody h3{font-size:clamp(1.25rem,2.4vw,1.7rem);letter-spacing:-.02em;margin-bottom:10px}
 .cbody p{max-width:56ch;font-size:1rem}
 .cbody .chips{margin-top:18px}
-.go{display:grid;place-items:center;width:46px;height:46px;border:1px solid rgba(255,255,255,.25);border-radius:50%;font-size:1.15rem;transition:background .25s,color .25s,transform .25s}
+.go{display:grid;place-items:center;width:46px;height:46px;border:1px solid rgba(0,123,167,.55);border-radius:50%;font-size:1.15rem;transition:background .25s,color .25s,transform .25s}
 
 /* tabs */
 .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
 .tabs button{background:none;border:1px solid var(--line);color:var(--mut);padding:8px 20px;border-radius:999px;font:500 .9rem 'Poppins',system-ui,sans-serif;cursor:pointer}
-.tabs button.on{background:#fff;color:#000;border-color:#fff}
+.tabs button.on{background:#007BA7;color:#fff;border-color:#007BA7}
 
 /* tech tiles: plain HTML + inline SVG, so they are on screen with the first paint (no image requests at all) */
 #techgrid{display:block}
 .tgroup{margin-bottom:38px}
-.tgroup h3{font-size:1rem;font-weight:500;color:var(--mut);margin-bottom:14px;letter-spacing:.08em;text-transform:uppercase}
+.tgroup h3{font-size:1rem;font-weight:500;color:var(--acc2);margin-bottom:14px;letter-spacing:.08em;text-transform:uppercase}
 .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:14px}
-.tile{--c:#fff;position:relative;display:grid;justify-items:center;align-content:start;gap:12px;padding:18px 8px 14px;border:1px solid rgba(255,255,255,.1);border-radius:20px;overflow:hidden;
-  background:linear-gradient(165deg,rgba(255,255,255,.075),rgba(255,255,255,.02)),rgba(14,14,14,.86);transition:transform .3s,border-color .3s,box-shadow .3s}
-/* brand-coloured glow from the top of each tile */
+.tile{--c:#fff;position:relative;display:grid;justify-items:center;align-content:start;gap:12px;padding:18px 8px 14px;border:1px solid rgba(0,123,167,.24);border-radius:20px;overflow:hidden;
+  background:linear-gradient(165deg,rgba(0,123,167,.08),rgba(255,45,149,.025)),rgba(14,14,14,.9);transition:transform .3s,border-color .3s,box-shadow .3s}
+/* restrained palette glow from the top of each tile */
 .tile::before{content:'';position:absolute;inset:0;pointer-events:none;opacity:.5;transition:opacity .3s;
-  background:radial-gradient(110% 80% at 50% -10%,var(--c),transparent 65%);mix-blend-mode:soft-light}
-.ic{position:relative;display:grid;place-items:center;width:58px;height:58px;border-radius:17px;color:var(--c);background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.18);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 10px 24px -10px var(--c)}
+  background:radial-gradient(110% 80% at 50% -10%,rgba(0,123,167,.24),transparent 65%),radial-gradient(80% 60% at 50% 0%,rgba(255,45,149,.1),transparent 72%);mix-blend-mode:soft-light}
+.ic{position:relative;display:grid;place-items:center;width:58px;height:58px;border-radius:17px;color:var(--acc2);background:rgba(0,123,167,.08);border:1px solid rgba(0,123,167,.32);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 10px 24px -10px rgba(0,123,167,.28);transition:border-color .3s,box-shadow .3s}
 .ic svg{width:34px;height:34px;display:block}
 .ic b{font-size:1.28rem;font-weight:800;letter-spacing:-.04em;line-height:1}
 .ic b.l{font-size:1.7rem}
@@ -225,13 +225,13 @@ h2::after{content:'';display:block;width:44px;height:3px;margin-top:12px;border-
 .form label,.field{display:grid;gap:6px;font-size:.9rem;color:var(--mut)}
 .form input,.form textarea{background:#0a0a0a;border:1px solid var(--line);border-radius:12px;padding:13px 15px;color:#fff;font:400 1rem 'Poppins',system-ui,sans-serif}
 .form textarea{resize:vertical}
-.form input:focus,.form textarea:focus{outline:none;border-color:#fff}
+.form input:focus,.form textarea:focus{outline:none;border-color:#FF2D95}
 .phone{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:stretch}
 .phone>input{min-width:0}
 .cc{position:relative;height:100%}
 .cc-btn{display:flex;align-items:center;gap:8px;height:100%;min-width:124px;padding:0 12px;background:#0a0a0a;border:1px solid var(--line);border-radius:12px;
   color:#fff;font:500 .95rem 'Poppins',system-ui,sans-serif;white-space:nowrap;cursor:pointer;touch-action:manipulation}
-.cc-btn:focus-visible,.cc-btn[aria-expanded=true]{outline:none;border-color:#fff}
+.cc-btn:focus-visible,.cc-btn[aria-expanded=true]{outline:none;border-color:#007BA7}
 .cc-dial{color:var(--mut);font-weight:400}
 .caret{margin-left:auto;width:6px;height:6px;border-right:1.5px solid #9a9a9a;border-bottom:1.5px solid #9a9a9a;transform:rotate(45deg) translateY(-2px)}
 .flag{display:block;width:24px;height:18px;flex:none;border-radius:3px;object-fit:cover;background:#1b1b1b}
@@ -242,36 +242,37 @@ h2::after{content:'';display:block;width:44px;height:3px;margin-top:12px;border-
 .cc-list li{display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:9px;color:#eee;font-size:.92rem;cursor:pointer}
 .cc-list li .n{flex:1;min-width:0}
 .cc-list li .d{color:var(--mut);font-size:.85rem}
-.cc-list li[aria-selected=true]{background:#1c1c1c}
-.cc-list li.act{background:#2a2a2a}
+.cc-list li[aria-selected=true]{background:rgba(0,123,167,.24)}
+.cc-list li.act{background:rgba(255,45,149,.18)}
 .cc-list li.cc-empty{justify-content:center;color:var(--mut);cursor:default}
 .form .btn{width:100%;padding:15px 26px;font-size:1rem;text-align:center}
 .hp{position:absolute!important;left:-9999px}
 #status{min-height:1.5em;font-size:.92rem}
-#status.ok{color:#7dffb0}
-#status.err{color:#ff8f8f}
+#status.ok{color:#007BA7}
+#status.err{color:#FF2D95}
 
 /* footer */
 .foot{display:grid;gap:14px;justify-items:center;text-align:center;padding:50px var(--gutter) 30px;border-top:1px solid var(--line);background:rgba(0,0,0,.85)}
 .foot p,.foot small{color:var(--mut)}
 .social{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 22px}
-.social a{color:#ddd;font-size:.92rem}
+.social a{color:#007BA7;font-size:.92rem}
 
 /* hover devices only (mouse): hover effects + 3D depth for the tilt. Touch screens skip all of this = lighter */
 @media(hover:hover){
-  .menu a:hover{color:#fff}
-  .cc-list li:hover{background:#242424}
-  .btn:hover{background:#fff;color:#000}
-  .btn.solid:hover{background:transparent;color:#fff}
-  .card:hover,.quote:hover{border-color:#fff}
+  .menu a:hover{color:#FF2D95}
+  .cc-list li:hover{background:rgba(0,123,167,.2)}
+  .btn:hover{background:#FF2D95;border-color:#FF2D95;color:#0A0A0A}
+  .btn.solid:hover{background:transparent;border-color:#FF2D95;color:#FF2D95}
+  .card:hover,.quote:hover{border-color:#FF2D95}
   .card:hover::before,.tile:hover::after{opacity:1}
-  .card:hover .go{background:#fff;color:#000;transform:rotate(45deg)}
-  .tile:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.55);box-shadow:0 16px 36px -14px var(--c)}
+  .card:hover .go{background:#FF2D95;border-color:#FF2D95;color:#0A0A0A;transform:rotate(45deg)}
+  .tile:hover{transform:translateY(-4px);border-color:rgba(255,45,149,.7);box-shadow:0 16px 36px -14px rgba(0,123,167,.36),inset 0 0 0 1px rgba(255,45,149,.12)}
+  .tile:hover .ic{border-color:rgba(255,45,149,.55);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 10px 24px -10px rgba(255,45,149,.35)}
   .tile:hover::before{opacity:.9}
-  .btn.solid:hover{box-shadow:0 10px 36px -6px rgba(255,255,255,.2)}
+  .btn.solid:hover{box-shadow:0 10px 36px -6px rgba(255,45,149,.3)}
   .btn:hover{transform:translateY(-2px)}
   .btn:hover .arr{transform:translateX(4px)}
-  .social a:hover{text-decoration:underline}
+  .social a:hover{color:#FF2D95;text-decoration:underline}
   .brand:hover img{transform:rotate(-8deg) scale(1.08)}
 
 }

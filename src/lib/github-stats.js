@@ -1,51 +1,48 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 
-const colors = {
-  CSS: "#663399",
-  TypeScript: "#3178c6",
-  JavaScript: "#f1e05a",
-  HTML: "#e34c26",
-  Python: "#3572a5",
-  Java: "#b07219",
-  Shell: "#89e051",
-  Vue: "#41b883",
-};
-const palette = ["#5ee7ff", "#8ea2ff", "#88ce02", "#ff9d6e", "#d987ff"];
-
 function decodeEntities(value) {
   return value
     .replace(/&amp;/g, "&")
+    .replace(/&apos;/g, "'")
+    .replace(/&quot;/g, '"')
     .replace(/&#(\d+);/g, (_, code) => String.fromCodePoint(Number(code)))
     .replace(/&#x([0-9a-f]+);/gi, (_, code) =>
       String.fromCodePoint(parseInt(code, 16)),
     );
 }
 
-export async function getGithubLanguages() {
-  const source = path.join(
-    process.cwd(),
-    "public",
-    "profile",
-    "top-langs.svg",
-  );
-  const svg = await readFile(source, "utf8");
+export function parseGithubLanguages(
+  svg,
+  source = "public/profile/top-langs.svg",
+) {
   const entries = [];
 
-  for (const match of svg.matchAll(/<text\b[^>]*>([\s\S]*?)<\/text>/gi)) {
-    const label = decodeEntities(match[1].replace(/<[^>]+>/g, "").trim());
+  for (const match of svg.matchAll(
+    /<g\b[^>]*class=["'][^"']*\bstagger\b[^"']*["'][^>]*>([\s\S]*?)<\/g>/gi,
+  )) {
+    const text = match[1].match(
+      /<text\b(?=[^>]*\bdata-testid=["']lang-name["'])[^>]*>([\s\S]*?)<\/text>/i,
+    );
+    if (!text) continue;
+
+    const label = decodeEntities(text[1].replace(/<[^>]+>/g, "").trim());
     const language = label.match(/^(.+?)\s+(\d+(?:\.\d+)?)%$/);
     if (!language) continue;
+
     const name = language[1].trim();
     const value = Number(language[2]);
-    if (value >= 0 && Number.isFinite(value)) {
-      entries.push({
-        label: name,
-        value,
-        maxValue: 100,
-        color: colors[name] || palette[entries.length % palette.length],
-      });
-    }
+    if (!name || value < 0 || value > 100 || !Number.isFinite(value)) continue;
+
+    const color = match[1].match(
+      /<circle\b[^>]*\bfill=["'](#[\da-f]{3,8})["']/i,
+    )?.[1];
+    entries.push({
+      label: name,
+      value,
+      maxValue: 100,
+      ...(color ? { color } : {}),
+    });
   }
 
   if (!entries.length) {
@@ -57,9 +54,27 @@ export async function getGithubLanguages() {
   return entries;
 }
 
+async function readGithubData(fileName, parse) {
+  const source = path.join(process.cwd(), "public", "profile", fileName);
+  try {
+    const svg = await readFile(source, "utf8");
+    return parse(svg, path.relative(process.cwd(), source));
+  } catch (error) {
+    console.warn(
+      `GitHub data from ${path.relative(process.cwd(), source)} is unavailable.`,
+      error,
+    );
+    return null;
+  }
+}
+
+export async function getGithubLanguages() {
+  return readGithubData("top-langs.svg", parseGithubLanguages);
+}
+
 const statsFields = {
   stars: /Total\s+Stars\s+Earned\s*:\s*([\d,]+(?:\.\d+)?)/i,
-  commits: /Total\s+Commits\s*\(last year\)\s*:\s*([\d,]+(?:\.\d+)?)/i,
+  commits: /Total\s+Commits(?:\s*\(last year\))?\s*:\s*([\d,]+(?:\.\d+)?)/i,
   prs: /Total\s+PRs\s*:\s*([\d,]+(?:\.\d+)?)/i,
   issues: /Total\s+Issues\s*:\s*([\d,]+(?:\.\d+)?)/i,
   contribs: /Contributed\s+to\s*\(last year\)\s*:\s*([\d,]+(?:\.\d+)?)/i,
@@ -103,17 +118,14 @@ export function parseGithubStats(svg, source = "public/profile/stats.svg") {
     (key) => stats[key] === undefined,
   );
   if (missingFields.length) {
-    throw new Error(`Could not read GitHub stats (${missingFields.join(", ")}) from ${source}.`);
+    throw new Error(
+      `Could not read GitHub stats (${missingFields.join(", ")}) from ${source}.`,
+    );
   }
 
   return stats;
 }
 
 export async function getGithubStats() {
-  const source = path.join(process.cwd(), "public", "profile", "stats.svg");
-  const svg = await readFile(source, "utf8");
-  return parseGithubStats(
-    svg,
-    path.relative(process.cwd(), source),
-  );
+  return readGithubData("stats.svg", parseGithubStats);
 }

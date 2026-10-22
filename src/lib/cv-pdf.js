@@ -1,5 +1,7 @@
 import fs from "node:fs";
 
+const INTRO_SESSION_KEY = "adnanzeros-intro-completed-v5";
+
 function siteOrigin() {
   if (process.env.SITE_URL) return process.env.SITE_URL.replace(/\/+$/, "");
   if (process.env.VERCEL) {
@@ -7,6 +9,9 @@ function siteOrigin() {
       process.env.VERCEL_ENV === "production"
         ? process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL
         : process.env.VERCEL_URL;
+    if (!host) {
+      throw new Error("Set SITE_URL or VERCEL_URL to render the CV PDF.");
+    }
     return `https://${host}`;
   }
   return `http://127.0.0.1:${process.env.PORT || 3000}`;
@@ -69,6 +74,11 @@ export async function renderCvPdf() {
   const browser = await launchBrowser();
   try {
     const page = await browser.newPage();
+    await page.evaluateOnNewDocument(key => {
+      if (window.location.origin !== "null") {
+        window.sessionStorage.setItem(key, "played");
+      }
+    }, INTRO_SESSION_KEY);
     await page.goto(`${siteOrigin()}/cv`, {
       waitUntil: "load",
       timeout: 25000,

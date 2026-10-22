@@ -17,10 +17,11 @@
   width: 100%;
   min-width: 0;
   padding: 18px;
-  border: 1px solid var(--line);
+  border: 1px solid rgba(0, 123, 167, .28);
   border-radius: 14px;
-  background: #0d1117;
+  background: linear-gradient(145deg, rgba(0, 123, 167, .055), transparent 62%), #0A0A0A;
   color: #fff;
+  box-shadow: 0 8px 24px rgba(0, 123, 167, .08);
 }
 
 .github-chart-card h3 {
@@ -58,7 +59,7 @@
   padding: 10px;
   border: 1px solid var(--line2);
   border-radius: 8px;
-  background: #090b0f;
+  background: #0A0A0A;
   box-shadow: 0 8px 24px #0009;
   font-size: 0.68rem;
   pointer-events: none;
@@ -88,6 +89,7 @@
 }
 
 .github-radar-values strong {
+  color: var(--acc2);
   font-variant-numeric: tabular-nums;
 }
 
@@ -133,6 +135,12 @@
   flex: none;
   border-radius: 50%;
   background: var(--language-color);
+}
+
+@media (hover: hover) {
+  .github-chart-card:hover {
+    border-color: rgba(255, 45, 149, .55);
+  }
 }
 
 @media (max-width: 991px) {

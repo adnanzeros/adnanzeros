@@ -45,7 +45,7 @@ export default function GitHubRadarChart({ stats }) {
   const data = [
     {
       label: "ADNAN SAMI",
-      color: "#5ee7ff",
+      color: "#007BA7",
       values: plottedValues,
     },
   ];

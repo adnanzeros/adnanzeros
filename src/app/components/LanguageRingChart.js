@@ -13,6 +13,17 @@ export default function LanguageRingChart({ languages }) {
   const prefersReducedMotion = useReducedMotion();
   const animate = prefersReducedMotion === false;
 
+  if (!languages?.length) {
+    return (
+      <article className="github-chart-card">
+        <h3>Most used languages</h3>
+        <p className="github-chart-subtitle" role="status">
+          Language data is temporarily unavailable.
+        </p>
+      </article>
+    );
+  }
+
   return (
     <article className="github-chart-card">
       <h3>Most used languages</h3>
