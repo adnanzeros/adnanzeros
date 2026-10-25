@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const projects = {
   frontend: [
@@ -52,51 +52,6 @@ const tabs = [
 export default function Projects() {
   const [category, setCategory] = useState("frontend");
   const cards = projects[category];
-
-  useEffect(() => {
-    const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduceMotion) return;
-
-    let frame = 0;
-    const paintStack = () => {
-      frame = 0;
-      const elements = [...document.querySelectorAll("#projgrid .card")];
-      elements.forEach((card, index) => {
-        const next = elements[index + 1];
-        if (!next) {
-          card.style.setProperty("--dim", "0");
-          card.style.transform = "";
-          return;
-        }
-        const top = parseFloat(getComputedStyle(card).top) || 72;
-        const nextTop = parseFloat(getComputedStyle(next).top) || top;
-        const startY = top + card.offsetHeight;
-        const progress = Math.min(
-          1,
-          Math.max(
-            0,
-            (startY - next.getBoundingClientRect().top) / (startY - nextTop || 1),
-          ),
-        );
-        card.style.setProperty("--dim", (progress * 0.65).toFixed(3));
-        card.style.transform = progress
-          ? `scale(${(1 - progress * 0.06).toFixed(4)})`
-          : "";
-      });
-    };
-    const schedulePaint = () => {
-      if (!frame) frame = requestAnimationFrame(paintStack);
-    };
-
-    window.addEventListener("scroll", schedulePaint, { passive: true });
-    window.addEventListener("resize", schedulePaint);
-    schedulePaint();
-    return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", schedulePaint);
-      window.removeEventListener("resize", schedulePaint);
-    };
-  }, [category]);
 
   return (
     <section id="projects" className="wrap">

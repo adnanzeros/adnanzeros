@@ -1,83 +1,74 @@
+/* ==========================================================================
+   CV page: scoped to .page, built on the global design tokens
+   (--c-ocean, --c-deep, --c-ink, --c-dim, --c-sky, --c-edge, --c-sand,
+    --font-body, --font-display, --gutter).
+   Global .btn / .brand are reused. Class names that exist in the global
+   sheet (.photo, .role, h2::after ...) are NOT reused or are neutralised
+   here so nothing leaks into the A4 sheet.
+   ========================================================================== */
+
 .page {
-  --cv-line: #d7dedf;
-  --cv-muted: #59666b;
+  --cv-accent: #007BA7;
   min-height: 100vh;
-  background: radial-gradient(1200px 600px at 50% -10%, #1b1b1b, #0A0A0A 70%) #0A0A0A;
-  color: #fff;
-  font-family: "Poppins", system-ui, sans-serif;
+  background:
+    radial-gradient(1200px 600px at 50% -10%, var(--c-deep), var(--c-ocean) 70%)
+    var(--c-ocean);
+  color: var(--c-ink);
+  font-family: var(--font-body);
   line-height: 1.6;
   overflow-x: hidden;
 }
 
-.page :global(*),
-.page :global(*::before),
-.page :global(*::after) {
-  box-sizing: border-box;
-}
-
-.page :global(*) {
-  margin: 0;
-}
-
-.page :global(a) {
-  color: inherit;
-  text-decoration: none;
-}
-
-.page :global(:focus-visible) {
-  outline: 2px solid #007BA7;
-  outline-offset: 3px;
-}
-
+/* ---------- Screen UI (hidden in print) ---------- */
 .page :global(.top) {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 14px max(5vw, env(safe-area-inset-left));
-  border-bottom: 1px solid rgba(0, 123, 167, .22);
-}
-
-.page :global(.brand) {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  font-weight: 700;
-  font-size: 1.2rem;
-  letter-spacing: -.02em;
-}
-
-.page :global(.brand img) {
-  display: block;
-  width: 26px;
-  height: 26px;
-  border-radius: 7px;
-  filter: invert(1);
+  padding: 14px max(var(--gutter), env(safe-area-inset-left));
+  border-bottom: 1px solid var(--c-edge);
+  background: rgba(6, 11, 22, 0.6);
+  backdrop-filter: blur(14px);
 }
 
 .page :global(.back) {
-  color: #007BA7;
-  font-size: .9rem;
-  transition: color .2s;
+  color: var(--c-sky);
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: color 0.2s ease;
 }
 
 .page :global(.stage) {
-  padding: 36px max(4vw, env(safe-area-inset-left)) max(56px, env(safe-area-inset-bottom));
+  padding: 36px max(4vw, env(safe-area-inset-left))
+    max(56px, env(safe-area-inset-bottom));
 }
 
-.page :global(.stage h1) {
-  max-width: 794px;
-  margin: 0 auto 6px;
-  font-size: clamp(1.6rem, 4vw, 2.4rem);
-  font-weight: 700;
-  letter-spacing: -.03em;
+.page :global(.page-title) {
+  width: min(210mm, 100%);
+  margin: 0 auto 8px;
+  color: var(--c-ink);
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 4.4vw, 3rem);
+  font-weight: 600;
+  letter-spacing: -0.065em;
+  line-height: 1.08;
 }
 
-.page :global(.stage .sub) {
-  max-width: 794px;
+.page :global(.page-title)::after {
+  display: block;
+  width: 64px;
+  height: 3px;
+  margin-top: 16px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--c-sky), var(--c-green));
+  content: "";
+}
+
+.page :global(.page-sub) {
+  width: min(210mm, 100%);
   margin: 0 auto 22px;
-  color: #9a9a9a;
-  font-size: .95rem;
+  color: var(--c-dim);
+  font-size: 0.95rem;
 }
 
 .page :global(.fit) {
@@ -95,58 +86,43 @@
   margin: 26px auto 0;
 }
 
-.page :global(.btn) {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 13px 28px;
-  border: 1px solid #007BA7;
-  border-radius: 999px;
-  color: #fff;
-  background: transparent;
-  font: 500 .95rem "Poppins", sans-serif;
-  cursor: pointer;
-  transition: .25s;
-}
-
-.page :global(.btn.solid) {
-  color: #fff;
-  background: #007BA7;
-}
-
-.page :global(.btn svg) {
+/* .btn / .btn.solid come from the global stylesheet */
+.page :global(.actions .btn svg) {
   width: 18px;
   height: 18px;
-}
-
-.page :global(.btn:disabled) {
-  opacity: .6;
-  cursor: wait;
+  flex: none;
 }
 
 .page :global(.note) {
   width: min(210mm, 100%);
   min-height: 1.5em;
   margin: 12px auto 0;
-  color: #9a9a9a;
-  font-size: .88rem;
+  color: var(--c-dim);
+  font-size: 0.88rem;
 }
 
+/* ---------- The A4 sheet ---------- */
 .page :global(.sheet) {
-  --cv-accent: #007BA7;
+  --ink: #172326;
+  --body: #263539;
+  --soft: #405155;
+  --muted: #526166;
   position: absolute;
   top: 0;
   left: 0;
+  display: flex;
+  flex-direction: column;
   width: 210mm;
   height: 297mm;
   overflow: hidden;
-  padding: 13mm 15mm 12mm;
+  padding: 12mm 14mm 11mm;
   transform-origin: 0 0;
   background: #fff;
-  color: #172326;
-  font: 400 12px/1.5 "Poppins", Arial, sans-serif;
-  box-shadow: 0 30px 80px rgba(255, 255, 255, .08), 0 0 0 1px #2a2a2a;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 9pt;
+  line-height: 1.5;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 0 0 1px var(--c-edge);
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
@@ -160,70 +136,74 @@
   height: 11px;
   flex: none;
   fill: none;
-  stroke: #007BA7;
+  stroke: var(--cv-accent);
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
-.page :global(.head) {
+/* Header */
+.page :global(.sheet .head) {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 26mm;
+  grid-template-columns: minmax(0, 1fr) 28mm;
   align-items: center;
   gap: 8mm;
   padding-bottom: 5mm;
-  border-bottom: 1.5px solid #007BA7;
+  border-bottom: 1.5px solid var(--cv-accent);
 }
 
-.page :global(.head h1) {
+.page :global(.sheet .head h1) {
   margin: 0;
-  color: #172326;
-  font-size: 29pt;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 30pt;
   font-weight: 700;
-  letter-spacing: -.035em;
+  letter-spacing: -0.05em;
   line-height: 1;
 }
 
-.page :global(.head .role) {
-  margin-top: 2mm;
-  color: #405155;
+.page :global(.sheet .headline) {
+  max-width: none;
+  margin: 2mm 0 0;
+  color: var(--soft);
   font-size: 10pt;
   font-weight: 500;
 }
 
-.page :global(.contact) {
+.page :global(.sheet .contact) {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 1.6mm 4mm;
+  gap: 1.8mm 4mm;
   margin-top: 4mm;
-  font-size: 8pt;
+  font-size: 8.5pt;
 }
 
-.page :global(.contact span),
-.page :global(.contact a) {
+.page :global(.sheet .contact span),
+.page :global(.sheet .contact a) {
   display: flex;
   align-items: center;
-  gap: 1.5mm;
+  gap: 1.6mm;
   min-width: 0;
 }
 
-.page :global(.contact b) {
+.page :global(.sheet .contact b) {
   font-weight: 500;
   overflow-wrap: anywhere;
 }
 
-.page :global(.photo) {
+/* Portrait: no border, no frame, no overlay */
+.page :global(.sheet .avatar) {
   justify-self: end;
-  order: 0;
-  width: 26mm;
-  height: 26mm;
+  width: 28mm;
+  height: 28mm;
   overflow: hidden;
-  border: 1.5px solid #007BA7;
+  border: 0;
   border-radius: 50%;
   background: #e6e8ec;
+  box-shadow: none;
 }
 
-.page :global(.photo img) {
+.page :global(.sheet .avatar img) {
   display: block;
   width: 100%;
   height: 100%;
@@ -231,220 +211,233 @@
   object-position: 50% 20%;
 }
 
-.page :global(.cols) {
-  display: grid;
-  grid-template-columns: minmax(0, 1.12fr) minmax(0, .88fr);
-  grid-template-areas:
-    "profile skills"
-    "projects education"
-    "projects personal";
-  column-gap: 6mm;
-  row-gap: 5mm;
-  margin-top: 5mm;
-  height: 218mm;
+/* Sections */
+.page :global(.sheet .sec) {
+  min-width: 0;
 }
 
-.page :global(.profile-section) {
-  grid-area: profile;
-}
-
-.page :global(.skills-section) {
-  grid-area: skills;
-}
-
-.page :global(.projects-section) {
-  grid-area: projects;
-}
-
-.page :global(.education-section) {
-  grid-area: education;
-}
-
-.page :global(.personal-section) {
-  grid-area: personal;
-  align-self: end;
-}
-
-.page :global(.profile-section),
-.page :global(.skills-section),
-.page :global(.projects-section),
-.page :global(.education-section) {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.page :global(.sec h2) {
-  margin: 0 0 3mm;
-  padding-bottom: 1.5mm;
-  border-bottom: 1px solid rgba(0, 123, 167, .45);
-  color: #007BA7;
-  font-size: 9pt;
+.page :global(.sheet .sec h2) {
+  margin: 0 0 2.8mm;
+  padding-bottom: 1.4mm;
+  border-bottom: 1px solid rgba(0, 123, 167, 0.45);
+  color: var(--cv-accent);
+  font-family: var(--font-display);
+  font-size: 9.5pt;
   font-weight: 700;
-  letter-spacing: .13em;
+  letter-spacing: 0.13em;
+  line-height: 1.3;
   text-transform: uppercase;
 }
 
-.page :global(.sec p) {
-  margin: 0;
-  color: #263539;
+/* kill the global gradient bar under every h2 */
+.page :global(.sheet .sec h2::after) {
+  display: none;
+  content: none;
 }
 
-.page :global(.motto) {
-  margin-top: 2.5mm !important;
-  color: #405155 !important;
+.page :global(.sheet .sec p) {
+  margin: 0;
+  color: var(--body);
+}
+
+.page :global(.sheet .profile-section) {
+  margin-top: 5mm;
+}
+
+.page :global(.sheet .motto) {
+  margin-top: 2mm;
+  color: var(--soft);
   font-weight: 500;
   font-style: italic;
 }
 
-.page :global(.item) {
-  margin-bottom: 5mm;
+/* Two columns fill the remaining page height evenly */
+.page :global(.sheet .cols) {
+  display: grid;
+  flex: 1;
+  min-height: 0;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  column-gap: 7mm;
+  margin-top: 5mm;
 }
 
-.page :global(.item:last-child) {
+.page :global(.sheet .col) {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 4mm;
+}
+
+/* Items */
+.page :global(.sheet .item) {
+  margin-bottom: 4.2mm;
+}
+
+.page :global(.sheet .item:last-child) {
   margin-bottom: 0;
 }
 
-.page :global(.item .row) {
+.page :global(.sheet .item .row) {
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
   align-items: baseline;
-  gap: 2mm;
+  justify-content: space-between;
+  gap: 0 2mm;
 }
 
-.page :global(.item h3) {
+.page :global(.sheet .item h3) {
   margin: 0;
-  font-size: 9.3pt;
-  font-weight: 700;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 10pt;
+  font-weight: 600;
+  letter-spacing: -0.02em;
   line-height: 1.25;
 }
 
-.page :global(.item .meta) {
+.page :global(.sheet .item .meta) {
   flex: none;
-  color: #526166;
-  font-size: 7.2pt;
-  font-weight: 500;
+  color: var(--muted);
+  font-size: 7.4pt;
+  font-weight: 600;
   white-space: nowrap;
 }
 
-.page :global(.item p) {
+.page :global(.sheet .item p) {
   margin: 1mm 0 0;
-  color: #263539;
-  font-size: 8pt;
-  line-height: 1.35;
+  color: var(--body);
+  font-size: 8.8pt;
+  line-height: 1.4;
 }
 
-.page :global(.projects-section .item p) {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.page :global(.sheet .item ul) {
+  margin: 1.2mm 0 0;
+  padding: 0;
+  list-style: none;
 }
 
-.page :global(.item .lnk) {
+.page :global(.sheet .item li) {
+  position: relative;
+  padding-left: 3.2mm;
+  color: var(--body);
+  font-size: 8.8pt;
+  line-height: 1.4;
+}
+
+.page :global(.sheet .item li + li) {
+  margin-top: 0.6mm;
+}
+
+.page :global(.sheet .item li::before) {
+  position: absolute;
+  top: 1.7mm;
+  left: 0.2mm;
+  width: 1.2mm;
+  height: 1.2mm;
+  border-radius: 50%;
+  background: var(--cv-accent);
+  content: "";
+}
+
+.page :global(.sheet .item .lnk) {
   display: block;
   width: fit-content;
   max-width: 100%;
-  margin-top: .8mm;
-  color: #007BA7;
-  font-size: 7.7pt;
+  margin-top: 1mm;
+  color: var(--cv-accent);
+  font-size: 8pt;
   text-decoration: underline;
   text-underline-offset: 1px;
   overflow-wrap: anywhere;
 }
 
-.page :global(.edu) {
+/* Education timeline */
+.page :global(.sheet .edu) {
   position: relative;
   margin-left: 1mm;
-  padding-left: 3mm;
-  border-left: 1.5px solid rgba(0, 123, 167, .45);
+  padding-left: 3.4mm;
+  border-left: 1.5px solid rgba(0, 123, 167, 0.45);
 }
 
-.page :global(.edu::before) {
+.page :global(.sheet .edu::before) {
   position: absolute;
-  top: 1.1mm;
-  left: -1.25mm;
-  width: 2mm;
-  height: 2mm;
+  top: 1.2mm;
+  left: -1.3mm;
+  width: 2.1mm;
+  height: 2.1mm;
   border: 1px solid #fff;
   border-radius: 50%;
-  background: #FF2D95;
+  background: var(--cv-accent);
   content: "";
 }
 
-.page :global(.edu + .edu) {
-  margin-top: 3mm;
-}
-
-.page :global(.edu .row) {
+.page :global(.sheet .edu .row) {
   display: block;
 }
 
-.page :global(.edu .meta) {
+.page :global(.sheet .edu .meta) {
   display: block;
-  margin-top: .5mm;
+  margin-top: 0.4mm;
 }
 
-.page :global(.skill) {
-  margin-bottom: 3.2mm;
+.page :global(.sheet .nowrap) {
+  white-space: nowrap;
 }
 
-.page :global(.skill:last-child) {
+/* Skills */
+.page :global(.sheet .skill) {
+  margin-bottom: 3.4mm;
+}
+
+.page :global(.sheet .skill:last-child) {
   margin-bottom: 0;
 }
 
-.page :global(.skill b) {
+.page :global(.sheet .skill b) {
   display: block;
-  margin-bottom: .5mm;
-  color: #526166;
-  font-size: 7.2pt;
+  margin-bottom: 0.5mm;
+  color: var(--muted);
+  font-size: 7.4pt;
   font-weight: 700;
-  letter-spacing: .08em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-.page :global(.skill span) {
-  color: #263539;
-  font-size: 9pt;
+.page :global(.sheet .skill span) {
+  color: var(--body);
+  font-size: 9.2pt;
   line-height: 1.4;
 }
 
-.page :global(.dl) {
+/* Personal details */
+.page :global(.sheet .dl) {
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 1mm 3mm;
+  gap: 1.2mm 4mm;
   margin: 0;
-  color: #405155;
-  font-size: 8.5pt;
+  color: var(--soft);
+  font-size: 9pt;
 }
 
-.page :global(.dl dt) {
+.page :global(.sheet .dl dt) {
   font-weight: 500;
 }
 
-.page :global(.dl dd) {
+.page :global(.sheet .dl dd) {
   margin: 0;
-  color: #263539;
-  font-weight: 500;
+  color: var(--body);
+  font-weight: 600;
 }
 
-@media (hover: hover) {
+/* ---------- Hover (mouse devices only) ---------- */
+@media (hover: hover) and (pointer: fine) {
   .page :global(.back:hover) {
-    color: #FF2D95;
-  }
-
-  .page :global(.btn:hover) {
-    color: #0A0A0A;
-    background: #FF2D95;
-    border-color: #FF2D95;
-  }
-
-  .page :global(.btn.solid:hover) {
-    color: #FF2D95;
-    background: transparent;
-    border-color: #FF2D95;
+    color: var(--c-sand);
   }
 }
 
+/* ---------- Small screens ---------- */
 @media (max-width: 480px) {
   .page :global(.actions .btn) {
     width: 100%;
@@ -460,25 +453,25 @@
     padding: 9px max(4vw, env(safe-area-inset-left));
   }
 
-  .page :global(.brand) {
-    gap: 7px;
+  .page :global(.top .brand) {
     min-width: 0;
-    font-size: .98rem;
+    gap: 7px;
+    font-size: 0.98rem;
     white-space: nowrap;
   }
 
-  .page :global(.brand img) {
-    width: 22px;
-    height: 22px;
-    border-radius: 6px;
+  .page :global(.top .brand img) {
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
   }
 
   .page :global(.back) {
     flex: none;
     padding: 7px 12px;
-    border: 1px solid #262626;
+    border: 1px solid var(--c-edge);
     border-radius: 999px;
-    font-size: .78rem;
+    font-size: 0.78rem;
     line-height: 1;
     white-space: nowrap;
   }
@@ -488,6 +481,7 @@
   }
 }
 
+/* ---------- Print: exactly one A4 page ---------- */
 @page {
   size: A4;
   margin: 0;
@@ -495,6 +489,9 @@
 
 @media print {
   .page {
+    min-height: 0;
+    height: 297mm;
+    overflow: hidden;
     background: #fff !important;
   }
 
@@ -515,6 +512,7 @@
   .page :global(.sheet) {
     transform: none !important;
     box-shadow: none !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
 }
-

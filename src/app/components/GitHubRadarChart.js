@@ -1,22 +1,22 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { MotionConfig, useReducedMotion } from "motion/react";
-import { RadarChart } from "@/components/charts/radar-chart";
-import { RadarArea } from "@/components/charts/radar-area";
-import { RadarAxis } from "@/components/charts/radar-axis";
-import { RadarGrid } from "@/components/charts/radar-grid";
-import { RadarLabels } from "@/components/charts/radar-labels";
+import { useState } from 'react';
+import { MotionConfig, useReducedMotion } from 'motion/react';
+import { RadarChart } from '@/components/charts/radar-chart';
+import { RadarArea } from '@/components/charts/radar-area';
+import { RadarAxis } from '@/components/charts/radar-axis';
+import { RadarGrid } from '@/components/charts/radar-grid';
+import { RadarLabels } from '@/components/charts/radar-labels';
 
 const metrics = [
-  { key: "stars", label: "Stars", title: "Total Stars" },
-  { key: "commits", label: "Commits", title: "Total Commits (last year)" },
-  { key: "prs", label: "PRs", title: "Total PRs" },
-  { key: "issues", label: "Issues", title: "Total Issues" },
+  { key: 'stars', label: 'Stars', title: 'Total Stars' },
+  { key: 'commits', label: 'Commits', title: 'Total Commits (last year)' },
+  { key: 'prs', label: 'PRs', title: 'Total PRs' },
+  { key: 'issues', label: 'Issues', title: 'Total Issues' },
   {
-    key: "contribs",
-    label: "Contributed",
-    title: "Contributed to (last year)",
+    key: 'contribs',
+    label: 'Contributed',
+    title: 'Contributed to (last year)',
   },
 ];
 
@@ -29,7 +29,7 @@ const softMaximums = {
 };
 
 function formatStat(value) {
-  return value.toLocaleString("en-US");
+  return value.toLocaleString('en-US');
 }
 
 export default function GitHubRadarChart({ stats }) {
@@ -44,8 +44,8 @@ export default function GitHubRadarChart({ stats }) {
   );
   const data = [
     {
-      label: "ADNAN SAMI",
-      color: "#007BA7",
+      label: 'ADNAN SAMI',
+      color: '#4cc9f0',
       values: plottedValues,
     },
   ];

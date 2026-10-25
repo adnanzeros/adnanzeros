@@ -1,7 +1,8 @@
 import './globals.css';
-import './migration.css';
+import './world.css';
 import Script from 'next/script';
 import IntroOverlay from './components/IntroOverlay';
+import SceneGate from './components/SceneGate';
 import { Analytics } from '@vercel/analytics/next';
 
 export const metadata = {
@@ -81,11 +82,12 @@ export default function RootLayout({ children }) {
         />
         <link
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+          href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
         />
       </head>
 
       <body>
+        <SceneGate />
         <IntroOverlay />
         {children}
         <Analytics />

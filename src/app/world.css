@@ -1,0 +1,47 @@
+/* ==========================================================================
+   world.css: the 3D layer (loaded after globals.css)
+   Only things that exist because of the WebGL scene live here.
+   ========================================================================== */
+
+/* 1. Canvas layer */
+.scene3d {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.scene3d canvas { display: block; width: 100%; height: 100%; }
+.scene3d::after { /* vignette keeps text readable over the 3D */
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(130% 100% at 50% 40%, transparent 50%, rgba(3, 6, 12, 0.75));
+  content: "";
+}
+
+/* page background must not hide the canvas */
+html, body { background: transparent; }
+html { background-color: var(--c-ocean); }
+
+/* 2. Fallback when WebGL is unavailable */
+body::before {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background: radial-gradient(60% 50% at 72% 22%, #0f2e57, transparent 70%), var(--c-ocean);
+  content: "";
+}
+
+/* 4. Readability panels. Text sections get frosted glass so 3D never fights text */
+#about .lead {
+  padding: clamp(18px, 3vw, 28px);
+  border: 1px solid var(--c-edge);
+  border-radius: 20px;
+  background: var(--c-glass);
+  backdrop-filter: blur(14px);
+}
+.quote, .form { backdrop-filter: blur(16px) saturate(1.3); }
+.card { backdrop-filter: blur(14px); }
+#github > h2, #contact > h2, #projects > h2, #about > h2 { text-shadow: 0 2px 30px rgba(0, 0, 0, 0.7); }
+
+/* 5. 3D reveal helper used by GSAP (perspective lives on the animated node) */
+#projgrid, #github .stats { perspective: 1200px; }
