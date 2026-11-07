@@ -1,76 +1,81 @@
-import ContactForm from "./components/ContactForm";
-import GitHubStats from "./components/GitHubStats";
-import Hero from "./components/Hero";
-import PortfolioEffects from "./components/PortfolioEffects";
-import PortfolioHeader from "./components/PortfolioHeader";
-import Projects from "./components/Projects";
-import TechStack from "./components/TechStack";
-import { getGithubLanguages, getGithubStats } from "../lib/github-stats";
+import Link from 'next/link';
+import ContactForm from './components/ContactForm';
+import GitHubStats from './components/GitHubStats';
+import Hero from './components/Hero';
+import PortfolioEffects from './components/PortfolioEffects';
+import PortfolioHeader from './components/PortfolioHeader';
+import Projects from './components/Projects';
+import TechStack from './components/TechStack';
+import { getGithubLanguages, getGithubStats } from '../lib/github-stats';
+import { getPublicProjects } from '../lib/projects-store';
+
+/* Admin theke project change korle revalidatePath('/') diye sathe sathe update hoy; eita fallback */
+export const revalidate = 60;
 
 const profiles = [
-  ["GitHub", "https://github.com/adnanzeros"],
-  ["LinkedIn", "https://www.linkedin.com/in/adnanzeros/"],
-  ["Facebook", "https://www.facebook.com/adnansamidm"],
-  ["Instagram", "https://www.instagram.com/adnanzeros"],
-  ["X", "https://x.com/adnanzerosx"],
-  ["TikTok", "https://www.tiktok.com/@adnanzerosx"],
-  ["Reddit", "https://www.reddit.com/user/adnanzeros/"],
+  ['GitHub', 'https://github.com/adnanzeros'],
+  ['LinkedIn', 'https://www.linkedin.com/in/adnanzeros/'],
+  ['Facebook', 'https://www.facebook.com/adnansamidm'],
+  ['Instagram', 'https://www.instagram.com/adnanzeros'],
+  ['X', 'https://x.com/adnanzerosx'],
+  ['TikTok', 'https://www.tiktok.com/@adnanzerosx'],
+  ['Reddit', 'https://www.reddit.com/user/adnanzeros/'],
 ];
 
 const structuredData = {
-  "@context": "https://schema.org",
-  "@graph": [
+  '@context': 'https://schema.org',
+  '@graph': [
     {
-      "@type": "ProfilePage",
-      "@id": "https://adnanzeros.vercel.app/#profilepage",
-      url: "https://adnanzeros.vercel.app/",
-      name: "adnanzeros (Adnan Sami) | Web Designer & Frontend Developer, Bangladesh",
-      inLanguage: "en",
-      about: { "@id": "https://adnanzeros.vercel.app/#person" },
-      mainEntity: { "@id": "https://adnanzeros.vercel.app/#person" },
+      '@type': 'ProfilePage',
+      '@id': 'https://adnanzeros.vercel.app/#profilepage',
+      url: 'https://adnanzeros.vercel.app/',
+      name: 'adnanzeros (Adnan Sami) | Web Designer & Frontend Developer, Bangladesh',
+      inLanguage: 'en',
+      about: { '@id': 'https://adnanzeros.vercel.app/#person' },
+      mainEntity: { '@id': 'https://adnanzeros.vercel.app/#person' },
     },
     {
-      "@type": "WebSite",
-      "@id": "https://adnanzeros.vercel.app/#website",
-      url: "https://adnanzeros.vercel.app/",
-      name: "adnanzeros",
-      alternateName: ["adnan zeros", "Adnan Sami"],
-      inLanguage: "en",
-      publisher: { "@id": "https://adnanzeros.vercel.app/#person" },
+      '@type': 'WebSite',
+      '@id': 'https://adnanzeros.vercel.app/#website',
+      url: 'https://adnanzeros.vercel.app/',
+      name: 'adnanzeros',
+      alternateName: ['adnan zeros', 'Adnan Sami'],
+      inLanguage: 'en',
+      publisher: { '@id': 'https://adnanzeros.vercel.app/#person' },
     },
     {
-      "@type": "Person",
-      "@id": "https://adnanzeros.vercel.app/#person",
-      name: "Adnan Sami",
-      alternateName: ["adnanzeros", "adnan zeros", "adnanzerosx", "Adnan Sami"],
-      givenName: "Adnan",
-      familyName: "Sami",
-      url: "https://adnanzeros.vercel.app/",
-      image: "https://adnanzeros.vercel.app/adnan2.webp",
-      jobTitle: "Web Designer and Frontend Developer",
+      '@type': 'Person',
+      '@id': 'https://adnanzeros.vercel.app/#person',
+      name: 'Adnan Sami',
+      alternateName: ['adnanzeros', 'adnan zeros', 'adnanzerosx', 'Adnan Sami'],
+      givenName: 'Adnan',
+      familyName: 'Sami',
+      url: 'https://adnanzeros.vercel.app/',
+      image: 'https://adnanzeros.vercel.app/adnan2.webp',
+      jobTitle: 'Web Designer and Frontend Developer',
       description:
-        "Adnan Sami, also known online as adnanzeros (adnan zeros), is a web designer and frontend developer from Dhaka, Bangladesh.",
+        'Adnan Sami, also known online as adnanzeros (adnan zeros), is a web designer and frontend developer from Dhaka, Bangladesh.',
       disambiguatingDescription:
-        "adnanzeros, adnan zeros and Adnan Sami are the same person: a web designer from Bangladesh.",
-      identifier: "adnanzeros",
-      nationality: { "@type": "Country", name: "Bangladesh" },
-      homeLocation: { "@type": "Place", name: "Dhaka, Bangladesh" },
+        'adnanzeros, adnan zeros and Adnan Sami are the same person: a web designer from Bangladesh.',
+      identifier: 'adnanzeros',
+      nationality: { '@type': 'Country', name: 'Bangladesh' },
+      homeLocation: { '@type': 'Place', name: 'Dhaka, Bangladesh' },
       hasOccupation: {
-        "@type": "Occupation",
-        name: "Web Designer",
-        occupationLocation: { "@type": "Country", name: "Bangladesh" },
+        '@type': 'Occupation',
+        name: 'Web Designer',
+        occupationLocation: { '@type': 'Country', name: 'Bangladesh' },
       },
       knowsAbout: [
-        "Web design",
-        "Frontend development",
-        "React",
-        "JavaScript",
-        "Chrome extensions",
+        'Web design',
+        'Frontend development',
+        'React',
+        'JavaScript',
+        'Chrome extensions',
       ],
       address: {
-        "@type": "PostalAddress",
-        addressLocality: "Dhaka",
-        addressCountry: "BD",
+        '@type': 'PostalAddress',
+        addressLocality: 'Dhaka',
+        addressCountry: 'BD',
       },
       sameAs: profiles.map(([, url]) => url),
     },
@@ -78,10 +83,13 @@ const structuredData = {
 };
 
 export default async function HomePage() {
-  const [stats, languages] = await Promise.all([
+  const [stats, languages, projectList] = await Promise.all([
     getGithubStats(),
     getGithubLanguages(),
+    getPublicProjects(),
   ]);
+  const projects = { frontend: [], backend: [], tools: [] };
+  projectList.forEach(p => projects[p.category]?.push(p));
 
   return (
     <>
@@ -113,7 +121,7 @@ export default async function HomePage() {
           </p>
         </section>
         <TechStack />
-        <Projects />
+        <Projects projects={projects} />
         <GitHubStats stats={stats} languages={languages} />
         <ContactForm />
       </main>
@@ -130,6 +138,10 @@ export default async function HomePage() {
             </a>
           ))}
         </div>
+        <nav className="legal-links" aria-label="Legal">
+          <Link href="/privacy">Privacy Policy</Link>
+          <Link href="/terms">Terms of Use</Link>
+        </nav>
         <small>© {new Date().getFullYear()} adnanzeros</small>
       </footer>
       <PortfolioEffects />

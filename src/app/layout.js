@@ -61,13 +61,13 @@ export const metadata = {
   other: {
     'geo.region': 'BD',
     'geo.placename': 'Dhaka, Bangladesh',
-    'theme-color': '#000000',
+    'theme-color': '#81adea',
   },
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
+    <html lang="en" className="light" suppressHydrationWarning>
       <head>
         <Script
           id="intro-session-bootstrap"

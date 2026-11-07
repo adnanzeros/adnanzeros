@@ -1,9 +1,10 @@
 export default function robots() {
   return {
     rules: {
-      userAgent: "*",
-      allow: "/",
+      userAgent: '*',
+      allow: '/',
+      disallow: ['/admin', '/api/'],
     },
-    sitemap: "https://adnanzeros.vercel.app/sitemap.xml",
+    sitemap: 'https://adnanzeros.vercel.app/sitemap.xml',
   };
 }

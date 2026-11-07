@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import { gsap } from "gsap";
-import { useLayoutEffect, useRef, useState } from "react";
-import styles from "./IntroOverlay.module.css";
+import { gsap } from 'gsap';
+import { useLayoutEffect, useRef, useState } from 'react';
+import styles from './IntroOverlay.module.css';
 
-const SESSION_KEY = "adnanzeros-intro-completed-v5";
-const HERO_ONLY_CLASS = "introHeroOnly";
+const SESSION_KEY = 'adnanzeros-intro-completed-v5';
+const HERO_ONLY_CLASS = 'introHeroOnly';
 const WORDS = [
-  "I",
-  "LOVE",
-  "CODING",
-  "I BUILD",
-  "WEBSITE",
-  "WELCOME",
-  "TO",
-  "ADNAN ZEROS",
+  'I',
+  'LOVE',
+  'CODING',
+  'I BUILD',
+  'WEBSITE',
+  'WELCOME',
+  'TO',
+  'ADNAN ZEROS',
 ];
 const WORD_DURATION = 0.29;
 const WELCOME_START = WORDS.length * WORD_DURATION;
@@ -28,47 +28,57 @@ export default function IntroOverlay() {
   useLayoutEffect(() => {
     const overlay = rootRef.current;
     if (!overlay) return;
+    if (window.location.pathname.startsWith('/admin')) {
+      setFinished(true);
+      return;
+    }
 
     try {
       if (
-        document.documentElement.hasAttribute("data-intro-completed") ||
+        document.documentElement.hasAttribute('data-intro-completed') ||
         window.sessionStorage.getItem(SESSION_KEY)
       ) {
         setFinished(true);
         return;
       }
     } catch (error) {
-      console.warn("Intro session storage is unavailable; the intro will play.", error);
+      console.warn(
+        'Intro session storage is unavailable; the intro will play.',
+        error,
+      );
     }
 
-    const words = gsap.utils.toArray("[data-intro-word]", overlay);
-    const indicators = gsap.utils.toArray("[data-intro-indicator]", overlay);
-    const robot = overlay.querySelector("[data-intro-robot]");
-    const eyes = overlay.querySelector("[data-intro-eyes]");
-    const glow = overlay.querySelector("[data-intro-glow]");
-    const welcome = overlay.querySelector("[data-intro-welcome]");
+    const words = gsap.utils.toArray('[data-intro-word]', overlay);
+    const indicators = gsap.utils.toArray('[data-intro-indicator]', overlay);
+    const robot = overlay.querySelector('[data-intro-robot]');
+    const eyes = overlay.querySelector('[data-intro-eyes]');
+    const glow = overlay.querySelector('[data-intro-glow]');
+    const welcome = overlay.querySelector('[data-intro-welcome]');
     const page = document.body;
     const reducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
+      '(prefers-reduced-motion: reduce)',
     ).matches;
     const revealTargets = [
       ...Array.from(page.children).filter(
-        (element) =>
+        element =>
           element !== overlay &&
-          element.tagName !== "MAIN" &&
-          element.tagName !== "SCRIPT",
+          element.tagName !== 'MAIN' &&
+          element.tagName !== 'SCRIPT',
       ),
-      ...Array.from(document.querySelector("main")?.children ?? []).filter(
-        (element) => element.id !== "home" && element.tagName !== "SCRIPT",
+      ...Array.from(document.querySelector('main')?.children ?? []).filter(
+        element => element.id !== 'home' && element.tagName !== 'SCRIPT',
       ),
     ];
     const completeIntro = () => {
       page.classList.remove(HERO_ONLY_CLASS);
-      document.documentElement.setAttribute("data-intro-completed", "");
+      document.documentElement.setAttribute('data-intro-completed', '');
       try {
-        window.sessionStorage.setItem(SESSION_KEY, "played");
+        window.sessionStorage.setItem(SESSION_KEY, 'played');
       } catch (error) {
-        console.warn("Intro completion could not be saved for this tab.", error);
+        console.warn(
+          'Intro completion could not be saved for this tab.',
+          error,
+        );
       }
       setFinished(true);
     };
@@ -81,7 +91,7 @@ export default function IntroOverlay() {
     const context = gsap.context(() => {
       const timeline = gsap.timeline({
         paused: true,
-        defaults: { ease: "power2.inOut" },
+        defaults: { ease: 'power2.inOut' },
         onComplete: completeIntro,
       });
 
@@ -89,7 +99,7 @@ export default function IntroOverlay() {
         y: -6,
         duration: 0.6,
         delay: 0.45,
-        ease: "sine.inOut",
+        ease: 'sine.inOut',
         repeat: -1,
         yoyo: true,
       });
@@ -99,13 +109,13 @@ export default function IntroOverlay() {
         repeat: -1,
         repeatDelay: 1.15,
         yoyo: true,
-        transformOrigin: "50% 50%",
+        transformOrigin: '50% 50%',
       });
       gsap.to(glow, {
         scale: 1.08,
         opacity: 0.65,
         duration: 1,
-        ease: "sine.inOut",
+        ease: 'sine.inOut',
         repeat: -1,
         yoyo: true,
       });
@@ -122,13 +132,13 @@ export default function IntroOverlay() {
         timeline
           .fromTo(
             word,
-            { autoAlpha: 0, y: 12, filter: "blur(4px)" },
-            { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 0.09 },
+            { autoAlpha: 0, y: 12, filter: 'blur(4px)' },
+            { autoAlpha: 1, y: 0, filter: 'blur(0px)', duration: 0.09 },
             start,
           )
           .to(
             word,
-            { autoAlpha: 0, y: -9, filter: "blur(2px)", duration: 0.08 },
+            { autoAlpha: 0, y: -9, filter: 'blur(2px)', duration: 0.08 },
             start + 0.21,
           )
           .fromTo(
@@ -143,7 +153,7 @@ export default function IntroOverlay() {
             start + 0.21,
           )
           .call(
-            () => overlay.setAttribute("aria-label", WORDS[index]),
+            () => overlay.setAttribute('aria-label', WORDS[index]),
             [],
             start,
           );
@@ -152,19 +162,19 @@ export default function IntroOverlay() {
       timeline
         .fromTo(
           welcome,
-          { autoAlpha: 0, y: 14, filter: "blur(4px)" },
-          { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 0.18 },
+          { autoAlpha: 0, y: 14, filter: 'blur(4px)' },
+          { autoAlpha: 1, y: 0, filter: 'blur(0px)', duration: 0.18 },
           WELCOME_START,
         )
         .call(
-          () => overlay.setAttribute("aria-label", "WELCOME TO MY WORLD"),
+          () => overlay.setAttribute('aria-label', 'WELCOME TO MY WORLD'),
           [],
           WELCOME_START,
         )
         .call(
           () => {
             page.classList.add(HERO_ONLY_CLASS);
-            overlay.style.pointerEvents = "none";
+            overlay.style.pointerEvents = 'none';
           },
           [],
           EXIT_START,
@@ -180,7 +190,7 @@ export default function IntroOverlay() {
           {
             autoAlpha: 1,
             duration: INTRO_DURATION - EXIT_START,
-            ease: "power2.out",
+            ease: 'power2.out',
             overwrite: true,
           },
           EXIT_START,
@@ -196,7 +206,7 @@ export default function IntroOverlay() {
 
     return () => {
       page.classList.remove(HERO_ONLY_CLASS);
-      overlay.style.pointerEvents = "";
+      overlay.style.pointerEvents = '';
       context.revert();
     };
   }, []);
@@ -243,8 +253,22 @@ export default function IntroOverlay() {
               fillOpacity="0.045"
             />
             <g data-intro-eyes>
-              <rect x="40" y="48" width="10" height="16" rx="5" fill="currentColor" />
-              <rect x="70" y="48" width="10" height="16" rx="5" fill="currentColor" />
+              <rect
+                x="40"
+                y="48"
+                width="10"
+                height="16"
+                rx="5"
+                fill="currentColor"
+              />
+              <rect
+                x="70"
+                y="48"
+                width="10"
+                height="16"
+                rx="5"
+                fill="currentColor"
+              />
             </g>
             <path
               d="M51 73H69"
@@ -277,7 +301,7 @@ export default function IntroOverlay() {
               <span
                 key={word}
                 className={`${styles.wordItem} ${
-                  index === WORDS.length - 1 ? styles.brandWord : ""
+                  index === WORDS.length - 1 ? styles.brandWord : ''
                 }`}
                 data-intro-word
               >
@@ -294,12 +318,8 @@ export default function IntroOverlay() {
         </div>
 
         <div className={styles.indicator} aria-hidden="true">
-          {WORDS.map((word) => (
-            <span
-              key={word}
-              className={styles.dot}
-              data-intro-indicator
-            />
+          {WORDS.map(word => (
+            <span key={word} className={styles.dot} data-intro-indicator />
           ))}
         </div>
         <span className={styles.caption}>A CREATIVE DEVELOPER EXPERIENCE</span>

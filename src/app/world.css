@@ -1,6 +1,6 @@
 /* ==========================================================================
-   world.css: the 3D layer (loaded after globals.css)
-   Only things that exist because of the WebGL scene live here.
+   world.css: 3D layer + pastel background (globals.css er pore load hoy)
+   Palette: Powder Blue #81adea | Soft Lavender #e0dcf3 | Sunset Peach #eeaa93
    ========================================================================== */
 
 /* 1. Canvas layer */
@@ -11,37 +11,41 @@
   pointer-events: none;
 }
 .scene3d canvas { display: block; width: 100%; height: 100%; }
-.scene3d::after { /* vignette keeps text readable over the 3D */
+.scene3d::after { /* halka depth: kinar ektu gaero blue, text readable thake */
   position: absolute;
   inset: 0;
-  background: radial-gradient(130% 100% at 50% 40%, transparent 50%, rgba(3, 6, 12, 0.75));
+  background: radial-gradient(130% 100% at 50% 40%, transparent 55%, color-mix(in srgb, var(--blue) 55%, #000 8%));
   content: "";
 }
 
 /* page background must not hide the canvas */
 html, body { background: transparent; }
-html { background-color: var(--c-ocean); }
+html { background-color: var(--blue); }
 
-/* 2. Fallback when WebGL is unavailable */
+/* 2. Pastel mesh background (WebGL na thakleo eta dekha jabe) */
 body::before {
   position: fixed;
   inset: 0;
   z-index: -2;
-  background: radial-gradient(60% 50% at 72% 22%, #0f2e57, transparent 70%), var(--c-ocean);
+  background:
+    radial-gradient(50% 44% at 12% 8%, rgba(224, 220, 243, 0.55), transparent 70%),
+    radial-gradient(46% 42% at 92% 22%, rgba(224, 220, 243, 0.4), transparent 70%),
+    radial-gradient(34% 30% at 80% 90%, rgba(238, 170, 147, 0.18), transparent 70%),
+    var(--blue);
   content: "";
 }
 
-/* 4. Readability panels. Text sections get frosted glass so 3D never fights text */
+/* 3. Readability panels: text section gulo frosted glass */
 #about .lead {
   padding: clamp(18px, 3vw, 28px);
   border: 1px solid var(--c-edge);
-  border-radius: 20px;
+  border-radius: 24px;
   background: var(--c-glass);
+  box-shadow: var(--shadow-md);
   backdrop-filter: blur(14px);
 }
 .quote, .form { backdrop-filter: blur(16px) saturate(1.3); }
 .card { backdrop-filter: blur(14px); }
-#github > h2, #contact > h2, #projects > h2, #about > h2 { text-shadow: 0 2px 30px rgba(0, 0, 0, 0.7); }
 
-/* 5. 3D reveal helper used by GSAP (perspective lives on the animated node) */
+/* 4. 3D reveal helper used by GSAP (perspective lives on the animated node) */
 #projgrid, #github .stats { perspective: 1200px; }

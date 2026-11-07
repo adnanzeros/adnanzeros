@@ -77,21 +77,21 @@ export default function TechStack() {
             >
               <defs>
                 <radialGradient id="tech-stack-core">
-                  <stop offset="0%" stopColor="#FF2D95" stopOpacity=".9" />
-                  <stop offset="55%" stopColor="#007BA7" stopOpacity=".85" />
-                  <stop offset="100%" stopColor="#007BA7" stopOpacity=".15" />
+                  <stop offset="0%" stopColor="#eeaa93" stopOpacity=".95" />
+                  <stop offset="55%" stopColor="#e0dcf3" stopOpacity=".95" />
+                  <stop offset="100%" stopColor="#81adea" stopOpacity=".55" />
                 </radialGradient>
                 <radialGradient id="tech-stack-halo">
-                  <stop offset="0%" stopColor="#FF2D95" stopOpacity=".2" />
-                  <stop offset="100%" stopColor="#007BA7" stopOpacity="0" />
+                  <stop offset="0%" stopColor="#eeaa93" stopOpacity=".2" />
+                  <stop offset="100%" stopColor="#81adea" stopOpacity="0" />
                 </radialGradient>
               </defs>
               <circle cx="200" cy="160" r="112" fill="url(#tech-stack-halo)" />
               <g
                 className={styles.orbitPaths}
                 fill="none"
-                stroke="#007BA7"
-                strokeOpacity=".48"
+                stroke="#243042"
+                strokeOpacity=".35"
                 strokeWidth="1"
               >
                 <ellipse cx="200" cy="160" rx="148" ry="94" />
@@ -117,9 +117,9 @@ export default function TechStack() {
                       cx={x + 14}
                       cy={y + 14}
                       r="18"
-                      fill="#0A0A0A"
-                      fillOpacity=".9"
-                      stroke="#007BA7"
+                      fill="#e0dcf3"
+                      fillOpacity="1"
+                      stroke="#81adea"
                       strokeOpacity=".55"
                     />
                     <image
@@ -137,7 +137,7 @@ export default function TechStack() {
                 cy="160"
                 r="52"
                 fill="url(#tech-stack-core)"
-                stroke="#FF2D95"
+                stroke="#eeaa93"
                 strokeOpacity=".65"
               />
               <circle
@@ -145,14 +145,14 @@ export default function TechStack() {
                 cy="160"
                 r="43"
                 fill="none"
-                stroke="#fff"
-                strokeOpacity=".18"
+                stroke="#e0dcf3"
+                strokeOpacity=".9"
               />
               <text
                 x="200"
                 y="169"
                 textAnchor="middle"
-                fill="#fff"
+                fill="#243042"
                 fontFamily="ui-monospace, monospace"
                 fontSize="22"
                 fontWeight="700"

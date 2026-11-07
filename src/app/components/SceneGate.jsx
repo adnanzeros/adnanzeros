@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import Scene3D from './Scene3D';
 
 /* Je route gulote 3D scene lagbe na */
-const NO_SCENE = ['/cv'];
+const NO_SCENE = ['/cv', '/privacy', '/terms', '/admin'];
 
 export default function SceneGate() {
   const pathname = usePathname() || '';
