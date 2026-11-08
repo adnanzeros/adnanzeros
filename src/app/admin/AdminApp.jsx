@@ -1799,7 +1799,6 @@ export default function AdminApp() {
 
   return (
     <main className={`adm-workspace adm-theme-${theme}`}>
-      <MatrixRain dim />
       <aside className="adm-sidebar">
         <a className="adm-sidebar-brand" href="/" aria-label="adnanzeros home">
           <img src="/favicon.svg" alt="" width="34" height="34" />
@@ -1884,7 +1883,6 @@ export default function AdminApp() {
             <span>/</span>
             <strong>{tab[0].toUpperCase() + tab.slice(1)}</strong>
           </div>
-          <div className="mx-topbar-title">THIS IS ADNAN ZEROS TERRITORY</div>
           <div className="adm-topbar-actions">
             <ThemeToggle
               theme={theme}
