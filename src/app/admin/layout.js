@@ -1,4 +1,5 @@
 import './admin.css';
+import './matrix.css';
 
 export const metadata = {
   title: 'Admin | adnanzeros',

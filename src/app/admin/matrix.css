@@ -1,0 +1,222 @@
+/* ==========================================================================
+   MATRIX THEME for /admin
+   Loaded AFTER admin.css (see layout.js). admin.css is untouched; this file
+   only re-colors and re-skins it. Delete the import in layout.js to go back.
+
+   The 3 colors live right here. Change them once and the whole UI + the
+   falling rain follow:
+   ========================================================================== */
+.adm-root {
+  --mx-blue: #81adea;
+  --mx-lavender: #e0dcf3;
+  --mx-peach: #eeaa93;
+  --mx-void: #03060b;
+
+  --adm-bg: var(--mx-void);
+  --adm-surface: rgba(5, 10, 17, 0.82);
+  --adm-surface-soft: rgba(129, 173, 234, 0.07);
+  --adm-text: var(--mx-lavender);
+  --adm-muted: rgba(224, 220, 243, 0.62);
+  --adm-line: rgba(129, 173, 234, 0.3);
+  --adm-blue: var(--mx-blue);
+  --adm-blue-deep: var(--mx-blue);
+  --adm-lavender: var(--mx-lavender);
+  --adm-peach: var(--mx-peach);
+  --adm-green: var(--mx-blue);
+  --adm-shadow: 0 0 28px rgba(129, 173, 234, 0.18);
+
+  background: var(--mx-void);
+  font-family: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: 0.01em;
+}
+
+/* Matrix is dark only: both themes get the same palette, toggle is hidden. */
+.adm-root .adm-theme-light,
+.adm-root .adm-theme-dark {
+  --adm-bg: var(--mx-void);
+  --adm-surface: rgba(5, 10, 17, 0.82);
+  --adm-surface-soft: rgba(129, 173, 234, 0.07);
+  --adm-text: var(--mx-lavender);
+  --adm-muted: rgba(224, 220, 243, 0.62);
+  --adm-line: rgba(129, 173, 234, 0.3);
+  --adm-blue: var(--mx-blue);
+  --adm-blue-deep: var(--mx-blue);
+  --adm-lavender: var(--mx-lavender);
+  --adm-peach: var(--mx-peach);
+  --adm-green: var(--mx-blue);
+  --adm-shadow: 0 0 28px rgba(129, 173, 234, 0.18);
+}
+.adm-root button[aria-label^="Switch to"] { display: none; }
+
+/* ---------- Rain canvas + scanlines ---------- */
+.mx-rain { position: fixed; z-index: 0; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.mx-rain-dim { opacity: 0.32; }
+.adm-root::after {
+  position: fixed;
+  z-index: 3;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.16) 0 1px, transparent 1px 3px);
+  pointer-events: none;
+  content: "";
+}
+.adm-login-page,
+.adm-workspace,
+.adm-loading-screen { background: transparent; }
+/* position only (no z-index) so modals and drawers still sit above the sidebar */
+.adm-login-layout,
+.adm-login-footer,
+.adm-login-tools,
+.adm-main-area { position: relative; }
+.adm-sidebar { background: rgba(3, 6, 11, 0.9); }
+.adm-topbar { background: rgba(3, 6, 11, 0.88); }
+
+/* ---------- Center text: THIS IS ADNAN ZEROS TERRITORY ---------- */
+.mx-territory { position: relative; z-index: 1; display: grid; justify-items: center; gap: 10px; margin: 0 0 34px; text-align: center; }
+.mx-kicker { margin: 0; color: var(--mx-peach); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.32em; text-shadow: 0 0 10px rgba(238, 170, 147, 0.6); }
+.mx-territory-title {
+  display: inline-block;
+  max-width: 100%;
+  width: 29ch;
+  margin: 0;
+  overflow: hidden;
+  border-right: 0.12em solid var(--mx-peach);
+  color: var(--mx-blue);
+  font-size: clamp(0.98rem, 4.3vw, 2.3rem);
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1.25;
+  text-shadow: 0 0 6px rgba(129, 173, 234, 0.9), 0 0 22px rgba(129, 173, 234, 0.55), 2px 0 0 rgba(238, 170, 147, 0.55), -2px 0 0 rgba(224, 220, 243, 0.4);
+  white-space: nowrap;
+  animation: mx-type 2.6s steps(29) 0.2s both, mx-caret 0.9s step-end infinite;
+}
+.mx-topbar-title { color: var(--mx-blue); font-size: 0.7rem; font-weight: 800; letter-spacing: 0.22em; text-shadow: 0 0 10px rgba(129, 173, 234, 0.7); white-space: nowrap; }
+@keyframes mx-type { from { width: 0; } to { width: 29ch; } }
+@keyframes mx-caret { 50% { border-right-color: transparent; } }
+
+/* ---------- Login: single centered column (old left panel is hidden) ---------- */
+.adm-login-page { background: transparent; }
+.adm-brand-panel { display: none; }
+.adm-login-layout { grid-template-columns: minmax(0, 430px); justify-content: center; }
+.adm-login-card { border-color: rgba(129, 173, 234, 0.55); background: rgba(3, 7, 12, 0.88); box-shadow: 0 0 0 1px rgba(129, 173, 234, 0.12), 0 0 46px rgba(129, 173, 234, 0.2); backdrop-filter: blur(3px); }
+.adm-login-logo { background: rgba(129, 173, 234, 0.14); color: var(--mx-blue); }
+.adm-login-footer { color: var(--adm-muted); letter-spacing: 0.12em; }
+
+/* ---------- Shape: sharp corners instead of soft ones ---------- */
+.adm-root :where(.adm-button, .adm-icon-button, .adm-field input, .adm-field textarea, .adm-password-wrap, .adm-login-card, .adm-panel, .adm-stat-card, .adm-stat-icon, .adm-message-card, .adm-project-card, .adm-confirm-modal, .adm-toast, .adm-search, .adm-segment, .adm-segment button, .adm-empty-state, .adm-error-box, .adm-soon-card, .adm-dropzone, .adm-nav-item, .adm-project-filters button, .adm-skeleton-card, .adm-warning, .adm-server-warning, .adm-image-preview img) { border-radius: 3px; }
+
+/* ---------- Text glow ---------- */
+.adm-root h1,
+.adm-root h2 { text-shadow: 0 0 14px rgba(129, 173, 234, 0.4); }
+.adm-welcome h1,
+.adm-page-heading h1,
+.adm-login-card-heading h2,
+.adm-section-heading h2,
+.adm-sidebar-brand span,
+.adm-stat-card strong { font-family: inherit; }
+.adm-stat-card strong { color: var(--mx-blue); text-shadow: 0 0 14px rgba(129, 173, 234, 0.6); }
+.adm-eyebrow { color: var(--mx-peach); }
+
+/* ---------- Panels ---------- */
+.adm-panel,
+.adm-stat-card,
+.adm-message-card,
+.adm-project-card,
+.adm-empty-state,
+.adm-soon-card { border-color: var(--adm-line); box-shadow: 0 0 18px rgba(129, 173, 234, 0.07); backdrop-filter: blur(2px); }
+.adm-project-card:hover,
+.adm-message-open { border-color: var(--mx-blue); box-shadow: 0 0 26px rgba(129, 173, 234, 0.28); }
+.adm-message-unread { border-left-color: var(--mx-peach); }
+.adm-confirm-modal,
+.adm-toast { background: #05090f; }
+.adm-drawer { border-left: 1px solid var(--adm-line); }
+
+/* ---------- Inputs ---------- */
+.adm-field input,
+.adm-field textarea { border-color: var(--adm-line); background: rgba(129, 173, 234, 0.06); color: var(--mx-lavender); caret-color: var(--mx-peach); }
+.adm-field input:focus,
+.adm-field textarea:focus { border-color: var(--mx-blue); box-shadow: 0 0 0 3px rgba(129, 173, 234, 0.18), 0 0 18px rgba(129, 173, 234, 0.3); }
+.adm-password-wrap { border-color: var(--adm-line); background: rgba(129, 173, 234, 0.06); }
+.adm-field input::placeholder,
+.adm-field textarea::placeholder,
+.adm-search input::placeholder { color: rgba(224, 220, 243, 0.38); }
+.adm-field > span:first-child { color: var(--mx-blue); letter-spacing: 0.1em; text-transform: uppercase; }
+
+/* ---------- Buttons ---------- */
+.adm-root .adm-button-primary { border-color: var(--mx-peach); background: transparent; color: var(--mx-peach) !important; box-shadow: 0 0 14px rgba(238, 170, 147, 0.25); letter-spacing: 0.08em; text-transform: uppercase; }
+.adm-root .adm-button-primary:hover:not(:disabled) { background: var(--mx-peach); color: var(--mx-void) !important; box-shadow: 0 0 26px rgba(238, 170, 147, 0.55); }
+.adm-root .adm-button-secondary { border-color: var(--adm-line); background: transparent; color: var(--mx-blue); }
+.adm-root .adm-button-secondary:hover:not(:disabled) { border-color: var(--mx-blue); background: rgba(129, 173, 234, 0.12); box-shadow: 0 0 16px rgba(129, 173, 234, 0.3); }
+.adm-root .adm-button-danger { border-color: rgba(238, 170, 147, 0.5); background: rgba(238, 170, 147, 0.08); color: var(--mx-peach) !important; }
+.adm-icon-button { background: transparent; }
+.adm-icon-button:hover { border-color: var(--mx-blue); box-shadow: 0 0 14px rgba(129, 173, 234, 0.3); }
+.adm-danger-icon { color: var(--mx-peach); }
+.adm-danger-icon:hover,
+.adm-theme-dark .adm-danger-icon:hover { border-color: var(--mx-peach); background: rgba(238, 170, 147, 0.12); color: var(--mx-peach); }
+.adm-text-button { color: var(--mx-blue); }
+
+/* ---------- Navigation ---------- */
+.adm-nav-active { background: rgba(129, 173, 234, 0.14); color: var(--mx-blue); text-shadow: 0 0 10px rgba(129, 173, 234, 0.6); }
+.adm-nav-active::before { background: var(--mx-peach); box-shadow: 0 0 10px var(--mx-peach); }
+.adm-mobile-tabs { background: rgba(3, 6, 11, 0.94); }
+.adm-avatar { border-color: var(--adm-line); background: rgba(129, 173, 234, 0.14); color: var(--mx-blue); }
+.adm-theme-dark .adm-avatar { color: var(--mx-blue); }
+.adm-breadcrumb strong { color: var(--mx-blue); }
+
+/* ---------- Filters / segments (active text was unreadable on lavender) ---------- */
+.adm-segment button.adm-segment-active { background: rgba(129, 173, 234, 0.16); color: var(--mx-blue); box-shadow: inset 0 0 0 1px rgba(129, 173, 234, 0.5); }
+.adm-segment button.adm-segment-active span { background: rgba(129, 173, 234, 0.2); color: var(--mx-blue); }
+.adm-project-filters button.adm-filter-active { border-color: var(--mx-blue); background: rgba(129, 173, 234, 0.14); color: var(--mx-blue); }
+
+/* ---------- Charts and meters ---------- */
+.adm-chart-track span { background: linear-gradient(180deg, var(--mx-lavender), var(--mx-blue)); box-shadow: 0 0 12px rgba(129, 173, 234, 0.5); }
+.adm-meter-track > span { background: linear-gradient(90deg, var(--mx-blue), var(--mx-lavender)); box-shadow: 0 0 10px rgba(129, 173, 234, 0.45); }
+.adm-stat-card::after { opacity: 0.12; }
+.adm-stat-icon { background: rgba(129, 173, 234, 0.12); color: var(--mx-blue); }
+
+/* ---------- Projects ---------- */
+.adm-project-cover { background: linear-gradient(135deg, rgba(129, 173, 234, 0.16), rgba(3, 6, 11, 0.9), rgba(238, 170, 147, 0.14)); }
+.adm-project-cover > span:first-child:not(.adm-project-category) { color: rgba(129, 173, 234, 0.5); }
+.adm-project-category,
+.adm-category-backend,
+.adm-category-tools { border: 1px solid var(--mx-blue); background: rgba(3, 6, 11, 0.88); color: var(--mx-blue); }
+.adm-category-backend { border-color: var(--mx-peach); color: var(--mx-peach); }
+.adm-category-tools { border-color: var(--mx-lavender); color: var(--mx-lavender); }
+.adm-dropzone { border-color: rgba(129, 173, 234, 0.5); }
+.adm-upload-icon,
+.adm-empty-icon { background: rgba(129, 173, 234, 0.14); color: var(--mx-blue); }
+
+/* ---------- Messages / badges ---------- */
+.adm-unread-pill { background: rgba(238, 170, 147, 0.15); color: var(--mx-peach); }
+.adm-theme-dark .adm-unread-pill { color: var(--mx-peach); }
+.adm-unread-badge,
+.adm-mobile-unread-badge { background: var(--mx-peach); color: var(--mx-void); }
+
+/* ---------- Warnings and errors (were light-mode colors) ---------- */
+.adm-form-error { color: var(--mx-peach); }
+.adm-warning,
+.adm-server-warning,
+.adm-theme-dark .adm-warning,
+.adm-theme-dark .adm-server-warning { border-color: rgba(238, 170, 147, 0.4); background: rgba(238, 170, 147, 0.1); color: var(--mx-peach); }
+.adm-server-warning .adm-text-button { color: var(--mx-peach); }
+.adm-error-box,
+.adm-theme-dark .adm-error-box { border-color: rgba(238, 170, 147, 0.45); background: rgba(238, 170, 147, 0.08); color: var(--mx-peach); }
+.adm-confirm-icon { background: rgba(238, 170, 147, 0.14); color: var(--mx-peach); }
+.adm-toast-error > svg { color: var(--mx-peach); }
+.adm-remove-image { color: var(--mx-peach); }
+
+/* ---------- Forgot password ---------- */
+.mx-forgot { justify-self: end; }
+.mx-center { justify-self: center; }
+.mx-notice { margin: 0; padding: 10px 12px; border: 1px solid rgba(129, 173, 234, 0.4); border-radius: 3px; background: rgba(129, 173, 234, 0.08); color: var(--mx-blue); font-size: 0.8rem; line-height: 1.45; }
+
+/* ---------- Loading ---------- */
+.adm-loading-orbit { border-color: rgba(129, 173, 234, 0.25); border-top-color: var(--mx-peach); box-shadow: 0 0 22px rgba(129, 173, 234, 0.3); }
+
+/* ---------- Small screens: rain stays, title and topbar text shrink ---------- */
+@media (max-width: 780px) {
+  .mx-topbar-title { display: none; }
+  .mx-territory { margin-bottom: 24px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mx-territory-title { width: 29ch; animation: none; }
+}

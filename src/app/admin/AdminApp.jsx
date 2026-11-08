@@ -1,6 +1,8 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import MatrixRain from './MatrixRain';
+import ForgotPassword from './ForgotPassword';
 
 const CATEGORIES = [
   ['frontend', 'Frontend'],
@@ -18,30 +20,137 @@ const EMPTY_PROJECT = {
   image: '',
 };
 const ICONS = {
-  dashboard: <><rect x="3" y="3" width="8" height="8" rx="2" /><rect x="13" y="3" width="8" height="5" rx="2" /><rect x="13" y="10" width="8" height="11" rx="2" /><rect x="3" y="13" width="8" height="8" rx="2" /></>,
-  messages: <><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z" /></>,
-  projects: <><rect x="3" y="4" width="18" height="16" rx="3" /><path d="M3 9h18M9 4v5" /></>,
-  blog: <><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /><path d="M8 7h8M8 11h8" /></>,
-  products: <><path d="m12 3 9 5-9 5-9-5 9-5z" /><path d="m3 12 9 5 9-5M3 16l9 5 9-5M12 13v8" /></>,
-  payments: <><rect x="2" y="5" width="20" height="14" rx="3" /><path d="M2 10h20M7 15h3" /></>,
-  sun: <><circle cx="12" cy="12" r="4" /><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" /></>,
+  dashboard: (
+    <>
+      <rect x="3" y="3" width="8" height="8" rx="2" />
+      <rect x="13" y="3" width="8" height="5" rx="2" />
+      <rect x="13" y="10" width="8" height="11" rx="2" />
+      <rect x="3" y="13" width="8" height="8" rx="2" />
+    </>
+  ),
+  messages: (
+    <>
+      <path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z" />
+    </>
+  ),
+  projects: (
+    <>
+      <rect x="3" y="4" width="18" height="16" rx="3" />
+      <path d="M3 9h18M9 4v5" />
+    </>
+  ),
+  blog: (
+    <>
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+      <path d="M8 7h8M8 11h8" />
+    </>
+  ),
+  products: (
+    <>
+      <path d="m12 3 9 5-9 5-9-5 9-5z" />
+      <path d="m3 12 9 5 9-5M3 16l9 5 9-5M12 13v8" />
+    </>
+  ),
+  payments: (
+    <>
+      <rect x="2" y="5" width="20" height="14" rx="3" />
+      <path d="M2 10h20M7 15h3" />
+    </>
+  ),
+  sun: (
+    <>
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" />
+    </>
+  ),
   moon: <path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13z" />,
-  logout: <><path d="M10 17l5-5-5-5M15 12H3" /><path d="M12 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6" /></>,
-  external: <><path d="M14 3h7v7M10 14 21 3" /><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /></>,
-  search: <><circle cx="11" cy="11" r="7" /><path d="m20 20-4-4" /></>,
-  refresh: <><path d="M20 7v5h-5M4 17v-5h5" /><path d="M5.6 9a7 7 0 0 1 11.5-2L20 12M4 12l2.9 5a7 7 0 0 0 11.5-2" /></>,
-  plus: <><path d="M12 5v14M5 12h14" /></>,
-  close: <><path d="m18 6-12 12M6 6l12 12" /></>,
-  trash: <><path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m4 4v6m6-6v6" /></>,
-  edit: <><path d="m15 5 4 4M4 20l4-.8L19 8a2.8 2.8 0 0 0-4-4L4 15l-.8 4.2z" /></>,
+  logout: (
+    <>
+      <path d="M10 17l5-5-5-5M15 12H3" />
+      <path d="M12 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6" />
+    </>
+  ),
+  external: (
+    <>
+      <path d="M14 3h7v7M10 14 21 3" />
+      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+    </>
+  ),
+  search: (
+    <>
+      <circle cx="11" cy="11" r="7" />
+      <path d="m20 20-4-4" />
+    </>
+  ),
+  refresh: (
+    <>
+      <path d="M20 7v5h-5M4 17v-5h5" />
+      <path d="M5.6 9a7 7 0 0 1 11.5-2L20 12M4 12l2.9 5a7 7 0 0 0 11.5-2" />
+    </>
+  ),
+  plus: (
+    <>
+      <path d="M12 5v14M5 12h14" />
+    </>
+  ),
+  close: (
+    <>
+      <path d="m18 6-12 12M6 6l12 12" />
+    </>
+  ),
+  trash: (
+    <>
+      <path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m4 4v6m6-6v6" />
+    </>
+  ),
+  edit: (
+    <>
+      <path d="m15 5 4 4M4 20l4-.8L19 8a2.8 2.8 0 0 0-4-4L4 15l-.8 4.2z" />
+    </>
+  ),
   check: <path d="m5 12 4 4L19 6" />,
-  arrow: <><path d="M5 12h14m-7-7 7 7-7 7" /></>,
-  upload: <><path d="M12 16V4m-5 5 5-5 5 5" /><path d="M4 16v4h16v-4" /></>,
-  link: <><path d="M10 13a5 5 0 0 0 7.1 0l3-3A5 5 0 0 0 13 2.9l-1.7 1.7" /><path d="M14 11a5 5 0 0 0-7.1 0l-3 3A5 5 0 0 0 11 21.1l1.7-1.7" /></>,
-  menu: <><path d="M4 6h16M4 12h16M4 18h16" /></>,
-  sparkle: <><path d="m12 3 1.9 5.8L20 11l-6.1 2.2L12 19l-2-5.8L4 11l6-2.2L12 3z" /><path d="m19 14 1 2.5 2 1-2 1L19 21l-1-2.5-2-1 2-1 1-2.5z" /></>,
-  eye: <><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" /><circle cx="12" cy="12" r="3" /></>,
-  eyeOff: <><path d="M17.9 17.9A10.9 10.9 0 0 1 12 19c-6.5 0-10-7-10-7a18 18 0 0 1 4-5" /><path d="M10 5.1A10.9 10.9 0 0 1 12 5c6.5 0 10 7 10 7a18 18 0 0 1-2.2 3.2M1 1l22 22" /><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2" /></>,
+  arrow: (
+    <>
+      <path d="M5 12h14m-7-7 7 7-7 7" />
+    </>
+  ),
+  upload: (
+    <>
+      <path d="M12 16V4m-5 5 5-5 5 5" />
+      <path d="M4 16v4h16v-4" />
+    </>
+  ),
+  link: (
+    <>
+      <path d="M10 13a5 5 0 0 0 7.1 0l3-3A5 5 0 0 0 13 2.9l-1.7 1.7" />
+      <path d="M14 11a5 5 0 0 0-7.1 0l-3 3A5 5 0 0 0 11 21.1l1.7-1.7" />
+    </>
+  ),
+  menu: (
+    <>
+      <path d="M4 6h16M4 12h16M4 18h16" />
+    </>
+  ),
+  sparkle: (
+    <>
+      <path d="m12 3 1.9 5.8L20 11l-6.1 2.2L12 19l-2-5.8L4 11l6-2.2L12 3z" />
+      <path d="m19 14 1 2.5 2 1-2 1L19 21l-1-2.5-2-1 2-1 1-2.5z" />
+    </>
+  ),
+  eye: (
+    <>
+      <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" />
+      <circle cx="12" cy="12" r="3" />
+    </>
+  ),
+  eyeOff: (
+    <>
+      <path d="M17.9 17.9A10.9 10.9 0 0 1 12 19c-6.5 0-10-7-10-7a18 18 0 0 1 4-5" />
+      <path d="M10 5.1A10.9 10.9 0 0 1 12 5c6.5 0 10 7 10 7a18 18 0 0 1-2.2 3.2M1 1l22 22" />
+      <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2" />
+    </>
+  ),
 };
 
 async function api(path, options = {}) {
@@ -126,10 +235,19 @@ function ThemeToggle({ theme, onToggle }) {
   );
 }
 
-function Login({ configured, dbReady, serverError, theme, onToggleTheme, onDone, onRetry }) {
+function Login({
+  configured,
+  dbReady,
+  serverError,
+  theme,
+  onToggleTheme,
+  onDone,
+  onRetry,
+}) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [mode, setMode] = useState('login');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
 
@@ -152,8 +270,13 @@ function Login({ configured, dbReady, serverError, theme, onToggleTheme, onDone,
 
   return (
     <main className={`adm-login-page adm-theme-${theme}`}>
+      <MatrixRain />
       <div className="adm-login-tools">
         <ThemeToggle theme={theme} onToggle={onToggleTheme} />
+      </div>
+      <div className="mx-territory">
+        <p className="mx-kicker">// ACCESS RESTRICTED</p>
+        <h1 className="mx-territory-title">THIS IS ADNAN ZEROS TERRITORY</h1>
       </div>
       <div className="adm-login-layout">
         <section className="adm-brand-panel">
@@ -167,9 +290,15 @@ function Login({ configured, dbReady, serverError, theme, onToggleTheme, onDone,
             workspace.
           </p>
           <ul className="adm-feature-list">
-            <li><Icon name="check" size={18} /> Keep your portfolio current</li>
-            <li><Icon name="check" size={18} /> Stay on top of new messages</li>
-            <li><Icon name="check" size={18} /> Make every detail feel like you</li>
+            <li>
+              <Icon name="check" size={18} /> Keep your portfolio current
+            </li>
+            <li>
+              <Icon name="check" size={18} /> Stay on top of new messages
+            </li>
+            <li>
+              <Icon name="check" size={18} /> Make every detail feel like you
+            </li>
           </ul>
           <div className="adm-brand-decoration" aria-hidden="true">
             <span />
@@ -177,73 +306,101 @@ function Login({ configured, dbReady, serverError, theme, onToggleTheme, onDone,
             <span />
           </div>
         </section>
-        <form className="adm-login-card" onSubmit={submit}>
-          <div className="adm-login-card-heading">
-            <div className="adm-login-logo"><Icon name="sparkle" size={23} /></div>
-            <div>
-              <p className="adm-eyebrow">WELCOME BACK</p>
-              <h2>Sign in</h2>
+        {mode === 'forgot' ? (
+          <ForgotPassword onBack={() => setMode('login')} onDone={onDone} />
+        ) : (
+          <form className="adm-login-card" onSubmit={submit}>
+            <div className="adm-login-card-heading">
+              <div className="adm-login-logo">
+                <Icon name="sparkle" size={23} />
+              </div>
+              <div>
+                <p className="adm-eyebrow">WELCOME BACK</p>
+                <h2>Sign in</h2>
+              </div>
             </div>
-          </div>
-          <p className="adm-muted adm-login-intro">
-            Use your server admin credentials to continue.
-          </p>
-          {configured === false && (
-            <p className="adm-warning">
-              ADMIN_PASSWORD is not set on the server.
+            <p className="adm-muted adm-login-intro">
+              Use your server admin credentials to continue.
             </p>
-          )}
-          {dbReady === false && (
-            <p className="adm-warning">
-              MONGODB_URI is not set. Login works, data will not.
-            </p>
-          )}
-          {serverError && (
-            <div className="adm-server-warning" role="alert">
-              <p>Could not check the admin session: {serverError}</p>
-              <button className="adm-text-button" type="button" onClick={onRetry}>Retry connection</button>
-            </div>
-          )}
-          <label className="adm-field">
-            <span>Username</span>
-            <input
-              value={username}
-              onChange={event => setUsername(event.target.value)}
-              autoComplete="username"
-              placeholder="Your username"
-              required
-            />
-          </label>
-          <label className="adm-field">
-            <span>Password</span>
-            <span className="adm-password-wrap">
+            {configured === false && (
+              <p className="adm-warning">
+                ADMIN_PASSWORD is not set on the server.
+              </p>
+            )}
+            {dbReady === false && (
+              <p className="adm-warning">
+                MONGODB_URI is not set. Login works, data will not.
+              </p>
+            )}
+            {serverError && (
+              <div className="adm-server-warning" role="alert">
+                <p>Could not check the admin session: {serverError}</p>
+                <button
+                  className="adm-text-button"
+                  type="button"
+                  onClick={onRetry}
+                >
+                  Retry connection
+                </button>
+              </div>
+            )}
+            <label className="adm-field">
+              <span>Username</span>
               <input
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={event => setPassword(event.target.value)}
-                autoComplete="current-password"
-                placeholder="Your password"
+                value={username}
+                onChange={event => setUsername(event.target.value)}
+                autoComplete="username"
+                placeholder="Your username"
                 required
               />
-              <button
-                className="adm-password-toggle"
-                type="button"
-                onClick={() => setShowPassword(value => !value)}
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
-              >
-                <Icon name={showPassword ? 'eyeOff' : 'eye'} size={18} />
-              </button>
-            </span>
-          </label>
-          {error && <p className="adm-form-error" role="alert">{error}</p>}
-          <button className="adm-button adm-button-primary adm-login-submit" disabled={busy}>
-            {busy ? 'Signing in…' : 'Continue'}
-            {!busy && <Icon name="arrow" size={18} />}
-          </button>
-          <a className="adm-back-link" href="/">← Back to portfolio</a>
-        </form>
+            </label>
+            <label className="adm-field">
+              <span>Password</span>
+              <span className="adm-password-wrap">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={event => setPassword(event.target.value)}
+                  autoComplete="current-password"
+                  placeholder="Your password"
+                  required
+                />
+                <button
+                  className="adm-password-toggle"
+                  type="button"
+                  onClick={() => setShowPassword(value => !value)}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  <Icon name={showPassword ? 'eyeOff' : 'eye'} size={18} />
+                </button>
+              </span>
+            </label>
+            <button
+              className="adm-text-button mx-forgot"
+              type="button"
+              onClick={() => setMode('forgot')}
+            >
+              Forgot password?
+            </button>
+            {error && (
+              <p className="adm-form-error" role="alert">
+                {error}
+              </p>
+            )}
+            <button
+              className="adm-button adm-button-primary adm-login-submit"
+              disabled={busy}
+            >
+              {busy ? 'Signing in…' : 'Continue'}
+              {!busy && <Icon name="arrow" size={18} />}
+            </button>
+            <a className="adm-back-link" href="/">
+              ← Back to portfolio
+            </a>
+          </form>
+        )}
       </div>
-      <p className="adm-login-footer">A little space to keep your work in motion.</p>
+      <p className="adm-login-footer">// authorized personnel only</p>
     </main>
   );
 }
@@ -252,7 +409,9 @@ function CountUp({ value }) {
   const [count, setCount] = useState(0);
   useEffect(() => {
     const target = Number(value) || 0;
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reduced = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
     if (reduced) {
       setCount(target);
       return;
@@ -279,12 +438,19 @@ function greeting() {
 
 function utcDays() {
   const today = new Date();
-  const start = Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate());
+  const start = Date.UTC(
+    today.getUTCFullYear(),
+    today.getUTCMonth(),
+    today.getUTCDate(),
+  );
   return Array.from({ length: 7 }, (_, index) => {
     const day = new Date(start - (6 - index) * 86400000);
     return {
       key: day.toISOString().slice(0, 10),
-      label: day.toLocaleDateString(undefined, { weekday: 'short', timeZone: 'UTC' }),
+      label: day.toLocaleDateString(undefined, {
+        weekday: 'short',
+        timeZone: 'UTC',
+      }),
     };
   });
 }
@@ -300,21 +466,46 @@ function Dashboard({ onOpenMessages }) {
       setError(loadError.message);
     }
   }, []);
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    load();
+  }, [load]);
 
   if (error) return <ErrorBox error={error} onRetry={load} />;
   if (!stats) return <Skeleton cards={5} />;
 
   const days = utcDays();
-  const maxMessages = Math.max(1, ...days.map(day => Number(stats.perDay?.[day.key] || 0)));
+  const maxMessages = Math.max(
+    1,
+    ...days.map(day => Number(stats.perDay?.[day.key] || 0)),
+  );
   const categories = stats.projects?.byCategory || {};
   const projectTotal = Number(stats.projects?.total || 0);
   const recent = Array.isArray(stats.recent) ? stats.recent : [];
   const cards = [
-    { label: 'Total messages', value: stats.messages?.total, icon: 'messages', tone: 'blue' },
-    { label: 'Unread messages', value: stats.messages?.unread, icon: 'sparkle', tone: 'peach' },
-    { label: 'Projects live', value: stats.projects?.total, icon: 'projects', tone: 'lavender' },
-    { label: 'This week', value: stats.messages?.week, icon: 'arrow', tone: 'green' },
+    {
+      label: 'Total messages',
+      value: stats.messages?.total,
+      icon: 'messages',
+      tone: 'blue',
+    },
+    {
+      label: 'Unread messages',
+      value: stats.messages?.unread,
+      icon: 'sparkle',
+      tone: 'peach',
+    },
+    {
+      label: 'Projects live',
+      value: stats.projects?.total,
+      icon: 'projects',
+      tone: 'lavender',
+    },
+    {
+      label: 'This week',
+      value: stats.messages?.week,
+      icon: 'arrow',
+      tone: 'green',
+    },
   ];
 
   return (
@@ -322,8 +513,12 @@ function Dashboard({ onOpenMessages }) {
       <section className="adm-welcome">
         <div>
           <p className="adm-eyebrow">YOUR SPACE, AT A GLANCE</p>
-          <h1>{greeting()}, Adnan <span aria-hidden="true">✦</span></h1>
-          <p className="adm-muted">Here&apos;s what&apos;s happening with your portfolio.</p>
+          <h1>
+            {greeting()}, Adnan <span aria-hidden="true">✦</span>
+          </h1>
+          <p className="adm-muted">
+            Here&apos;s what&apos;s happening with your portfolio.
+          </p>
         </div>
         <button className="adm-button adm-button-secondary" onClick={load}>
           <Icon name="refresh" size={17} /> Refresh
@@ -332,10 +527,17 @@ function Dashboard({ onOpenMessages }) {
 
       <section className="adm-stat-grid" aria-label="Portfolio statistics">
         {cards.map(card => (
-          <article className={`adm-stat-card adm-tone-${card.tone}`} key={card.label}>
-            <span className="adm-stat-icon"><Icon name={card.icon} size={19} /></span>
+          <article
+            className={`adm-stat-card adm-tone-${card.tone}`}
+            key={card.label}
+          >
+            <span className="adm-stat-icon">
+              <Icon name={card.icon} size={19} />
+            </span>
             <p>{card.label}</p>
-            <strong><CountUp value={card.value} /></strong>
+            <strong>
+              <CountUp value={card.value} />
+            </strong>
             <span className="adm-stat-caption">
               {card.label === 'This week' ? 'in the last 7 days' : 'all time'}
             </span>
@@ -346,17 +548,30 @@ function Dashboard({ onOpenMessages }) {
       <div className="adm-dashboard-grid">
         <section className="adm-panel adm-chart-panel">
           <div className="adm-section-heading">
-            <div><p className="adm-eyebrow">INBOX ACTIVITY</p><h2>Messages this week</h2></div>
-            <span className="adm-chart-total">{Number(stats.messages?.week || 0)} total</span>
+            <div>
+              <p className="adm-eyebrow">INBOX ACTIVITY</p>
+              <h2>Messages this week</h2>
+            </div>
+            <span className="adm-chart-total">
+              {Number(stats.messages?.week || 0)} total
+            </span>
           </div>
-          <div className="adm-chart" role="img" aria-label="Messages received each of the last seven days">
+          <div
+            className="adm-chart"
+            role="img"
+            aria-label="Messages received each of the last seven days"
+          >
             {days.map(day => {
               const value = Number(stats.perDay?.[day.key] || 0);
               return (
                 <div className="adm-chart-column" key={day.key}>
                   <span className="adm-chart-value">{value || ''}</span>
                   <div className="adm-chart-track">
-                    <span style={{ height: `${Math.max(7, (value / maxMessages) * 100)}%` }} />
+                    <span
+                      style={{
+                        height: `${Math.max(7, (value / maxMessages) * 100)}%`,
+                      }}
+                    />
                   </div>
                   <span className="adm-chart-label">{day.label}</span>
                 </div>
@@ -367,7 +582,10 @@ function Dashboard({ onOpenMessages }) {
 
         <section className="adm-panel adm-category-panel">
           <div className="adm-section-heading">
-            <div><p className="adm-eyebrow">YOUR SHOWCASE</p><h2>Projects by category</h2></div>
+            <div>
+              <p className="adm-eyebrow">YOUR SHOWCASE</p>
+              <h2>Projects by category</h2>
+            </div>
             <span className="adm-chart-total">{projectTotal} total</span>
           </div>
           <div className="adm-meter-list">
@@ -376,8 +594,13 @@ function Dashboard({ onOpenMessages }) {
               const percent = projectTotal ? (amount / projectTotal) * 100 : 0;
               return (
                 <div className="adm-meter" key={key}>
-                  <div><span>{label}</span><strong>{amount}</strong></div>
-                  <span className="adm-meter-track"><span style={{ width: `${percent}%` }} /></span>
+                  <div>
+                    <span>{label}</span>
+                    <strong>{amount}</strong>
+                  </div>
+                  <span className="adm-meter-track">
+                    <span style={{ width: `${percent}%` }} />
+                  </span>
                 </div>
               );
             })}
@@ -387,7 +610,10 @@ function Dashboard({ onOpenMessages }) {
 
       <section className="adm-panel adm-recent-panel">
         <div className="adm-section-heading">
-          <div><p className="adm-eyebrow">FRESH FROM YOUR INBOX</p><h2>Recent messages</h2></div>
+          <div>
+            <p className="adm-eyebrow">FRESH FROM YOUR INBOX</p>
+            <h2>Recent messages</h2>
+          </div>
           <button className="adm-text-button" onClick={onOpenMessages}>
             All messages <Icon name="arrow" size={16} />
           </button>
@@ -405,12 +631,16 @@ function Dashboard({ onOpenMessages }) {
                   <strong>{message.name || 'Anonymous'}</strong>
                   <span>{message.message}</span>
                 </span>
-                <span className="adm-recent-date">{timeAgo(message.createdAt)}</span>
+                <span className="adm-recent-date">
+                  {timeAgo(message.createdAt)}
+                </span>
                 {!message.read && <span className="adm-unread-dot" />}
               </button>
             ))}
           </div>
-        ) : <p className="adm-empty-inline">No messages to show yet.</p>}
+        ) : (
+          <p className="adm-empty-inline">No messages to show yet.</p>
+        )}
       </section>
 
       <section className="adm-soon-grid" aria-label="Coming soon">
@@ -420,8 +650,14 @@ function Dashboard({ onOpenMessages }) {
           ['payments', 'A smoother way to get paid', 'Payments'],
         ].map(([icon, description, title]) => (
           <article className="adm-soon-card" key={title}>
-            <span><Icon name={icon} size={19} /></span>
-            <div><p className="adm-eyebrow">COMING SOON</p><h3>{title}</h3><p>{description}</p></div>
+            <span>
+              <Icon name={icon} size={19} />
+            </span>
+            <div>
+              <p className="adm-eyebrow">COMING SOON</p>
+              <h3>{title}</h3>
+              <p>{description}</p>
+            </div>
           </article>
         ))}
       </section>
@@ -430,7 +666,15 @@ function Dashboard({ onOpenMessages }) {
 }
 
 function initials(name = '') {
-  return name.trim().split(/\s+/).slice(0, 2).map(part => part[0] || '').join('').toUpperCase() || '?';
+  return (
+    name
+      .trim()
+      .split(/\s+/)
+      .slice(0, 2)
+      .map(part => part[0] || '')
+      .join('')
+      .toUpperCase() || '?'
+  );
 }
 
 function timeAgo(value) {
@@ -462,7 +706,9 @@ function Messages({ selectedId, notify, requestConfirm, onUnreadChanged }) {
       setError(loadError.message);
     }
   }, []);
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    load();
+  }, [load]);
   useEffect(() => {
     if (selectedId && items && openedSelectedRef.current !== selectedId) {
       const message = items.find(item => item.id === selectedId);
@@ -480,7 +726,11 @@ function Messages({ selectedId, notify, requestConfirm, onUnreadChanged }) {
     }
     setExpanded(message.id);
     if (message.read) return;
-    setItems(current => current.map(item => item.id === message.id ? { ...item, read: true } : item));
+    setItems(current =>
+      current.map(item =>
+        item.id === message.id ? { ...item, read: true } : item,
+      ),
+    );
     try {
       await api('/api/admin/messages', {
         method: 'PATCH',
@@ -495,14 +745,19 @@ function Messages({ selectedId, notify, requestConfirm, onUnreadChanged }) {
 
   async function toggleRead(message) {
     const read = !message.read;
-    setItems(current => current.map(item => item.id === message.id ? { ...item, read } : item));
+    setItems(current =>
+      current.map(item => (item.id === message.id ? { ...item, read } : item)),
+    );
     try {
       await api('/api/admin/messages', {
         method: 'PATCH',
         body: JSON.stringify({ id: message.id, read }),
       });
       onUnreadChanged();
-      notify(read ? 'Message marked as read.' : 'Message marked as unread.', 'success');
+      notify(
+        read ? 'Message marked as read.' : 'Message marked as unread.',
+        'success',
+      );
     } catch (updateError) {
       notify(updateError.message, 'error');
       load();
@@ -527,7 +782,9 @@ function Messages({ selectedId, notify, requestConfirm, onUnreadChanged }) {
   async function importMessages() {
     setImporting(true);
     try {
-      const result = await api('/api/admin/messages/import', { method: 'POST' });
+      const result = await api('/api/admin/messages/import', {
+        method: 'POST',
+      });
       const imported = Number(result.imported || 0);
       const remaining = Number(result.remaining || 0);
       notify(
@@ -548,9 +805,17 @@ function Messages({ selectedId, notify, requestConfirm, onUnreadChanged }) {
   const filtered = useMemo(() => {
     const query = search.trim().toLowerCase();
     return (items || []).filter(message => {
-      const matchesFilter = filter === 'all' || (filter === 'unread' ? !message.read : message.read);
-      const matchesSearch = !query || [message.name, message.email, message.whatsapp, message.message]
-        .some(value => String(value || '').toLowerCase().includes(query));
+      const matchesFilter =
+        filter === 'all' ||
+        (filter === 'unread' ? !message.read : message.read);
+      const matchesSearch =
+        !query ||
+        [message.name, message.email, message.whatsapp, message.message].some(
+          value =>
+            String(value || '')
+              .toLowerCase()
+              .includes(query),
+        );
       return matchesFilter && matchesSearch;
     });
   }, [filter, items, search]);
@@ -561,10 +826,22 @@ function Messages({ selectedId, notify, requestConfirm, onUnreadChanged }) {
   return (
     <div className="adm-view-content">
       <div className="adm-page-heading">
-        <div><p className="adm-eyebrow">YOUR INBOX</p><h1>Messages</h1><p className="adm-muted">A little hello can turn into something great.</p></div>
+        <div>
+          <p className="adm-eyebrow">YOUR INBOX</p>
+          <h1>Messages</h1>
+          <p className="adm-muted">
+            A little hello can turn into something great.
+          </p>
+        </div>
         <div className="adm-toolbar">
-          <button className="adm-button adm-button-secondary" onClick={load}><Icon name="refresh" size={17} /> Refresh</button>
-          <button className="adm-button adm-button-primary" onClick={importMessages} disabled={importing}>
+          <button className="adm-button adm-button-secondary" onClick={load}>
+            <Icon name="refresh" size={17} /> Refresh
+          </button>
+          <button
+            className="adm-button adm-button-primary"
+            onClick={importMessages}
+            disabled={importing}
+          >
             {importing ? 'Importing…' : 'Import from Resend'}
           </button>
         </div>
@@ -572,7 +849,11 @@ function Messages({ selectedId, notify, requestConfirm, onUnreadChanged }) {
       <div className="adm-message-tools">
         <label className="adm-search">
           <Icon name="search" size={19} />
-          <input value={search} onChange={event => setSearch(event.target.value)} placeholder="Search messages…" />
+          <input
+            value={search}
+            onChange={event => setSearch(event.target.value)}
+            placeholder="Search messages…"
+          />
         </label>
         <div className="adm-segment" aria-label="Filter messages">
           {[
@@ -586,7 +867,8 @@ function Messages({ selectedId, notify, requestConfirm, onUnreadChanged }) {
               onClick={() => setFilter(value)}
               aria-pressed={filter === value}
             >
-              {label}<span>{count}</span>
+              {label}
+              <span>{count}</span>
             </button>
           ))}
         </div>
@@ -597,39 +879,91 @@ function Messages({ selectedId, notify, requestConfirm, onUnreadChanged }) {
             const isExpanded = expanded === message.id;
             const phone = String(message.whatsapp || '').replace(/\D/g, '');
             return (
-              <article className={`adm-message-card${!message.read ? ' adm-message-unread' : ''}${isExpanded ? ' adm-message-open' : ''}`} key={message.id}>
-                <button className="adm-message-summary" onClick={() => openMessage(message)} aria-expanded={isExpanded}>
+              <article
+                className={`adm-message-card${!message.read ? ' adm-message-unread' : ''}${isExpanded ? ' adm-message-open' : ''}`}
+                key={message.id}
+              >
+                <button
+                  className="adm-message-summary"
+                  onClick={() => openMessage(message)}
+                  aria-expanded={isExpanded}
+                >
                   <span className="adm-avatar">{initials(message.name)}</span>
                   <span className="adm-message-main">
-                    <span className="adm-message-title"><strong>{message.name || 'Anonymous'}</strong>{!message.read && <span className="adm-unread-pill">New</span>}</span>
-                    <span className="adm-message-preview">{message.message}</span>
+                    <span className="adm-message-title">
+                      <strong>{message.name || 'Anonymous'}</strong>
+                      {!message.read && (
+                        <span className="adm-unread-pill">New</span>
+                      )}
+                    </span>
+                    <span className="adm-message-preview">
+                      {message.message}
+                    </span>
                   </span>
-                  <span className="adm-message-date">{timeAgo(message.createdAt)}</span>
+                  <span className="adm-message-date">
+                    {timeAgo(message.createdAt)}
+                  </span>
                   {!message.read && <span className="adm-unread-dot" />}
-                  <span className={`adm-chevron${isExpanded ? ' adm-chevron-open' : ''}`} />
+                  <span
+                    className={`adm-chevron${isExpanded ? ' adm-chevron-open' : ''}`}
+                  />
                 </button>
                 {isExpanded && (
                   <div className="adm-message-details">
                     <div className="adm-contact-links">
-                      {message.email && <a href={`mailto:${message.email}`}>{message.email}</a>}
-                      {phone && <a href={`https://wa.me/${phone}`} target="_blank" rel="noopener noreferrer">WhatsApp · {message.whatsapp}</a>}
-                      <span>{new Date(message.createdAt).toLocaleString()}</span>
+                      {message.email && (
+                        <a href={`mailto:${message.email}`}>{message.email}</a>
+                      )}
+                      {phone && (
+                        <a
+                          href={`https://wa.me/${phone}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          WhatsApp · {message.whatsapp}
+                        </a>
+                      )}
+                      <span>
+                        {new Date(message.createdAt).toLocaleString()}
+                      </span>
                     </div>
                     <p className="adm-message-body">{message.message}</p>
                     <div className="adm-inline-actions">
-                      {message.email && <a className="adm-button adm-button-secondary" href={`mailto:${message.email}`}>Reply <Icon name="arrow" size={16} /></a>}
-                      {phone && <a className="adm-button adm-button-secondary" href={`https://wa.me/${phone}`} target="_blank" rel="noopener noreferrer">WhatsApp</a>}
-                      <button className="adm-button adm-button-secondary" onClick={() => toggleRead(message)}>
-                        <Icon name="check" size={16} /> Mark {message.read ? 'unread' : 'read'}
+                      {message.email && (
+                        <a
+                          className="adm-button adm-button-secondary"
+                          href={`mailto:${message.email}`}
+                        >
+                          Reply <Icon name="arrow" size={16} />
+                        </a>
+                      )}
+                      {phone && (
+                        <a
+                          className="adm-button adm-button-secondary"
+                          href={`https://wa.me/${phone}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          WhatsApp
+                        </a>
+                      )}
+                      <button
+                        className="adm-button adm-button-secondary"
+                        onClick={() => toggleRead(message)}
+                      >
+                        <Icon name="check" size={16} /> Mark{' '}
+                        {message.read ? 'unread' : 'read'}
                       </button>
                       <button
                         className="adm-button adm-button-danger"
-                        onClick={() => requestConfirm({
-                          title: 'Delete this message?',
-                          message: `This will permanently remove the message from ${message.name || 'this sender'}.`,
-                          confirmLabel: 'Delete message',
-                          onConfirm: () => remove(message),
-                        })}
+                        onClick={() =>
+                          requestConfirm({
+                            title: 'Delete this message?',
+                            message: `This will permanently remove the message from ${message.name || 'this sender'}.`,
+                            confirmLabel: 'Delete message',
+                            onConfirm: () => remove(message),
+                          })
+                        }
                       >
                         <Icon name="trash" size={16} /> Delete
                       </button>
@@ -642,9 +976,17 @@ function Messages({ selectedId, notify, requestConfirm, onUnreadChanged }) {
         </div>
       ) : (
         <div className="adm-empty-state">
-          <span className="adm-empty-icon"><Icon name="messages" size={24} /></span>
-          <h2>{items.length ? 'No matching messages' : 'Your inbox is quiet'}</h2>
-          <p>{items.length ? 'Try another search or filter.' : 'New notes from your contact form will show up here.'}</p>
+          <span className="adm-empty-icon">
+            <Icon name="messages" size={24} />
+          </span>
+          <h2>
+            {items.length ? 'No matching messages' : 'Your inbox is quiet'}
+          </h2>
+          <p>
+            {items.length
+              ? 'Try another search or filter.'
+              : 'New notes from your contact form will show up here.'}
+          </p>
         </div>
       )}
     </div>
@@ -661,9 +1003,12 @@ function useDialogKeyboard(dialogRef, onClose, active = true) {
     if (!dialog) return undefined;
 
     const previousFocus = document.activeElement;
-    const getFocusable = () => [...dialog.querySelectorAll(
-      'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
-    )].filter(element => element.getClientRects().length > 0);
+    const getFocusable = () =>
+      [
+        ...dialog.querySelectorAll(
+          'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
+      ].filter(element => element.getClientRects().length > 0);
     const focusable = getFocusable();
     (focusable[0] || dialog).focus();
 
@@ -683,10 +1028,18 @@ function useDialogKeyboard(dialogRef, onClose, active = true) {
       }
       const first = current[0];
       const last = current[current.length - 1];
-      if (event.shiftKey && (document.activeElement === first || !dialog.contains(document.activeElement))) {
+      if (
+        event.shiftKey &&
+        (document.activeElement === first ||
+          !dialog.contains(document.activeElement))
+      ) {
         event.preventDefault();
         last.focus();
-      } else if (!event.shiftKey && (document.activeElement === last || !dialog.contains(document.activeElement))) {
+      } else if (
+        !event.shiftKey &&
+        (document.activeElement === last ||
+          !dialog.contains(document.activeElement))
+      ) {
         event.preventDefault();
         first.focus();
       }
@@ -695,7 +1048,8 @@ function useDialogKeyboard(dialogRef, onClose, active = true) {
     document.addEventListener('keydown', handleKeyDown);
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-      if (previousFocus instanceof HTMLElement && previousFocus.isConnected) previousFocus.focus();
+      if (previousFocus instanceof HTMLElement && previousFocus.isConnected)
+        previousFocus.focus();
     };
   }, [active, dialogRef]);
 }
@@ -716,8 +1070,11 @@ async function compressImage(file) {
       context.drawImage(bitmap, 0, 0, width, height);
       for (const type of ['image/webp', 'image/jpeg']) {
         for (const quality of [0.82, 0.68, 0.54, 0.4]) {
-          const blob = await new Promise(resolve => canvas.toBlob(resolve, type, quality));
-          if (blob?.type === type && blob.size <= 1.4 * 1024 * 1024) return blob;
+          const blob = await new Promise(resolve =>
+            canvas.toBlob(resolve, type, quality),
+          );
+          if (blob?.type === type && blob.size <= 1.4 * 1024 * 1024)
+            return blob;
         }
       }
       width = Math.round(width * 0.78);
@@ -737,8 +1094,12 @@ function ProjectDrawer({ project, onClose, onSaved, notify }) {
   const inputRef = useRef(null);
   const dialogRef = useRef(null);
   useDialogKeyboard(dialogRef, onClose);
-  const set = key => event => setForm(current => ({ ...current, [key]: event.target.value }));
-  const tagList = form.tags.split(',').map(tag => tag.trim()).filter(Boolean);
+  const set = key => event =>
+    setForm(current => ({ ...current, [key]: event.target.value }));
+  const tagList = form.tags
+    .split(',')
+    .map(tag => tag.trim())
+    .filter(Boolean);
 
   async function upload(file) {
     if (!file) return;
@@ -756,9 +1117,17 @@ function ProjectDrawer({ project, onClose, onSaved, notify }) {
         body: blob,
       });
       let data = {};
-      try { data = await response.json(); } catch { data = {}; }
+      try {
+        data = await response.json();
+      } catch {
+        data = {};
+      }
       if (!response.ok) {
-        throw new Error(data.error ? `${data.error}${data.detail ? ` ${data.detail}` : ''}` : `Upload failed (${response.status}).`);
+        throw new Error(
+          data.error
+            ? `${data.error}${data.detail ? ` ${data.detail}` : ''}`
+            : `Upload failed (${response.status}).`,
+        );
       }
       if (!data.url) throw new Error('The server did not return an image URL.');
       setForm(current => ({ ...current, image: data.url }));
@@ -777,7 +1146,10 @@ function ProjectDrawer({ project, onClose, onSaved, notify }) {
     try {
       const body = JSON.stringify({ ...form, tags: form.tags });
       if (form.id) {
-        await api(`/api/admin/projects/${encodeURIComponent(form.id)}`, { method: 'PUT', body });
+        await api(`/api/admin/projects/${encodeURIComponent(form.id)}`, {
+          method: 'PUT',
+          body,
+        });
       } else {
         await api('/api/admin/projects', { method: 'POST', body });
       }
@@ -790,7 +1162,12 @@ function ProjectDrawer({ project, onClose, onSaved, notify }) {
   }
 
   return (
-    <div className="adm-drawer-backdrop" onMouseDown={event => { if (event.target === event.currentTarget) onClose(); }}>
+    <div
+      className="adm-drawer-backdrop"
+      onMouseDown={event => {
+        if (event.target === event.currentTarget) onClose();
+      }}
+    >
       <aside
         ref={dialogRef}
         className="adm-drawer"
@@ -800,13 +1177,37 @@ function ProjectDrawer({ project, onClose, onSaved, notify }) {
         tabIndex={-1}
       >
         <header className="adm-drawer-header">
-          <div><p className="adm-eyebrow">{form.id ? 'REFINE YOUR SHOWCASE' : 'ADD TO YOUR SHOWCASE'}</p><h2 id="adm-project-form-title">{form.id ? 'Edit project' : 'New project'}</h2></div>
-          <button className="adm-icon-button" type="button" onClick={onClose} aria-label="Close form"><Icon name="close" /></button>
+          <div>
+            <p className="adm-eyebrow">
+              {form.id ? 'REFINE YOUR SHOWCASE' : 'ADD TO YOUR SHOWCASE'}
+            </p>
+            <h2 id="adm-project-form-title">
+              {form.id ? 'Edit project' : 'New project'}
+            </h2>
+          </div>
+          <button
+            className="adm-icon-button"
+            type="button"
+            onClick={onClose}
+            aria-label="Close form"
+          >
+            <Icon name="close" />
+          </button>
         </header>
-        <form id="adm-project-form" className="adm-project-form" onSubmit={submit}>
+        <form
+          id="adm-project-form"
+          className="adm-project-form"
+          onSubmit={submit}
+        >
           <label className="adm-field">
             <span>Project name</span>
-            <input value={form.name} onChange={set('name')} maxLength={80} required placeholder="A name people will remember" />
+            <input
+              value={form.name}
+              onChange={set('name')}
+              maxLength={80}
+              required
+              placeholder="A name people will remember"
+            />
           </label>
           <fieldset className="adm-category-control">
             <legend>Category</legend>
@@ -815,25 +1216,68 @@ function ProjectDrawer({ project, onClose, onSaved, notify }) {
                 <button
                   type="button"
                   key={category}
-                  className={form.category === category ? 'adm-segment-active' : ''}
+                  className={
+                    form.category === category ? 'adm-segment-active' : ''
+                  }
                   onClick={() => setForm(current => ({ ...current, category }))}
                   aria-pressed={form.category === category}
-                >{label}</button>
+                >
+                  {label}
+                </button>
               ))}
             </div>
           </fieldset>
           <label className="adm-field">
-            <span className="adm-label-row">Description <span>{form.description.length}/400</span></span>
-            <textarea value={form.description} onChange={set('description')} maxLength={400} rows={4} required placeholder="What does it do, and what makes it special?" />
+            <span className="adm-label-row">
+              Description <span>{form.description.length}/400</span>
+            </span>
+            <textarea
+              value={form.description}
+              onChange={set('description')}
+              maxLength={400}
+              rows={4}
+              required
+              placeholder="What does it do, and what makes it special?"
+            />
           </label>
           <label className="adm-field">
-            <span>Tags <span className="adm-label-hint">Separate with commas</span></span>
-            <input value={form.tags} onChange={set('tags')} placeholder="React, Next.js, Design" />
+            <span>
+              Tags <span className="adm-label-hint">Separate with commas</span>
+            </span>
+            <input
+              value={form.tags}
+              onChange={set('tags')}
+              placeholder="React, Next.js, Design"
+            />
           </label>
-          {tagList.length > 0 && <div className="adm-tag-preview" aria-label="Tag preview">{tagList.map((tag, index) => <span className="adm-project-tag" key={`${tag}-${index}`}>{tag}</span>)}</div>}
+          {tagList.length > 0 && (
+            <div className="adm-tag-preview" aria-label="Tag preview">
+              {tagList.map((tag, index) => (
+                <span className="adm-project-tag" key={`${tag}-${index}`}>
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
           <div className="adm-form-two-col">
-            <label className="adm-field"><span>Live link</span><input type="url" value={form.url} onChange={set('url')} placeholder="https://…" /></label>
-            <label className="adm-field"><span>GitHub link</span><input type="url" value={form.repo} onChange={set('repo')} placeholder="https://github.com/…" /></label>
+            <label className="adm-field">
+              <span>Live link</span>
+              <input
+                type="url"
+                value={form.url}
+                onChange={set('url')}
+                placeholder="https://…"
+              />
+            </label>
+            <label className="adm-field">
+              <span>GitHub link</span>
+              <input
+                type="url"
+                value={form.repo}
+                onChange={set('repo')}
+                placeholder="https://github.com/…"
+              />
+            </label>
           </div>
           <div className="adm-field">
             <span>Cover image</span>
@@ -842,14 +1286,32 @@ function ProjectDrawer({ project, onClose, onSaved, notify }) {
               className="adm-hidden-input"
               type="file"
               accept="image/*"
-              onChange={event => { upload(event.target.files?.[0]); event.target.value = ''; }}
+              onChange={event => {
+                upload(event.target.files?.[0]);
+                event.target.value = '';
+              }}
             />
             {form.image ? (
               <div className="adm-image-preview">
                 <img src={form.image} alt="Project cover preview" />
                 <div className="adm-image-preview-actions">
-                  <button type="button" className="adm-button adm-button-secondary" onClick={() => inputRef.current?.click()} disabled={uploading}>Change image</button>
-                  <button type="button" className="adm-text-button adm-remove-image" onClick={() => setForm(current => ({ ...current, image: '' }))}>Remove image</button>
+                  <button
+                    type="button"
+                    className="adm-button adm-button-secondary"
+                    onClick={() => inputRef.current?.click()}
+                    disabled={uploading}
+                  >
+                    Change image
+                  </button>
+                  <button
+                    type="button"
+                    className="adm-text-button adm-remove-image"
+                    onClick={() =>
+                      setForm(current => ({ ...current, image: '' }))
+                    }
+                  >
+                    Remove image
+                  </button>
                 </div>
               </div>
             ) : (
@@ -858,20 +1320,43 @@ function ProjectDrawer({ project, onClose, onSaved, notify }) {
                 className="adm-dropzone"
                 onClick={() => inputRef.current?.click()}
                 onDragOver={event => event.preventDefault()}
-                onDrop={event => { event.preventDefault(); upload(event.dataTransfer.files?.[0]); }}
+                onDrop={event => {
+                  event.preventDefault();
+                  upload(event.dataTransfer.files?.[0]);
+                }}
                 disabled={uploading}
               >
-                <span className="adm-upload-icon"><Icon name="upload" size={22} /></span>
-                <strong>{uploading ? 'Preparing and uploading…' : 'Drop an image here or browse'}</strong>
+                <span className="adm-upload-icon">
+                  <Icon name="upload" size={22} />
+                </span>
+                <strong>
+                  {uploading
+                    ? 'Preparing and uploading…'
+                    : 'Drop an image here or browse'}
+                </strong>
                 <span>Compressed to WebP or JPEG · max 1.4 MB</span>
               </button>
             )}
           </div>
-          {error && <p className="adm-form-error" role="alert">{error}</p>}
+          {error && (
+            <p className="adm-form-error" role="alert">
+              {error}
+            </p>
+          )}
         </form>
         <footer className="adm-drawer-footer">
-          <button type="button" className="adm-button adm-button-secondary" onClick={onClose}>Cancel</button>
-          <button form="adm-project-form" className="adm-button adm-button-primary" disabled={busy || uploading}>
+          <button
+            type="button"
+            className="adm-button adm-button-secondary"
+            onClick={onClose}
+          >
+            Cancel
+          </button>
+          <button
+            form="adm-project-form"
+            className="adm-button adm-button-primary"
+            disabled={busy || uploading}
+          >
             {busy ? 'Saving…' : form.id ? 'Save changes' : 'Add project'}
           </button>
         </footer>
@@ -894,11 +1379,15 @@ function Projects({ notify, requestConfirm }) {
       setError(loadError.message);
     }
   }, []);
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    load();
+  }, [load]);
 
   async function remove(project) {
     try {
-      await api(`/api/admin/projects/${encodeURIComponent(project.id)}`, { method: 'DELETE' });
+      await api(`/api/admin/projects/${encodeURIComponent(project.id)}`, {
+        method: 'DELETE',
+      });
       setItems(current => current.filter(item => item.id !== project.id));
       notify('Project deleted.', 'success');
     } catch (deleteError) {
@@ -911,20 +1400,43 @@ function Projects({ notify, requestConfirm }) {
 
   const counts = Object.fromEntries([
     ['all', items.length],
-    ...CATEGORIES.map(([category]) => [category, items.filter(item => item.category === category).length]),
+    ...CATEGORIES.map(([category]) => [
+      category,
+      items.filter(item => item.category === category).length,
+    ]),
   ]);
-  const visible = filter === 'all' ? items : items.filter(project => project.category === filter);
+  const visible =
+    filter === 'all'
+      ? items
+      : items.filter(project => project.category === filter);
 
   return (
     <div className="adm-view-content">
       <div className="adm-page-heading">
-        <div><p className="adm-eyebrow">THE WORK YOU PUT INTO THE WORLD</p><h1>Projects</h1><p className="adm-muted">Your portfolio, shaped by the things you make.</p></div>
-        <button className="adm-button adm-button-primary" onClick={() => setEditing({ ...EMPTY_PROJECT })}><Icon name="plus" size={18} /> Add project</button>
+        <div>
+          <p className="adm-eyebrow">THE WORK YOU PUT INTO THE WORLD</p>
+          <h1>Projects</h1>
+          <p className="adm-muted">
+            Your portfolio, shaped by the things you make.
+          </p>
+        </div>
+        <button
+          className="adm-button adm-button-primary"
+          onClick={() => setEditing({ ...EMPTY_PROJECT })}
+        >
+          <Icon name="plus" size={18} /> Add project
+        </button>
       </div>
       <div className="adm-project-filters">
         {[['all', 'All projects'], ...CATEGORIES].map(([value, label]) => (
-          <button key={value} className={filter === value ? 'adm-filter-active' : ''} onClick={() => setFilter(value)} aria-pressed={filter === value}>
-            {label}<span>{counts[value] || 0}</span>
+          <button
+            key={value}
+            className={filter === value ? 'adm-filter-active' : ''}
+            onClick={() => setFilter(value)}
+            aria-pressed={filter === value}
+          >
+            {label}
+            <span>{counts[value] || 0}</span>
           </button>
         ))}
       </div>
@@ -933,30 +1445,88 @@ function Projects({ notify, requestConfirm }) {
           {visible.map(project => (
             <article className="adm-project-card" key={project.id}>
               <div className="adm-project-cover">
-                {project.image ? <img src={project.image} alt="" /> : <span>{initials(project.name)}</span>}
-                <span className={`adm-project-category adm-category-${project.category}`}>{CATEGORIES.find(([key]) => key === project.category)?.[1] || project.category}</span>
+                {project.image ? (
+                  <img src={project.image} alt="" />
+                ) : (
+                  <span>{initials(project.name)}</span>
+                )}
+                <span
+                  className={`adm-project-category adm-category-${project.category}`}
+                >
+                  {CATEGORIES.find(([key]) => key === project.category)?.[1] ||
+                    project.category}
+                </span>
               </div>
               <div className="adm-project-content">
                 <div className="adm-project-title-row">
                   <h2>{project.name}</h2>
                   <div className="adm-project-links">
-                    {project.url && <a className="adm-project-link" href={project.url} target="_blank" rel="noopener noreferrer" aria-label={`Open live link for ${project.name}`} title="Live link"><Icon name="external" size={17} /></a>}
-                    {project.repo && <a className="adm-project-link" href={project.repo} target="_blank" rel="noopener noreferrer" aria-label={`Open GitHub repository for ${project.name}`} title="GitHub link"><Icon name="external" size={17} /></a>}
+                    {project.url && (
+                      <a
+                        className="adm-project-link"
+                        href={project.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`Open live link for ${project.name}`}
+                        title="Live link"
+                      >
+                        <Icon name="external" size={17} />
+                      </a>
+                    )}
+                    {project.repo && (
+                      <a
+                        className="adm-project-link"
+                        href={project.repo}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`Open GitHub repository for ${project.name}`}
+                        title="GitHub link"
+                      >
+                        <Icon name="external" size={17} />
+                      </a>
+                    )}
                   </div>
                 </div>
                 <p className="adm-project-description">{project.description}</p>
                 <div className="adm-project-tags">
-                  {(project.tags || []).slice(0, 4).map((tag, index) => <span className="adm-project-tag" key={`${tag}-${index}`}>{tag}</span>)}
-                  {(project.tags || []).length > 4 && <span className="adm-project-tag">+{project.tags.length - 4}</span>}
+                  {(project.tags || []).slice(0, 4).map((tag, index) => (
+                    <span className="adm-project-tag" key={`${tag}-${index}`}>
+                      {tag}
+                    </span>
+                  ))}
+                  {(project.tags || []).length > 4 && (
+                    <span className="adm-project-tag">
+                      +{project.tags.length - 4}
+                    </span>
+                  )}
                 </div>
                 <div className="adm-project-actions">
-                  <button className="adm-button adm-button-secondary" onClick={() => setEditing({ ...EMPTY_PROJECT, ...project, tags: (project.tags || []).join(', ') })}><Icon name="edit" size={16} /> Edit</button>
-                  <button className="adm-icon-button adm-danger-icon" aria-label={`Delete ${project.name}`} onClick={() => requestConfirm({
-                    title: 'Delete this project?',
-                    message: `"${project.name}" will be removed from your portfolio.`,
-                    confirmLabel: 'Delete project',
-                    onConfirm: () => remove(project),
-                  })}><Icon name="trash" size={17} /></button>
+                  <button
+                    className="adm-button adm-button-secondary"
+                    onClick={() =>
+                      setEditing({
+                        ...EMPTY_PROJECT,
+                        ...project,
+                        tags: (project.tags || []).join(', '),
+                      })
+                    }
+                  >
+                    <Icon name="edit" size={16} /> Edit
+                  </button>
+                  <button
+                    className="adm-icon-button adm-danger-icon"
+                    aria-label={`Delete ${project.name}`}
+                    onClick={() =>
+                      requestConfirm({
+                        title: 'Delete this project?',
+                        message: `"${project.name}" will be removed from your portfolio.`,
+                        confirmLabel: 'Delete project',
+                        onConfirm: () => remove(project),
+                      })
+                    }
+                  >
+                    <Icon name="trash" size={17} />
+                  </button>
                 </div>
               </div>
             </article>
@@ -964,17 +1534,44 @@ function Projects({ notify, requestConfirm }) {
         </div>
       ) : (
         <div className="adm-empty-state">
-          <span className="adm-empty-icon"><Icon name="projects" size={24} /></span>
-          <h2>{items.length ? 'No projects in this category' : 'Your next project starts here'}</h2>
-          <p>{items.length ? 'Try another category filter.' : 'Add a project to give your portfolio a fresh update.'}</p>
-          {!items.length && <button className="adm-button adm-button-primary" onClick={() => setEditing({ ...EMPTY_PROJECT })}><Icon name="plus" size={18} /> Add your first project</button>}
+          <span className="adm-empty-icon">
+            <Icon name="projects" size={24} />
+          </span>
+          <h2>
+            {items.length
+              ? 'No projects in this category'
+              : 'Your next project starts here'}
+          </h2>
+          <p>
+            {items.length
+              ? 'Try another category filter.'
+              : 'Add a project to give your portfolio a fresh update.'}
+          </p>
+          {!items.length && (
+            <button
+              className="adm-button adm-button-primary"
+              onClick={() => setEditing({ ...EMPTY_PROJECT })}
+            >
+              <Icon name="plus" size={18} /> Add your first project
+            </button>
+          )}
         </div>
       )}
-      {editing && <ProjectDrawer project={editing} onClose={() => setEditing(null)} notify={notify} onSaved={() => {
-        setEditing(null);
-        notify(editing.id ? 'Project updated.' : 'Project added.', 'success');
-        load();
-      }} />}
+      {editing && (
+        <ProjectDrawer
+          project={editing}
+          onClose={() => setEditing(null)}
+          notify={notify}
+          onSaved={() => {
+            setEditing(null);
+            notify(
+              editing.id ? 'Project updated.' : 'Project added.',
+              'success',
+            );
+            load();
+          }}
+        />
+      )}
     </div>
   );
 }
@@ -994,7 +1591,12 @@ function ConfirmModal({ confirmation, onClose }) {
     }
   }
   return (
-    <div className="adm-modal-backdrop" onMouseDown={event => { if (event.target === event.currentTarget) onClose(); }}>
+    <div
+      className="adm-modal-backdrop"
+      onMouseDown={event => {
+        if (event.target === event.currentTarget) onClose();
+      }}
+    >
       <section
         ref={dialogRef}
         className="adm-confirm-modal"
@@ -1003,12 +1605,26 @@ function ConfirmModal({ confirmation, onClose }) {
         aria-labelledby="adm-confirm-title"
         tabIndex={-1}
       >
-        <span className="adm-confirm-icon"><Icon name="trash" size={21} /></span>
+        <span className="adm-confirm-icon">
+          <Icon name="trash" size={21} />
+        </span>
         <h2 id="adm-confirm-title">{confirmation.title}</h2>
         <p>{confirmation.message}</p>
         <div className="adm-modal-actions">
-          <button className="adm-button adm-button-secondary" onClick={onClose} disabled={busy}>Cancel</button>
-          <button className="adm-button adm-button-danger" onClick={confirm} disabled={busy}>{busy ? 'Working…' : confirmation.confirmLabel}</button>
+          <button
+            className="adm-button adm-button-secondary"
+            onClick={onClose}
+            disabled={busy}
+          >
+            Cancel
+          </button>
+          <button
+            className="adm-button adm-button-danger"
+            onClick={confirm}
+            disabled={busy}
+          >
+            {busy ? 'Working…' : confirmation.confirmLabel}
+          </button>
         </div>
       </section>
     </div>
@@ -1018,25 +1634,46 @@ function ConfirmModal({ confirmation, onClose }) {
 function Toast({ toast, onDismiss }) {
   if (!toast) return null;
   return (
-    <div className={`adm-toast adm-toast-${toast.type}`} role={toast.type === 'error' ? 'alert' : 'status'}>
+    <div
+      className={`adm-toast adm-toast-${toast.type}`}
+      role={toast.type === 'error' ? 'alert' : 'status'}
+    >
       <Icon name={toast.type === 'error' ? 'close' : 'check'} size={18} />
       <span>{toast.message}</span>
-      <button className="adm-toast-close" onClick={onDismiss} aria-label="Dismiss notification"><Icon name="close" size={16} /></button>
+      <button
+        className="adm-toast-close"
+        onClick={onDismiss}
+        aria-label="Dismiss notification"
+      >
+        <Icon name="close" size={16} />
+      </button>
     </div>
   );
 }
 
 function LoadingScreen() {
   return (
-    <main className="adm-loading-screen" role="status" aria-label="Checking admin session">
-      <span className="adm-loading-orbit"><img src="/favicon.svg" alt="" /></span>
+    <main
+      className="adm-loading-screen"
+      role="status"
+      aria-label="Checking admin session"
+    >
+      <span className="adm-loading-orbit">
+        <img src="/favicon.svg" alt="" />
+      </span>
       <p>Opening your workspace…</p>
     </main>
   );
 }
 
 export default function AdminApp() {
-  const [auth, setAuth] = useState({ status: 'loading', authed: false, configured: false, dbReady: false, error: '' });
+  const [auth, setAuth] = useState({
+    status: 'loading',
+    authed: false,
+    configured: false,
+    dbReady: false,
+    error: '',
+  });
   const [tab, setTab] = useState('dashboard');
   const [theme, setTheme] = useState('light');
   const [selectedMessage, setSelectedMessage] = useState(null);
@@ -1067,18 +1704,25 @@ export default function AdminApp() {
     }
   }, []);
 
-  useEffect(() => { checkSession(); }, [checkSession]);
+  useEffect(() => {
+    checkSession();
+  }, [checkSession]);
   useEffect(() => {
     try {
       const saved = window.localStorage.getItem('adm-theme');
       if (saved === 'light' || saved === 'dark') setTheme(saved);
-      else if (window.matchMedia('(prefers-color-scheme: dark)').matches) setTheme('dark');
+      else if (window.matchMedia('(prefers-color-scheme: dark)').matches)
+        setTheme('dark');
     } catch {
       setTheme('light');
     }
   }, []);
   useEffect(() => {
-    try { window.localStorage.setItem('adm-theme', theme); } catch { /* Storage may be disabled. */ }
+    try {
+      window.localStorage.setItem('adm-theme', theme);
+    } catch {
+      /* Storage may be disabled. */
+    }
   }, [theme]);
   useEffect(() => {
     const fromHash = window.location.hash.slice(1);
@@ -1094,14 +1738,17 @@ export default function AdminApp() {
 
   function navigate(nextTab) {
     setTab(nextTab);
-    if (window.location.hash !== `#${nextTab}`) window.history.replaceState(null, '', `#${nextTab}`);
+    if (window.location.hash !== `#${nextTab}`)
+      window.history.replaceState(null, '', `#${nextTab}`);
   }
   const notify = useCallback((message, type = 'success', duration = 3600) => {
     window.clearTimeout(toastTimer.current);
     setToast({ message, type });
     toastTimer.current = window.setTimeout(() => setToast(null), duration);
   }, []);
-  function requestConfirm(request) { setConfirmation(request); }
+  function requestConfirm(request) {
+    setConfirmation(request);
+  }
   const refreshUnread = useCallback(async () => {
     try {
       const data = await api('/api/admin/stats');
@@ -1126,7 +1773,11 @@ export default function AdminApp() {
   function completeLogin() {
     setTab('dashboard');
     setAuth(current => ({ ...current, authed: true }));
-    window.history.replaceState(null, '', window.location.pathname + window.location.search);
+    window.history.replaceState(
+      null,
+      '',
+      window.location.pathname + window.location.search,
+    );
   }
 
   if (auth.status === 'loading') return <LoadingScreen />;
@@ -1137,7 +1788,9 @@ export default function AdminApp() {
         dbReady={auth.dbReady}
         serverError={auth.status === 'error' ? auth.error : ''}
         theme={theme}
-        onToggleTheme={() => setTheme(value => value === 'dark' ? 'light' : 'dark')}
+        onToggleTheme={() =>
+          setTheme(value => (value === 'dark' ? 'light' : 'dark'))
+        }
         onDone={completeLogin}
         onRetry={checkSession}
       />
@@ -1146,10 +1799,13 @@ export default function AdminApp() {
 
   return (
     <main className={`adm-workspace adm-theme-${theme}`}>
+      <MatrixRain dim />
       <aside className="adm-sidebar">
         <a className="adm-sidebar-brand" href="/" aria-label="adnanzeros home">
           <img src="/favicon.svg" alt="" width="34" height="34" />
-          <span>adnanzeros<small>STUDIO</small></span>
+          <span>
+            adnanzeros<small>STUDIO</small>
+          </span>
         </a>
         <p className="adm-nav-label">WORKSPACE</p>
         <nav className="adm-main-nav" aria-label="Admin sections">
@@ -1158,54 +1814,146 @@ export default function AdminApp() {
             ['messages', 'Messages'],
             ['projects', 'Projects'],
           ].map(([value, label]) => (
-            <button key={value} className={`adm-nav-item${tab === value ? ' adm-nav-active' : ''}`} onClick={() => navigate(value)}>
-              <Icon name={value} size={19} /><span>{label}</span>
+            <button
+              key={value}
+              className={`adm-nav-item${tab === value ? ' adm-nav-active' : ''}`}
+              onClick={() => navigate(value)}
+            >
+              <Icon name={value} size={19} />
+              <span>{label}</span>
               {value === 'messages' && <UnreadBadge count={unreadCount} />}
             </button>
           ))}
         </nav>
         <p className="adm-nav-label adm-nav-label-later">IN THE WORKS</p>
         <div className="adm-main-nav">
-          {[['blog', 'Blog'], ['products', 'Products'], ['payments', 'Payments']].map(([icon, label]) => (
-            <span className="adm-nav-item adm-nav-disabled" key={label} aria-disabled="true">
-              <Icon name={icon} size={19} /><span>{label}</span><small>SOON</small>
+          {[
+            ['blog', 'Blog'],
+            ['products', 'Products'],
+            ['payments', 'Payments'],
+          ].map(([icon, label]) => (
+            <span
+              className="adm-nav-item adm-nav-disabled"
+              key={label}
+              aria-disabled="true"
+            >
+              <Icon name={icon} size={19} />
+              <span>{label}</span>
+              <small>SOON</small>
             </span>
           ))}
         </div>
         <div className="adm-sidebar-bottom">
-          <a className="adm-nav-item" href="/" target="_blank" rel="noopener noreferrer"><Icon name="external" size={19} /><span>View site</span></a>
-          <button className="adm-nav-item" onClick={logout}><Icon name="logout" size={19} /><span>Log out</span></button>
-          <div className="adm-sidebar-profile"><span className="adm-avatar">AZ</span><span><strong>Adnan Sami</strong><small>Portfolio owner</small></span><ThemeToggle theme={theme} onToggle={() => setTheme(value => value === 'dark' ? 'light' : 'dark')} /></div>
+          <a
+            className="adm-nav-item"
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Icon name="external" size={19} />
+            <span>View site</span>
+          </a>
+          <button className="adm-nav-item" onClick={logout}>
+            <Icon name="logout" size={19} />
+            <span>Log out</span>
+          </button>
+          <div className="adm-sidebar-profile">
+            <span className="adm-avatar">AZ</span>
+            <span>
+              <strong>Adnan Sami</strong>
+              <small>Portfolio owner</small>
+            </span>
+            <ThemeToggle
+              theme={theme}
+              onToggle={() =>
+                setTheme(value => (value === 'dark' ? 'light' : 'dark'))
+              }
+            />
+          </div>
         </div>
       </aside>
 
       <section className="adm-main-area">
         <header className="adm-topbar">
-          <div className="adm-mobile-brand"><img src="/favicon.svg" alt="" width="30" height="30" /><strong>adnanzeros</strong></div>
-          <div className="adm-breadcrumb"><span>Workspace</span><span>/</span><strong>{tab[0].toUpperCase() + tab.slice(1)}</strong></div>
+          <div className="adm-mobile-brand">
+            <img src="/favicon.svg" alt="" width="30" height="30" />
+            <strong>adnanzeros</strong>
+          </div>
+          <div className="adm-breadcrumb">
+            <span>Workspace</span>
+            <span>/</span>
+            <strong>{tab[0].toUpperCase() + tab.slice(1)}</strong>
+          </div>
+          <div className="mx-topbar-title">THIS IS ADNAN ZEROS TERRITORY</div>
           <div className="adm-topbar-actions">
-            <ThemeToggle theme={theme} onToggle={() => setTheme(value => value === 'dark' ? 'light' : 'dark')} />
-            <a className="adm-icon-button" href="/" target="_blank" rel="noopener noreferrer" aria-label="View site"><Icon name="external" size={19} /></a>
-            <button className="adm-icon-button adm-mobile-logout" onClick={logout} aria-label="Log out"><Icon name="logout" size={19} /></button>
+            <ThemeToggle
+              theme={theme}
+              onToggle={() =>
+                setTheme(value => (value === 'dark' ? 'light' : 'dark'))
+              }
+            />
+            <a
+              className="adm-icon-button"
+              href="/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="View site"
+            >
+              <Icon name="external" size={19} />
+            </a>
+            <button
+              className="adm-icon-button adm-mobile-logout"
+              onClick={logout}
+              aria-label="Log out"
+            >
+              <Icon name="logout" size={19} />
+            </button>
           </div>
         </header>
         <div className="adm-content-area">
           {tab === 'dashboard' && (
-            <Dashboard onOpenMessages={id => { setSelectedMessage(id || null); navigate('messages'); }} />
+            <Dashboard
+              onOpenMessages={id => {
+                setSelectedMessage(id || null);
+                navigate('messages');
+              }}
+            />
           )}
-          {tab === 'messages' && <Messages key={selectedMessage || 'messages'} selectedId={selectedMessage} notify={notify} requestConfirm={requestConfirm} onUnreadChanged={refreshUnread} />}
-          {tab === 'projects' && <Projects notify={notify} requestConfirm={requestConfirm} />}
+          {tab === 'messages' && (
+            <Messages
+              key={selectedMessage || 'messages'}
+              selectedId={selectedMessage}
+              notify={notify}
+              requestConfirm={requestConfirm}
+              onUnreadChanged={refreshUnread}
+            />
+          )}
+          {tab === 'projects' && (
+            <Projects notify={notify} requestConfirm={requestConfirm} />
+          )}
         </div>
         <nav className="adm-mobile-tabs" aria-label="Admin sections">
           {TABS.map(value => (
-            <button key={value} className={tab === value ? 'adm-mobile-tab-active' : ''} onClick={() => navigate(value)}>
-              <span className="adm-mobile-tab-icon"><Icon name={value} size={20} />{value === 'messages' && <UnreadBadge count={unreadCount} compact />}</span>
+            <button
+              key={value}
+              className={tab === value ? 'adm-mobile-tab-active' : ''}
+              onClick={() => navigate(value)}
+            >
+              <span className="adm-mobile-tab-icon">
+                <Icon name={value} size={20} />
+                {value === 'messages' && (
+                  <UnreadBadge count={unreadCount} compact />
+                )}
+              </span>
               <span>{value[0].toUpperCase() + value.slice(1)}</span>
             </button>
           ))}
         </nav>
       </section>
-      <ConfirmModal confirmation={confirmation} onClose={() => setConfirmation(null)} />
+      <ConfirmModal
+        confirmation={confirmation}
+        onClose={() => setConfirmation(null)}
+      />
       <Toast toast={toast} onDismiss={() => setToast(null)} />
     </main>
   );
@@ -1213,5 +1961,9 @@ export default function AdminApp() {
 
 function UnreadBadge({ count, compact = false }) {
   if (!count) return null;
-  return <span className={compact ? 'adm-mobile-unread-badge' : 'adm-unread-badge'}>{count > 99 ? '99+' : count}</span>;
+  return (
+    <span className={compact ? 'adm-mobile-unread-badge' : 'adm-unread-badge'}>
+      {count > 99 ? '99+' : count}
+    </span>
+  );
 }
