@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
+import { useToast } from '../components/Toast';
 
 const FILE_NAME = 'Adnan-Sami-CV';
 
@@ -128,17 +129,8 @@ function BtnIcon({ name }) {
 export default function CvPageClient() {
   const fitRef = useRef(null);
   const sheetRef = useRef(null);
-  const toastTimerRef = useRef(null);
+  const toast = useToast();
   const [downloading, setDownloading] = useState(false);
-  const [note, setNote] = useState('');
-  const [showToast, setShowToast] = useState(false);
-
-  useEffect(
-    () => () => {
-      window.clearTimeout(toastTimerRef.current);
-    },
-    [],
-  );
 
   useEffect(() => {
     const fit = fitRef.current;
@@ -174,10 +166,16 @@ export default function CvPageClient() {
   }, []);
 
   async function downloadCv() {
+    if (downloading) return;
     setDownloading(true);
-    setNote('');
+    const toastId = toast.loading('Preparing your CV…', {
+      description: 'Creating the PDF, this can take a few seconds.',
+    });
     try {
-      const response = await fetch('/api/cv', { cache: 'no-store' });
+      const response = await fetch('/api/cv', {
+        cache: 'no-store',
+        signal: AbortSignal.timeout(60000),
+      });
       const type = response.headers.get('content-type') || '';
       if (!response.ok || !type.includes('pdf')) {
         throw new Error('PDF download is unavailable.');
@@ -190,17 +188,16 @@ export default function CvPageClient() {
       anchor.click();
       anchor.remove();
       window.setTimeout(() => URL.revokeObjectURL(url), 5000);
-      // Browsers can't report when the file is saved; this confirms handoff to the download flow.
-      window.clearTimeout(toastTimerRef.current);
-      setShowToast(true);
-      toastTimerRef.current = window.setTimeout(() => {
-        setShowToast(false);
-        toastTimerRef.current = null;
-      }, 3500);
+      toast.success('CV downloaded', {
+        id: toastId,
+        description: `${FILE_NAME}.pdf is saved to your downloads.`,
+      });
     } catch {
-      setNote(
-        'Direct download is not available right now. In the print window choose "Save as PDF".',
-      );
+      toast.info('Direct download is not available', {
+        id: toastId,
+        description: 'In the print window choose "Save as PDF".',
+        duration: 7000,
+      });
       window.print();
     } finally {
       setDownloading(false);
@@ -379,51 +376,6 @@ export default function CvPageClient() {
             <span>Print</span>
           </button>
         </div>
-        <p className="note ui" role="status" aria-live="polite">
-          {note}
-        </p>
-        {showToast && (
-          <div className="cv-toast ui" role="status" aria-live="polite">
-            <span className="cv-toast-check" aria-hidden="true">
-              <svg
-                width="15"
-                height="15"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="m5 12 4 4L19 6" />
-              </svg>
-            </span>
-            <span>CV downloaded successfully</span>
-            <button
-              className="cv-toast-close"
-              type="button"
-              aria-label="Dismiss notification"
-              onClick={() => {
-                window.clearTimeout(toastTimerRef.current);
-                toastTimerRef.current = null;
-                setShowToast(false);
-              }}
-            >
-              <svg
-                width="15"
-                height="15"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                aria-hidden="true"
-              >
-                <path d="m18 6-12 12M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-        )}
       </main>
 
       <svg

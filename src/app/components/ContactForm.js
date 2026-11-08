@@ -1,25 +1,28 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import countries from "../../lib/countries";
+import { useEffect, useMemo, useRef, useState } from 'react';
+import countries from '../../lib/countries';
+import { useToast } from './Toast';
 
 const aliases = {
-  GB: "uk england britain",
-  US: "usa america",
-  AE: "uae emirates",
-  KR: "korea",
-  KP: "korea",
-  CZ: "czech",
-  CD: "congo",
-  CG: "congo",
+  GB: 'uk england britain',
+  US: 'usa america',
+  AE: 'uae emirates',
+  KR: 'korea',
+  KP: 'korea',
+  CZ: 'czech',
+  CD: 'congo',
+  CG: 'congo',
 };
 
 function searchScore(country, query) {
   const [name, dial, iso] = country;
   if (!query) return 0;
   if (/^\d+$/.test(query)) return dial.startsWith(query) ? 0 : 9;
-  const keywords = `${name} ${iso} +${dial} ${aliases[iso] || ""}`.toLowerCase();
-  if (iso.toLowerCase() === query || keywords.split(" ").includes(query)) return 0;
+  const keywords =
+    `${name} ${iso} +${dial} ${aliases[iso] || ''}`.toLowerCase();
+  if (iso.toLowerCase() === query || keywords.split(' ').includes(query))
+    return 0;
   if (name.toLowerCase().startsWith(query)) return 1;
   return keywords.includes(query) ? 2 : 9;
 }
@@ -27,23 +30,17 @@ function searchScore(country, query) {
 export default function ContactForm() {
   const [selected, setSelected] = useState(countries[0]);
   const [open, setOpen] = useState(false);
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState('');
   const [activeIndex, setActiveIndex] = useState(-1);
-  const [status, setStatus] = useState({ message: "", kind: "" });
-  const [toast, setToast] = useState(null);
+  const [status, setStatus] = useState({ message: '', kind: '' });
+  const toast = useToast();
   const [sending, setSending] = useState(false);
   const pickerRef = useRef(null);
   const searchRef = useRef(null);
   const phoneRef = useRef(null);
-  const toastTimerRef = useRef(null);
-
-  useEffect(
-    () => () => window.clearTimeout(toastTimerRef.current),
-    [],
-  );
 
   const visibleCountries = useMemo(() => {
-    const normalized = query.trim().toLowerCase().replace(/^\+/, "");
+    const normalized = query.trim().toLowerCase().replace(/^\+/, '');
     return countries
       .map((country, index) => ({
         country,
@@ -71,31 +68,22 @@ export default function ContactForm() {
     function closeOutside(event) {
       if (!pickerRef.current?.contains(event.target)) setOpen(false);
     }
-    document.addEventListener("pointerdown", closeOutside);
-    return () => document.removeEventListener("pointerdown", closeOutside);
+    document.addEventListener('pointerdown', closeOutside);
+    return () => document.removeEventListener('pointerdown', closeOutside);
   }, [open, selected, visibleCountries]);
 
   function chooseCountry(country) {
     setSelected(country);
     setOpen(false);
-    setQuery("");
+    setQuery('');
     phoneRef.current?.focus({ preventScroll: true });
   }
 
-  function notify(message, kind) {
-    window.clearTimeout(toastTimerRef.current);
-    setToast({ message, kind });
-    toastTimerRef.current = window.setTimeout(() => {
-      setToast(null);
-      toastTimerRef.current = null;
-    }, 4500);
-  }
-
   function handleSearchKeyDown(event) {
-    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
       event.preventDefault();
       if (!visibleCountries.length) return;
-      const direction = event.key === "ArrowDown" ? 1 : -1;
+      const direction = event.key === 'ArrowDown' ? 1 : -1;
       const next =
         (activeIndex + direction + visibleCountries.length) %
         visibleCountries.length;
@@ -103,15 +91,15 @@ export default function ContactForm() {
       requestAnimationFrame(() => {
         pickerRef.current
           ?.querySelector(`#country-${visibleCountries[next][2]}`)
-          ?.scrollIntoView({ block: "nearest" });
+          ?.scrollIntoView({ block: 'nearest' });
       });
-    } else if (event.key === "Enter") {
+    } else if (event.key === 'Enter') {
       event.preventDefault();
       const country = visibleCountries[activeIndex < 0 ? 0 : activeIndex];
       if (country) chooseCountry(country);
-    } else if (event.key === "Escape") {
+    } else if (event.key === 'Escape') {
       setOpen(false);
-      setQuery("");
+      setQuery('');
     }
   }
 
@@ -119,40 +107,41 @@ export default function ContactForm() {
     event.preventDefault();
     const form = event.currentTarget;
     const values = Object.fromEntries(new FormData(form));
-    const digits = String(values.phone || "")
-      .replace(/\D/g, "")
-      .replace(/^0+/, "");
+    const digits = String(values.phone || '')
+      .replace(/\D/g, '')
+      .replace(/^0+/, '');
     if (!String(values.name).trim()) {
-      const message = "Please enter your name.";
-      setStatus({ message, kind: "err" });
-      notify(message, "error");
+      const message = 'Please enter your name.';
+      setStatus({ message, kind: 'err' });
+      toast.error(message);
       return;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
-      const message = "Please enter a valid email.";
-      setStatus({ message, kind: "err" });
-      notify(message, "error");
+      const message = 'Please enter a valid email.';
+      setStatus({ message, kind: 'err' });
+      toast.error(message);
       return;
     }
     if (digits.length < 6 || selected[1].length + digits.length > 15) {
-      const message = "Please enter a valid WhatsApp number.";
-      setStatus({ message, kind: "err" });
-      notify(message, "error");
+      const message = 'Please enter a valid WhatsApp number.';
+      setStatus({ message, kind: 'err' });
+      toast.error(message);
       return;
     }
     if (String(values.message).trim().length < 5) {
-      const message = "Please write a short message.";
-      setStatus({ message, kind: "err" });
-      notify(message, "error");
+      const message = 'Please write a short message.';
+      setStatus({ message, kind: 'err' });
+      toast.error(message);
       return;
     }
 
     setSending(true);
-    setStatus({ message: "Sending…", kind: "" });
+    setStatus({ message: '', kind: '' });
+    const loadingId = toast.loading('Sending your message…');
     try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...values,
           dialCode: selected[1],
@@ -168,23 +157,22 @@ export default function ContactForm() {
       if (!response.ok)
         throw new Error(
           result.error ||
-            "The message server is unavailable. Please try again in a moment.",
+            'The message server is unavailable. Please try again in a moment.',
         );
-      setStatus({ message: "", kind: "" });
       form.reset();
-      notify("Message sent. I will reply soon.", "success");
+      toast.success('Message sent', {
+        id: loadingId,
+        description: 'Thank you! I will reply to you soon.',
+      });
     } catch (error) {
       const message =
         error instanceof TypeError
           ? "I couldn't reach the message server. Please try again in a moment."
           : error instanceof Error
             ? error.message
-            : "Could not send. Try again later.";
-      setStatus({
-        message,
-        kind: "err",
-      });
-      notify(message, "error");
+            : 'Could not send. Try again later.';
+      setStatus({ message, kind: 'err' });
+      toast.error('Message not sent', { id: loadingId, description: message });
     } finally {
       setSending(false);
     }
@@ -193,7 +181,13 @@ export default function ContactForm() {
   return (
     <section id="contact" className="wrap">
       <h2>Send me a message</h2>
-      <form className="form" method="post" action="#contact" noValidate onSubmit={submit}>
+      <form
+        className="form"
+        method="post"
+        action="#contact"
+        noValidate
+        onSubmit={submit}
+      >
         <input
           name="website"
           className="hp"
@@ -227,7 +221,7 @@ export default function ContactForm() {
                 aria-controls="ccPop"
                 aria-label={`Country code: ${selected[0]} +${selected[1]}`}
                 onClick={() => {
-                  setQuery("");
+                  setQuery('');
                   setOpen(value => !value);
                 }}
               >
@@ -241,7 +235,7 @@ export default function ContactForm() {
                   loading="lazy"
                   decoding="async"
                   onError={event => {
-                    event.currentTarget.style.visibility = "hidden";
+                    event.currentTarget.style.visibility = 'hidden';
                   }}
                 />
                 <span>{selected[2]}</span>
@@ -284,7 +278,7 @@ export default function ContactForm() {
                         key={country[2]}
                         role="option"
                         aria-selected={country[2] === selected[2]}
-                        className={index === activeIndex ? "act" : ""}
+                        className={index === activeIndex ? 'act' : ''}
                         onClick={() => chooseCountry(country)}
                       >
                         <img
@@ -296,7 +290,7 @@ export default function ContactForm() {
                           loading="lazy"
                           decoding="async"
                           onError={event => {
-                            event.currentTarget.style.visibility = "hidden";
+                            event.currentTarget.style.visibility = 'hidden';
                           }}
                         />
                         <span className="n">{country[0]}</span>
@@ -331,37 +325,17 @@ export default function ContactForm() {
           <textarea name="message" rows="5" required maxLength="3000" />
         </label>
         <button className="btn solid" type="submit" disabled={sending}>
-          {sending ? "Sending…" : "Send message →"}
+          {sending ? 'Sending…' : 'Send message →'}
         </button>
         <p
           id="status"
           className={status.kind}
-          role={sending ? "status" : undefined}
-          aria-live={sending ? "polite" : "off"}
+          role={sending ? 'status' : undefined}
+          aria-live={sending ? 'polite' : 'off'}
         >
           {status.message}
         </p>
       </form>
-      {toast && (
-        <div
-          className={`contact-toast contact-toast-${toast.kind}`}
-          role={toast.kind === "error" ? "alert" : "status"}
-          aria-live={toast.kind === "error" ? "assertive" : "polite"}
-        >
-          <span>{toast.message}</span>
-          <button
-            type="button"
-            aria-label="Dismiss notification"
-            onClick={() => {
-              window.clearTimeout(toastTimerRef.current);
-              toastTimerRef.current = null;
-              setToast(null);
-            }}
-          >
-            ×
-          </button>
-        </div>
-      )}
     </section>
   );
 }

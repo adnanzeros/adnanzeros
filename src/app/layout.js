@@ -4,6 +4,7 @@ import Script from 'next/script';
 import IntroOverlay from './components/IntroOverlay';
 import SceneGate from './components/SceneGate';
 import { Analytics } from '@vercel/analytics/next';
+import { ToastProvider } from './components/Toast';
 
 export const metadata = {
   title:
@@ -81,6 +82,9 @@ export default function RootLayout({ children }) {
           src="/intro-session-bootstrap.js"
           strategy="beforeInteractive"
         />
+        <noscript>
+          <style>{'[data-intro-overlay]{display:none!important}'}</style>
+        </noscript>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
@@ -94,10 +98,12 @@ export default function RootLayout({ children }) {
       </head>
 
       <body>
-        <SceneGate />
-        <IntroOverlay />
-        {children}
-        {isVercelDeployment && <Analytics />}
+        <ToastProvider>
+          <SceneGate />
+          <IntroOverlay />
+          {children}
+          {isVercelDeployment && <Analytics />}
+        </ToastProvider>
       </body>
     </html>
   );
