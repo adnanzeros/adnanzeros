@@ -128,8 +128,17 @@ function BtnIcon({ name }) {
 export default function CvPageClient() {
   const fitRef = useRef(null);
   const sheetRef = useRef(null);
+  const toastTimerRef = useRef(null);
   const [downloading, setDownloading] = useState(false);
   const [note, setNote] = useState('');
+  const [showToast, setShowToast] = useState(false);
+
+  useEffect(
+    () => () => {
+      window.clearTimeout(toastTimerRef.current);
+    },
+    [],
+  );
 
   useEffect(() => {
     const fit = fitRef.current;
@@ -181,7 +190,13 @@ export default function CvPageClient() {
       anchor.click();
       anchor.remove();
       window.setTimeout(() => URL.revokeObjectURL(url), 5000);
-      setNote('Your CV is downloading.');
+      // Browsers can't report when the file is saved; this confirms handoff to the download flow.
+      window.clearTimeout(toastTimerRef.current);
+      setShowToast(true);
+      toastTimerRef.current = window.setTimeout(() => {
+        setShowToast(false);
+        toastTimerRef.current = null;
+      }, 3500);
     } catch {
       setNote(
         'Direct download is not available right now. In the print window choose "Save as PDF".',
@@ -367,6 +382,48 @@ export default function CvPageClient() {
         <p className="note ui" role="status" aria-live="polite">
           {note}
         </p>
+        {showToast && (
+          <div className="cv-toast ui" role="status" aria-live="polite">
+            <span className="cv-toast-check" aria-hidden="true">
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="m5 12 4 4L19 6" />
+              </svg>
+            </span>
+            <span>CV downloaded successfully</span>
+            <button
+              className="cv-toast-close"
+              type="button"
+              aria-label="Dismiss notification"
+              onClick={() => {
+                window.clearTimeout(toastTimerRef.current);
+                toastTimerRef.current = null;
+                setShowToast(false);
+              }}
+            >
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                aria-hidden="true"
+              >
+                <path d="m18 6-12 12M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        )}
       </main>
 
       <svg

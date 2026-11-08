@@ -696,6 +696,46 @@ main { z-index: 3; }
 #status { min-height: 1.5em; color: var(--c-dim); font-size: 0.9rem; }
 #status.ok { color: var(--blue-deep); }
 #status.err { color: var(--peach-deep); }
+.contact-toast {
+  position: fixed;
+  z-index: 1000;
+  right: max(20px, env(safe-area-inset-right));
+  bottom: max(20px, env(safe-area-inset-bottom));
+  display: flex;
+  width: max-content;
+  max-width: min(460px, calc(100vw - 32px));
+  align-items: center;
+  gap: 12px;
+  padding: 13px 13px 13px 16px;
+  border: 1px solid var(--c-edge);
+  border-radius: 14px;
+  background: var(--c-deep);
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.3);
+  color: var(--c-ink);
+  font-size: 0.88rem;
+  line-height: 1.45;
+  animation: contact-toast-in 180ms ease-out both;
+}
+.contact-toast-error { border-color: color-mix(in srgb, var(--peach) 65%, var(--c-edge)); }
+.contact-toast-success { border-color: color-mix(in srgb, var(--c-green) 65%, var(--c-edge)); }
+.contact-toast button {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+.contact-toast button:hover { background: color-mix(in srgb, var(--c-ink) 12%, transparent); }
+@keyframes contact-toast-in {
+  from { transform: translateY(8px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
 
 /* ---------- 8. Footer ---------- */
 .foot {
@@ -820,6 +860,7 @@ main { z-index: 3; }
   .phone { gap: 7px; }
   .cc-btn { min-width: 105px; gap: 5px; padding: 0 8px; font-size: 0.83rem; }
   .form .btn { width: 100%; }
+  .contact-toast { right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); left: 12px; width: auto; max-width: none; }
   .foot { gap: 12px; padding-top: 36px; }
   .social { gap: 7px 15px; }
   .social a { font-size: 0.82rem; }
@@ -842,6 +883,7 @@ main { z-index: 3; }
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
   }
+  .contact-toast { animation: none; }
   .card { transform: none !important; }
 }
 /* ---------- Footer legal links (Privacy / Terms) ---------- */

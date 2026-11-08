@@ -1,6 +1,16 @@
+const API_URL = (process.env.API_URL || 'http://localhost:5000').replace(/\/+$/, '');
+
 const nextConfig = {
-  outputFileTracingIncludes: {
-    "/api/cv": ["./node_modules/@sparticuz/chromium/bin/**"],
+  turbopack: {
+    root: process.cwd(),
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: `${API_URL}/api/:path*`,
+      },
+    ];
   },
   async redirects() {
     return [{ source: "/cv.html", destination: "/cv", permanent: true }];

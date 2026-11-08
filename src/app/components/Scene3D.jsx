@@ -316,7 +316,8 @@ export default function Scene3D() {
     addEventListener('resize', resize);
 
     /* ---------- loop ---------- */
-    const clock = new THREE.Clock();
+    const timer = new THREE.Timer();
+    timer.connect(document);
     let camZ = START_Z;
     let vel = 0;
     let fov = 58;
@@ -326,7 +327,8 @@ export default function Scene3D() {
     function frame() {
       raf = requestAnimationFrame(frame);
       if (!running) return;
-      const t = reduce ? 0 : clock.getElapsedTime();
+      timer.update();
+      const t = reduce ? 0 : timer.getElapsed();
       pointer.sx += (pointer.x - pointer.sx) * 0.05;
       pointer.sy += (pointer.y - pointer.sy) * 0.05;
 
@@ -375,6 +377,7 @@ export default function Scene3D() {
       removeEventListener('pointermove', onPointer);
       removeEventListener('resize', resize);
       document.removeEventListener('visibilitychange', onVisibility);
+      timer.dispose();
       disposables.forEach(d => d.dispose?.());
       renderer.dispose();
       renderer.domElement.remove();

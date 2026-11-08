@@ -65,9 +65,16 @@ export const metadata = {
   },
 };
 
+const isVercelDeployment = process.env.VERCEL === '1';
+
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="light" suppressHydrationWarning>
+    <html
+      lang="en"
+      className="light"
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
+    >
       <head>
         <Script
           id="intro-session-bootstrap"
@@ -90,7 +97,7 @@ export default function RootLayout({ children }) {
         <SceneGate />
         <IntroOverlay />
         {children}
-        <Analytics />
+        {isVercelDeployment && <Analytics />}
       </body>
     </html>
   );

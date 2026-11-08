@@ -30,10 +30,17 @@ export default function ContactForm() {
   const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState(-1);
   const [status, setStatus] = useState({ message: "", kind: "" });
+  const [toast, setToast] = useState(null);
   const [sending, setSending] = useState(false);
   const pickerRef = useRef(null);
   const searchRef = useRef(null);
   const phoneRef = useRef(null);
+  const toastTimerRef = useRef(null);
+
+  useEffect(
+    () => () => window.clearTimeout(toastTimerRef.current),
+    [],
+  );
 
   const visibleCountries = useMemo(() => {
     const normalized = query.trim().toLowerCase().replace(/^\+/, "");
@@ -75,6 +82,15 @@ export default function ContactForm() {
     phoneRef.current?.focus({ preventScroll: true });
   }
 
+  function notify(message, kind) {
+    window.clearTimeout(toastTimerRef.current);
+    setToast({ message, kind });
+    toastTimerRef.current = window.setTimeout(() => {
+      setToast(null);
+      toastTimerRef.current = null;
+    }, 4500);
+  }
+
   function handleSearchKeyDown(event) {
     if (event.key === "ArrowDown" || event.key === "ArrowUp") {
       event.preventDefault();
@@ -106,20 +122,30 @@ export default function ContactForm() {
     const digits = String(values.phone || "")
       .replace(/\D/g, "")
       .replace(/^0+/, "");
-    if (!String(values.name).trim())
-      return setStatus({ message: "Please enter your name.", kind: "err" });
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email))
-      return setStatus({ message: "Please enter a valid email.", kind: "err" });
-    if (digits.length < 6 || selected[1].length + digits.length > 15)
-      return setStatus({
-        message: "Please enter a valid WhatsApp number.",
-        kind: "err",
-      });
-    if (String(values.message).trim().length < 5)
-      return setStatus({
-        message: "Please write a short message.",
-        kind: "err",
-      });
+    if (!String(values.name).trim()) {
+      const message = "Please enter your name.";
+      setStatus({ message, kind: "err" });
+      notify(message, "error");
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
+      const message = "Please enter a valid email.";
+      setStatus({ message, kind: "err" });
+      notify(message, "error");
+      return;
+    }
+    if (digits.length < 6 || selected[1].length + digits.length > 15) {
+      const message = "Please enter a valid WhatsApp number.";
+      setStatus({ message, kind: "err" });
+      notify(message, "error");
+      return;
+    }
+    if (String(values.message).trim().length < 5) {
+      const message = "Please write a short message.";
+      setStatus({ message, kind: "err" });
+      notify(message, "error");
+      return;
+    }
 
     setSending(true);
     setStatus({ message: "Sending…", kind: "" });
@@ -130,21 +156,35 @@ export default function ContactForm() {
         body: JSON.stringify({
           ...values,
           dialCode: selected[1],
+          phone: digits,
         }),
       });
-      const result = await response.json();
+      let result = {};
+      try {
+        result = await response.json();
+      } catch {
+        result = {};
+      }
       if (!response.ok)
-        throw new Error(result.error || "Could not send. Try again later.");
-      setStatus({ message: "Message sent. I will reply soon.", kind: "ok" });
+        throw new Error(
+          result.error ||
+            "The message server is unavailable. Please try again in a moment.",
+        );
+      setStatus({ message: "", kind: "" });
       form.reset();
+      notify("Message sent. I will reply soon.", "success");
     } catch (error) {
-      setStatus({
-        message:
-          error instanceof Error
+      const message =
+        error instanceof TypeError
+          ? "I couldn't reach the message server. Please try again in a moment."
+          : error instanceof Error
             ? error.message
-            : "Could not send. Try again later.",
+            : "Could not send. Try again later.";
+      setStatus({
+        message,
         kind: "err",
       });
+      notify(message, "error");
     } finally {
       setSending(false);
     }
@@ -293,10 +333,35 @@ export default function ContactForm() {
         <button className="btn solid" type="submit" disabled={sending}>
           {sending ? "Sending…" : "Send message →"}
         </button>
-        <p id="status" className={status.kind} role="status" aria-live="polite">
+        <p
+          id="status"
+          className={status.kind}
+          role={sending ? "status" : undefined}
+          aria-live={sending ? "polite" : "off"}
+        >
           {status.message}
         </p>
       </form>
+      {toast && (
+        <div
+          className={`contact-toast contact-toast-${toast.kind}`}
+          role={toast.kind === "error" ? "alert" : "status"}
+          aria-live={toast.kind === "error" ? "assertive" : "polite"}
+        >
+          <span>{toast.message}</span>
+          <button
+            type="button"
+            aria-label="Dismiss notification"
+            onClick={() => {
+              window.clearTimeout(toastTimerRef.current);
+              toastTimerRef.current = null;
+              setToast(null);
+            }}
+          >
+            ×
+          </button>
+        </div>
+      )}
     </section>
   );
 }
