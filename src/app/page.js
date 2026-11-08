@@ -138,7 +138,8 @@ export default async function HomePage() {
             </a>
           ))}
         </div>
-        <nav className="legal-links" aria-label="Legal">
+        <nav className="legal-links" aria-label="Footer links">
+          <Link href="/blog">Blog</Link>
           <Link href="/privacy">Privacy Policy</Link>
           <Link href="/terms">Terms of Use</Link>
         </nav>

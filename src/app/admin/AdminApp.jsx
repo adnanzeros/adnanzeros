@@ -3,13 +3,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import MatrixRain from './MatrixRain';
 import ForgotPassword from './ForgotPassword';
+import BlogAdmin from './BlogAdmin';
 
 const CATEGORIES = [
   ['frontend', 'Frontend'],
   ['backend', 'Backend'],
   ['tools', 'Extensions'],
 ];
-const TABS = ['dashboard', 'messages', 'projects'];
+const TABS = ['dashboard', 'messages', 'projects', 'blog'];
 const EMPTY_PROJECT = {
   category: 'frontend',
   name: '',
@@ -1812,6 +1813,7 @@ export default function AdminApp() {
             ['dashboard', 'Dashboard'],
             ['messages', 'Messages'],
             ['projects', 'Projects'],
+            ['blog', 'Blog'],
           ].map(([value, label]) => (
             <button
               key={value}
@@ -1827,7 +1829,6 @@ export default function AdminApp() {
         <p className="adm-nav-label adm-nav-label-later">IN THE WORKS</p>
         <div className="adm-main-nav">
           {[
-            ['blog', 'Blog'],
             ['products', 'Products'],
             ['payments', 'Payments'],
           ].map(([icon, label]) => (
@@ -1929,6 +1930,13 @@ export default function AdminApp() {
           {tab === 'projects' && (
             <Projects notify={notify} requestConfirm={requestConfirm} />
           )}
+          {tab === 'blog' && (
+            <BlogAdmin
+              notify={notify}
+              requestConfirm={requestConfirm}
+              kit={blogKit}
+            />
+          )}
         </div>
         <nav className="adm-mobile-tabs" aria-label="Admin sections">
           {TABS.map(value => (
@@ -1956,6 +1964,9 @@ export default function AdminApp() {
     </main>
   );
 }
+
+/* BlogAdmin ke ei helper gulo dey (circular import ora-r jonno) */
+const blogKit = { Icon, api, compressImage, ErrorBox, Skeleton };
 
 function UnreadBadge({ count, compact = false }) {
   if (!count) return null;
