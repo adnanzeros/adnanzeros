@@ -131,6 +131,205 @@ const LANGUAGES = 'Bengali (Native), English (Intermediate)';
 
 const stripProtocol = url => url.replace(/^https?:\/\//, '').replace(/\/$/, '');
 
+// PDF text uses a standard font, so swap curly quotes for plain ones
+const pdfText = text => text.replace(/[’‘]/g, "'").replace(/[“”]/g, '"');
+
+/**
+ * Builds the CV as a real text PDF (selectable text, clickable links)
+ * and downloads it directly. No print dialog, no server needed.
+ */
+async function buildAndDownloadPdf() {
+  // Loaded only on click, so it never runs during server rendering
+  const { jsPDF } = await import('jspdf');
+
+  const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+  const pageW = doc.internal.pageSize.getWidth();
+  const pageH = doc.internal.pageSize.getHeight();
+  const MARGIN = 44;
+  const maxW = pageW - MARGIN * 2;
+  const BLUE = [11, 58, 143];
+  let y = MARGIN;
+
+  const font = (style, size) => {
+    doc.setFont('helvetica', style);
+    doc.setFontSize(size);
+  };
+  const lineH = size => size * 1.38;
+  const ensure = height => {
+    if (y + height > pageH - MARGIN) {
+      doc.addPage();
+      y = MARGIN;
+    }
+  };
+
+  // Wrapped paragraph
+  const paragraph = (text, size = 9.5, style = 'normal', indent = 0) => {
+    font(style, size);
+    doc.setTextColor(0, 0, 0);
+    const lines = doc.splitTextToSize(pdfText(text), maxW - indent);
+    lines.forEach(line => {
+      ensure(lineH(size));
+      doc.text(line, MARGIN + indent, y + size);
+      y += lineH(size);
+    });
+  };
+
+  // "Label: value" where the label is bold
+  const labelLine = (label, value, size = 9.5) => {
+    font('bold', size);
+    const labelW = doc.getTextWidth(`${label}: `);
+    font('normal', size);
+    const lines = doc.splitTextToSize(pdfText(value), maxW - labelW - 2);
+    lines.forEach((line, i) => {
+      ensure(lineH(size));
+      if (i === 0) {
+        font('bold', size);
+        doc.text(`${label}:`, MARGIN, y + size);
+        font('normal', size);
+        doc.text(line, MARGIN + labelW, y + size);
+      } else {
+        font('normal', size);
+        doc.text(line, MARGIN + labelW, y + size);
+      }
+      y += lineH(size);
+    });
+  };
+
+  // Section heading with underline
+  const heading = title => {
+    ensure(30);
+    y += 9;
+    font('bold', 10.5);
+    doc.setTextColor(0, 0, 0);
+    doc.text(title.toUpperCase(), MARGIN, y + 10.5);
+    doc.setDrawColor(0, 0, 0);
+    doc.setLineWidth(0.7);
+    doc.line(MARGIN, y + 15, pageW - MARGIN, y + 15);
+    y += 21;
+  };
+
+  // A row of clickable items: [{ label?, text, url? }]
+  const linkRow = (items, size = 9) => {
+    ensure(lineH(size));
+    let x = MARGIN;
+    items.forEach(item => {
+      if (item.label) {
+        font('bold', size);
+        doc.setTextColor(0, 0, 0);
+        doc.text(item.label, x, y + size);
+        x += doc.getTextWidth(item.label) + 3;
+      }
+      font('normal', size);
+      if (item.url) {
+        doc.setTextColor(...BLUE);
+        doc.textWithLink(item.text, x, y + size, { url: item.url });
+        doc.setDrawColor(...BLUE);
+        doc.setLineWidth(0.4);
+        const w = doc.getTextWidth(item.text);
+        doc.line(x, y + size + 1.5, x + w, y + size + 1.5);
+      } else {
+        doc.setTextColor(0, 0, 0);
+        doc.text(item.text, x, y + size);
+      }
+      x += doc.getTextWidth(item.text) + 18;
+    });
+    doc.setTextColor(0, 0, 0);
+    y += lineH(size);
+  };
+
+  // Title on the left, date on the right
+  const titleDateRow = (title, date) => {
+    font('bold', 10);
+    const lines = doc.splitTextToSize(pdfText(title), maxW - 70);
+    lines.forEach((line, i) => {
+      ensure(lineH(10));
+      doc.setTextColor(0, 0, 0);
+      font('bold', 10);
+      doc.text(line, MARGIN, y + 10);
+      if (i === 0) {
+        font('normal', 9);
+        doc.text(date, pageW - MARGIN, y + 10, { align: 'right' });
+      }
+      y += lineH(10);
+    });
+  };
+
+  // ---------- Header ----------
+  font('bold', 25);
+  doc.setTextColor(0, 0, 0);
+  doc.text('Adnan Sami', MARGIN, y + 25);
+  y += 31;
+
+  paragraph(ROLE, 11.5, 'bold');
+  y += 4;
+
+  CONTACT_ROWS.forEach(row => {
+    linkRow(
+      row.map(item => ({ text: item.value, url: item.href })),
+      9.5
+    );
+  });
+
+  doc.setDrawColor(0, 0, 0);
+  doc.setLineWidth(0.8);
+  doc.line(MARGIN, y + 3, pageW - MARGIN, y + 3);
+  y += 4;
+
+  // ---------- Career Objective ----------
+  heading('Career Objective');
+  paragraph(OBJECTIVE);
+
+  // ---------- Skills ----------
+  heading('Skills');
+  SKILLS.forEach(([label, value]) => labelLine(label, value));
+
+  // ---------- Projects ----------
+  heading('Projects');
+  PROJECTS.forEach(project => {
+    ensure(70);
+    paragraph(project.title, 10.5, 'bold');
+    labelLine('Tech', project.stack, 9.5);
+    paragraph(project.overview);
+    project.features.forEach(feature => {
+      font('normal', 9.5);
+      const lines = doc.splitTextToSize(pdfText(feature), maxW - 16);
+      lines.forEach((line, i) => {
+        ensure(lineH(9.5));
+        if (i === 0) doc.text('\u2022', MARGIN + 5, y + 9.5);
+        doc.text(line, MARGIN + 16, y + 9.5);
+        y += lineH(9.5);
+      });
+    });
+    linkRow([
+      { label: 'Live:', text: stripProtocol(project.live), url: project.live },
+      {
+        label: 'GitHub:',
+        text: stripProtocol(project.repository),
+        url: project.repository,
+      },
+    ]);
+    y += 5;
+  });
+
+  // ---------- Education / Training / Languages ----------
+  heading('Education');
+  titleDateRow(EDUCATION.title, EDUCATION.date);
+
+  heading('Additional Training');
+  titleDateRow(TRAINING.title, TRAINING.date);
+
+  heading('Languages');
+  paragraph(LANGUAGES);
+
+  doc.setProperties({
+    title: 'Adnan Sami - CV',
+    author: 'Adnan Sami',
+  });
+
+  // Direct download, no dialog
+  doc.save(`${FILE_NAME}.pdf`);
+}
+
 const styles = `
   .cv-page { min-height: 100vh; padding: 28px 16px 56px; background: #f3f4f6; color: #000; }
   .cv-toolbar { max-width: 850px; margin: 0 auto 18px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
@@ -175,7 +374,7 @@ const styles = `
     .cv-sheet .cv-name { font-size: 21pt; }
   }
 
-  /* ---------- Print / PDF: full A4 page ---------- */
+  /* ---------- Print: full A4 page ---------- */
   @page { size: A4; margin: 0; }
   @media print {
     html, body { margin: 0 !important; padding: 0 !important; background: #fff !important; height: auto !important; min-height: 0 !important; }
@@ -223,40 +422,23 @@ export default function CvPageClient() {
     if (downloading) return;
     setDownloading(true);
     const toastId = toast.loading('Preparing your CV…', {
-      description: 'Creating the PDF. This may take a few seconds.',
+      description: 'Creating the PDF. This takes a moment.',
     });
 
     try {
-      const response = await fetch('/api/cv', {
-        cache: 'no-store',
-        signal: AbortSignal.timeout(60000),
-      });
-      const contentType = response.headers.get('content-type') || '';
-
-      if (!response.ok || !contentType.includes('pdf')) {
-        throw new Error('PDF download is unavailable.');
-      }
-
-      const url = URL.createObjectURL(await response.blob());
-      const anchor = document.createElement('a');
-      anchor.href = url;
-      anchor.download = `${FILE_NAME}.pdf`;
-      document.body.appendChild(anchor);
-      anchor.click();
-      anchor.remove();
-      window.setTimeout(() => URL.revokeObjectURL(url), 5000);
+      await buildAndDownloadPdf();
 
       toast.success('CV downloaded', {
         id: toastId,
         description: `${FILE_NAME}.pdf is saved to your downloads.`,
       });
-    } catch {
-      toast.info('Opening print dialog', {
+    } catch (error) {
+      console.error('CV PDF error:', error);
+      toast.info('Download failed', {
         id: toastId,
-        description: 'Choose “Save as PDF” as the destination.',
+        description: 'Could not create the PDF. Please try again.',
         duration: 7000,
       });
-      window.print();
     } finally {
       setDownloading(false);
     }
@@ -299,7 +481,7 @@ export default function CvPageClient() {
               {CONTACT_ROWS.map((row, i) => (
                 <div className="cv-contact-row" key={i}>
                   {row.map(item => (
-                    <span className="cv-contact-item" key={item.icon}>
+                    <span className="cv-contact-item" key={item.value}>
                       <Icon name={item.icon} />
                       {item.href ? (
                         <a href={item.href}>{item.value}</a>
