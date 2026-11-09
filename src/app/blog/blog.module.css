@@ -231,3 +231,44 @@
   .search { flex-basis: 100%; }
   .select { flex: 1 1 calc(50% - 6px); min-width: 0; }
 }
+
+/* ===== NOTUN: Visual builder blocks (admin preview + public page duitai eta use kore) ===== */
+.prose :global(.blk-left) { margin-right: auto; }
+.prose :global(.blk-center) { margin-inline: auto; }
+.prose :global(.blk-right) { margin-left: auto; }
+.prose :global(.blk-text) { line-height: 1.4; }
+.prose :global(.blk-pill) { width: fit-content; max-width: 100%; padding: 0.35em 0.9em; border-radius: 999px; }
+.prose :global(.blk-img) { max-width: 100%; }
+.prose :global(.blk-gallery) { display: grid; gap: 12px; max-width: 100%; margin-top: 1.6em; }
+.prose :global(.blk-gallery figure) { margin: 0; }
+.prose :global(.blk-gallery img) { aspect-ratio: 4 / 3; object-fit: cover; }
+.prose :global(.blk-cols-1) { grid-template-columns: minmax(0, 1fr); }
+.prose :global(.blk-cols-2) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.prose :global(.blk-cols-3) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.prose :global(.blk-cols-4) { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.prose :global(.blk-gap-0) { gap: 0; }
+.prose :global(.blk-gap-8) { gap: 8px; }
+.prose :global(.blk-gap-12) { gap: 12px; }
+.prose :global(.blk-gap-16) { gap: 16px; }
+.prose :global(.blk-gap-24) { gap: 24px; }
+.prose table { display: block; width: 100%; overflow-x: auto; border-collapse: collapse; }
+.prose th, .prose td { min-width: 80px; padding: 8px 12px; border: 1px solid var(--c-edge); text-align: left; vertical-align: top; }
+.prose th { background: rgba(129, 173, 234, 0.14); color: var(--ink); }
+.prose td p, .prose th p, .prose li p { margin: 0; }
+.prose pre { padding: 14px 16px; overflow-x: auto; border-radius: var(--radius-md); background: var(--ink); color: #f5f7ff; font-size: 0.9rem; line-height: 1.6; }
+.prose code { padding: 1px 6px; border-radius: 5px; background: rgba(129, 173, 234, 0.2); font-size: 0.9em; }
+.prose pre code { padding: 0; background: transparent; }
+
+/* Bangla */
+.article[lang='bn'], .bnWrap, .prose[lang='bn'] { font-family: 'Noto Sans Bengali', 'Hind Siliguri', 'Kalpurush', 'Nirmala UI', sans-serif; }
+.prose[lang='bn'], .article[lang='bn'] .prose { line-height: 1.95; }
+.article[lang='bn'] h1, .bnWrap h1 { font-family: inherit; letter-spacing: 0; line-height: 1.35; }
+
+/* Language switch */
+.langSwitch { display: inline-flex; margin: 14px 0 0; overflow: hidden; border: 1px solid var(--c-edge); border-radius: 999px; background: var(--surface); }
+.langSwitch button { padding: 7px 16px; border: 0; background: transparent; color: var(--ink); font-size: 0.85rem; font-weight: 700; cursor: pointer; }
+.langSwitch .langOn { background: var(--ink); color: var(--lavender); }
+
+@media (max-width: 640px) {
+  .prose :global(.blk-cols-3), .prose :global(.blk-cols-4) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

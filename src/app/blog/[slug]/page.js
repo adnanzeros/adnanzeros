@@ -4,6 +4,7 @@ import PortfolioHeader from '../../components/PortfolioHeader';
 import { getPublicPost } from '../../../lib/blog-store';
 import { formatDate } from '../../../lib/blog-utils';
 import styles from '../blog.module.css';
+import PostBody from './PostBody'; // NOTUN: English/Bangla switch
 
 export const revalidate = 60;
 
@@ -38,18 +39,39 @@ export default async function BlogPostPage({ params }) {
           <Link href="/blog" className={styles.back}>
             <span aria-hidden="true">&larr;</span> All posts
           </Link>
-          <h1>{post.title}</h1>
-          <p className={styles.meta}>
-            {formatDate(post.publishedAt)} · {post.readingMinutes} min read
-          </p>
-          {post.coverImage && (
-            <img className={styles.postCover} src={post.coverImage} alt="" />
+          {post.translations?.bn ? (
+            /* NOTUN: Bangla version thakle language switch soho, same URL e */
+            <PostBody
+              title={post.title}
+              dateText={formatDate(post.publishedAt)}
+              minutes={post.readingMinutes}
+              cover={post.coverImage}
+              enHtml={post.contentHtml}
+              bn={{
+                title: post.translations.bn.title,
+                html: post.translations.bn.contentHtml,
+              }}
+            />
+          ) : (
+            <>
+              <h1>{post.title}</h1>
+              <p className={styles.meta}>
+                {formatDate(post.publishedAt)} · {post.readingMinutes} min read
+              </p>
+              {post.coverImage && (
+                <img
+                  className={styles.postCover}
+                  src={post.coverImage}
+                  alt=""
+                />
+              )}
+              {/* contentHtml server e sanitize kora, admin chhara keu likhte pare na */}
+              <div
+                className={styles.prose}
+                dangerouslySetInnerHTML={{ __html: post.contentHtml }}
+              />
+            </>
           )}
-          {/* contentHtml server e sanitize kora, admin chhara keu likhte pare na */}
-          <div
-            className={styles.prose}
-            dangerouslySetInnerHTML={{ __html: post.contentHtml }}
-          />
         </article>
       </main>
     </>

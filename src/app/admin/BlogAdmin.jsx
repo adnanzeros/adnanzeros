@@ -8,6 +8,9 @@ import {
   matchesDateFilter,
 } from '../../lib/blog-utils';
 import './blog-admin.css';
+// NOTUN: visual bilingual builder + category delete
+import BlogBuilder from './blog-builder/BlogBuilder';
+import { CategoryManager } from './blog-builder/CategoryBox';
 
 /* Blog admin: list + editor. AdminApp theke `kit` prop e Icon/api/compressImage ashe */
 
@@ -790,10 +793,11 @@ export default function BlogAdmin({ notify, requestConfirm, kit }) {
 
   if (editing) {
     return (
-      <BlogEditor
+      <BlogBuilder
         id={editing === 'new' ? null : editing}
         kit={kit}
         notify={notify}
+        requestConfirm={requestConfirm}
         onClose={() => setEditing(null)}
         onSaved={() => {
           setEditing(null);
@@ -824,6 +828,13 @@ export default function BlogAdmin({ notify, requestConfirm, kit }) {
           <kit.Icon name="plus" size={18} /> New post
         </button>
       </div>
+
+      <CategoryManager
+        kit={kit}
+        notify={notify}
+        requestConfirm={requestConfirm}
+        onChanged={load}
+      />
 
       <div className="blg-filters">
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
