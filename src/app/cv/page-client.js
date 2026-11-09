@@ -1,185 +1,242 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { useToast } from '../components/Toast';
 
 const FILE_NAME = 'Adnan-Sami-CV';
 
-const CONTACT = [
-  {
-    icon: 'mail',
-    href: 'mailto:asadnanzeros@gmail.com',
-    text: 'asadnanzeros@gmail.com',
-  },
-  { icon: 'pin', text: 'Faridpur, Dhaka Division, Bangladesh' },
-  {
-    icon: 'chat',
-    href: 'https://wa.me/8801580327310',
-    text: '+880 1580 327310 (WhatsApp)',
-  },
-  {
-    icon: 'github',
-    href: 'https://github.com/adnanzeros',
-    text: 'github.com/adnanzeros',
-  },
-  {
-    icon: 'linkedin',
-    href: 'https://www.linkedin.com/in/adnanzeros/',
-    text: 'linkedin.com/in/adnanzeros',
-  },
-];
-
-const SKILLS = [
-  ['Languages', 'HTML5, CSS3, JavaScript, TypeScript, Python, PowerShell'],
-  [
-    'Frontend',
-    'React, Next.js, React Native, React Router, Vite, Tailwind CSS, WordPress, GSAP, Three.js',
-  ],
-  [
-    'Backend & Cloud',
-    'Node.js, Vercel, Netlify, Firebase, Google Cloud, Resend',
-  ],
-  ['Tools & Design', 'Git, GitHub, npm, Figma, Canva, Adobe XD, Blender'],
-];
-
-const PROJECTS = [
-  {
-    title: 'TimeMate: Screen Time Coach',
-    meta: 'JavaScript · Chrome APIs',
-    points: [
-      'Chrome extension that tracks the time spent on every tab',
-      'Blocks distracting sites and sends reminder notifications',
-      'Includes a Focus Mode for distraction-free sessions',
-    ],
-    href: 'https://github.com/adnanzeros/screen-time-coach',
-    label: 'github.com/adnanzeros/screen-time-coach',
-  },
-  {
-    title: 'DevStack',
-    meta: 'React · Vite · CSS',
-    points: [
-      'Explore technologies and compose a personalized React tech stack',
-      'Component-based UI built with React and Vite',
-    ],
-    href: 'https://github.com/adnanzeros/Assignment-5',
-    label: 'github.com/adnanzeros/Assignment-5',
-  },
-  {
-    title: 'Shuru Kori Online',
-    meta: 'Web · Platform',
-    points: [
-      'Learning platform featuring live sessions',
-      'Practical, hands-on work alongside the lessons',
-    ],
-    href: 'https://shurukori.online/',
-    label: 'shurukori.online',
-  },
-  {
-    title: 'Personal Portfolio (adnanzeros)',
-    meta: 'Next.js · GSAP · Resend',
-    points: [
-      'Next.js site with GSAP scroll animations and 3D tilt cards',
-      'Contact form served by a Resend API route',
-      'GitHub stats charts, filterable projects, fully responsive',
-    ],
-    href: 'https://github.com/adnanzeros',
-    label: 'github.com/adnanzeros',
-  },
-];
-
-const FOCUS = [
-  'Responsive websites and React / Next.js apps',
-  'Clean, modern interface and web design',
-  'Chrome extensions for small everyday problems',
-  'Learning by shipping real projects',
-];
-
-const DETAILS = [
-  ['Nationality', 'Bangladeshi'],
-  ['Religion', 'Muslim'],
-  ['Location', 'Faridpur, Bangladesh'],
-];
+const ICONS = {
+  mail: 'M3 5h18v14H3z M3 5l9 8 9-8',
+  phone:
+    'M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z',
+  pin: 'M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z M12 7.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z',
+  github:
+    'M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12 12 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21',
+  linkedin:
+    'M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z M2 9h4v12H2z M4 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z',
+  globe:
+    'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z M2 12h20 M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z',
+};
 
 function Icon({ name }) {
   return (
-    <svg className="i" aria-hidden="true" focusable="false">
-      <use href={`#i-${name}`} />
-    </svg>
-  );
-}
-
-function BtnIcon({ name }) {
-  return (
     <svg
+      className="cv-icon"
       viewBox="0 0 24 24"
+      width="11"
+      height="11"
       fill="none"
-      stroke="currentColor"
+      stroke="#000"
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
       focusable="false"
     >
-      <use href={`#i-${name}`} />
+      <path d={ICONS[name]} />
     </svg>
   );
 }
 
+const ROLE = 'Junior Frontend & Backend Developer (React.js, Next.js)';
+
+// Row 1: personal contact | Row 2: professional profiles
+const CONTACT_ROWS = [
+  [
+    {
+      icon: 'mail',
+      value: 'asadnanzeros@gmail.com',
+      href: 'mailto:asadnanzeros@gmail.com',
+    },
+    { icon: 'phone', value: '+880 1580 327310', href: 'tel:+8801580327310' },
+    { icon: 'pin', value: 'Faridpur, Bangladesh' },
+  ],
+  [
+    {
+      icon: 'github',
+      value: 'github.com/adnanzeros',
+      href: 'https://github.com/adnanzeros',
+    },
+    {
+      icon: 'linkedin',
+      value: 'linkedin.com/in/adnanzeros',
+      href: 'https://www.linkedin.com/in/adnanzeros/',
+    },
+    {
+      icon: 'globe',
+      value: 'adnanzeros.vercel.app',
+      href: 'https://adnanzeros.vercel.app/',
+    },
+  ],
+];
+
+const OBJECTIVE =
+  'Junior frontend and backend developer who wants to build MVPs and problem-solving SaaS products that make people’s online lives easier. I focus on real user needs and clean, practical code. I am eager to grow with a team where I can create real impact.';
+
+const SKILLS = [
+  ['Programming', 'HTML5, CSS3, JavaScript, TypeScript'],
+  [
+    'Frontend',
+    'React.js, Next.js, React Native, React Router, Vite, Tailwind CSS, GSAP',
+  ],
+  ['Backend & Services', 'Node.js, Express.js, MongoDB, Firebase, Resend'],
+  ['Tools', 'Git, GitHub, npm, VS Code, Figma'],
+  ['Soft Skills', 'Problem Solving, Communication, Teamwork, Time Management'],
+];
+
+const PROJECTS = [
+  {
+    title: 'StudioSpace',
+    stack: 'Next.js, MongoDB, Authentication',
+    overview:
+      'A website where people can find creative studios, and studio owners can list their spaces and manage bookings.',
+    live: 'https://studiospace-sooty.vercel.app/',
+    repository: 'https://github.com/adnanzeros/studiospace',
+    features: [
+      'Search, filter, and sort studio listings',
+      'Studio owners can add, edit, and manage their listings',
+      'Users can request a booking, and hosts can confirm or decline it',
+      'Stops double booking for the same studio',
+    ],
+  },
+  {
+    title: 'Adnan Zeros: Developer Portfolio',
+    stack: 'Next.js, React, GSAP, Resend',
+    overview:
+      'My personal website where I show my projects, skills, and contact details.',
+    live: 'https://adnanzeros.vercel.app/',
+    repository: 'https://github.com/adnanzeros/adnanzeros',
+    features: [
+      'Responsive layout with a project filter',
+      'Scroll animations and interactive 3D-style cards',
+      'Contact form that sends messages to my email',
+      'GitHub stats and project details',
+    ],
+  },
+];
+
+const EDUCATION = {
+  title:
+    'Higher Secondary Certificate (HSC), Government Yasin College, Faridpur',
+  date: '2024',
+};
+
+const TRAINING = {
+  title: 'Full Stack Web Engineering, Programming Hero (Batch 14)',
+  date: 'Ongoing',
+};
+
+const LANGUAGES = 'Bengali (Native), English (Intermediate)';
+
+const stripProtocol = url => url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+
+const styles = `
+  .cv-page { min-height: 100vh; padding: 28px 16px 56px; background: #f3f4f6; color: #000; }
+  .cv-toolbar { max-width: 850px; margin: 0 auto 18px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .cv-toolbar a { color: #111; text-decoration: none; font-weight: 600; }
+  .cv-actions { display: flex; gap: 8px; }
+  .cv-button { border: 1px solid #222; background: #fff; color: #111; border-radius: 6px; padding: 9px 13px; font: inherit; font-size: 13px; cursor: pointer; }
+  .cv-button.primary { background: #111; color: #fff; }
+  .cv-button:disabled { opacity: .6; cursor: wait; }
+
+  /* ---------- CV sheet (screen) ---------- */
+  .cv-sheet { box-sizing: border-box; width: 100%; max-width: 850px; margin: 0 auto; padding: 34px 44px; background: #fff; border: 0 !important; box-shadow: 0 5px 28px rgba(0,0,0,.10); font-family: Arial, Helvetica, sans-serif !important; font-size: 10pt; line-height: 1.35; color: #000; }
+  .cv-sheet * { font-family: Arial, Helvetica, sans-serif !important; box-sizing: border-box; }
+  .cv-sheet *::before, .cv-sheet *::after { content: none !important; display: none !important; }
+
+  .cv-sheet .cv-name { margin: 0; padding: 0; font-size: 24pt; line-height: 1.1; font-weight: 700; color: #000; background: none; letter-spacing: 0; text-transform: none; }
+  .cv-sheet .cv-role { margin: 3px 0 8px; font-size: 11pt; font-weight: 600; color: #000; }
+
+  .cv-contact { padding-bottom: 8px; border-bottom: 1px solid #000; font-size: 9pt; }
+  .cv-contact-row { display: flex; flex-wrap: wrap; gap: 3px 16px; margin: 2px 0; }
+  .cv-contact-item { display: inline-flex; align-items: center; gap: 5px; }
+  .cv-icon { flex: none; }
+  .cv-sheet a { color: #0b3a8f; text-decoration: underline; overflow-wrap: anywhere; }
+
+  .cv-section { margin-top: 11px; }
+  .cv-sheet .cv-section h2 { margin: 0 0 4px; padding: 0 0 2px; border: 0; border-bottom: 1px solid #000; background: none; color: #000; font-size: 10.5pt; line-height: 1.2; font-weight: 700; text-transform: uppercase; letter-spacing: .35px; }
+  .cv-section p { margin: 2px 0; }
+  .cv-skill { margin: 1px 0; }
+  .cv-project { margin: 6px 0 9px; break-inside: avoid; }
+  .cv-sheet .cv-project h3 { margin: 0; font-size: 10pt; font-weight: 700; color: #000; }
+  .cv-stack { margin: 1px 0 2px; font-size: 9pt; }
+  .cv-project ul { margin: 2px 0 3px 16px; padding: 0; list-style: disc; }
+  .cv-project li { margin: 0; }
+  .cv-links { display: flex; flex-wrap: wrap; gap: 2px 16px; font-size: 9pt; }
+  .cv-edu-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin: 2px 0; }
+  .cv-sheet .cv-edu-row h3 { margin: 0; font-size: 10pt; font-weight: 700; color: #000; }
+  .cv-date { font-size: 9pt; white-space: nowrap; }
+
+  @media (max-width: 600px) {
+    .cv-page { padding: 14px 8px 32px; }
+    .cv-toolbar { align-items: flex-start; flex-direction: column; }
+    .cv-sheet { padding: 22px 18px; font-size: 9.5pt; }
+    .cv-sheet .cv-name { font-size: 21pt; }
+  }
+
+  /* ---------- Print / PDF: full A4 page ---------- */
+  @page { size: A4; margin: 0; }
+  @media print {
+    html, body { margin: 0 !important; padding: 0 !important; background: #fff !important; height: auto !important; min-height: 0 !important; }
+    .cv-page { padding: 0 !important; min-height: 0 !important; height: auto !important; background: #fff !important; }
+    .cv-toolbar { display: none !important; }
+
+    .cv-sheet {
+      width: 210mm !important;
+      max-width: none !important;
+      height: 296mm !important;
+      min-height: 296mm !important;
+      margin: 0 !important;
+      padding: 15mm 17mm !important;
+      box-shadow: none !important;
+      border: 0 !important;
+      font-size: 10.8pt !important;
+      line-height: 1.45 !important;
+      overflow: hidden !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: space-between !important;
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+    }
+
+    .cv-sheet header, .cv-sheet .cv-section { margin-top: 0 !important; }
+    .cv-sheet .cv-name { font-size: 27pt !important; }
+    .cv-sheet .cv-role { font-size: 12pt !important; margin: 4px 0 10px !important; }
+    .cv-contact { font-size: 10pt !important; padding-bottom: 10px !important; }
+    .cv-sheet .cv-section h2 { font-size: 11.5pt !important; margin-bottom: 6px !important; padding-bottom: 3px !important; }
+    .cv-stack, .cv-links, .cv-date { font-size: 10pt !important; }
+    .cv-project { margin: 7px 0 10px !important; }
+    .cv-skill { margin: 2px 0 !important; }
+    .cv-project li { margin: 1px 0 !important; }
+
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+`;
+
 export default function CvPageClient() {
-  const fitRef = useRef(null);
-  const sheetRef = useRef(null);
   const toast = useToast();
   const [downloading, setDownloading] = useState(false);
-
-  useEffect(() => {
-    const fit = fitRef.current;
-    const sheet = sheetRef.current;
-    if (!fit || !sheet) return undefined;
-
-    const originalTitle = document.title;
-
-    const fitSheet = () => {
-      const scale = Math.min(1, fit.clientWidth / sheet.offsetWidth);
-      sheet.style.transform = `scale(${scale})`;
-      fit.style.height = `${sheet.offsetHeight * scale}px`;
-    };
-    const beforePrint = () => {
-      document.title = FILE_NAME;
-    };
-    const afterPrint = () => {
-      document.title = originalTitle;
-    };
-
-    fitSheet();
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(fitSheet).catch(() => {});
-    }
-    window.addEventListener('resize', fitSheet);
-    window.addEventListener('beforeprint', beforePrint);
-    window.addEventListener('afterprint', afterPrint);
-    return () => {
-      window.removeEventListener('resize', fitSheet);
-      window.removeEventListener('beforeprint', beforePrint);
-      window.removeEventListener('afterprint', afterPrint);
-    };
-  }, []);
 
   async function downloadCv() {
     if (downloading) return;
     setDownloading(true);
     const toastId = toast.loading('Preparing your CV…', {
-      description: 'Creating the PDF, this can take a few seconds.',
+      description: 'Creating the PDF. This may take a few seconds.',
     });
+
     try {
       const response = await fetch('/api/cv', {
         cache: 'no-store',
         signal: AbortSignal.timeout(60000),
       });
-      const type = response.headers.get('content-type') || '';
-      if (!response.ok || !type.includes('pdf')) {
+      const contentType = response.headers.get('content-type') || '';
+
+      if (!response.ok || !contentType.includes('pdf')) {
         throw new Error('PDF download is unavailable.');
       }
+
       const url = URL.createObjectURL(await response.blob());
       const anchor = document.createElement('a');
       anchor.href = url;
@@ -188,14 +245,15 @@ export default function CvPageClient() {
       anchor.click();
       anchor.remove();
       window.setTimeout(() => URL.revokeObjectURL(url), 5000);
+
       toast.success('CV downloaded', {
         id: toastId,
         description: `${FILE_NAME}.pdf is saved to your downloads.`,
       });
     } catch {
-      toast.info('Direct download is not available', {
+      toast.info('Opening print dialog', {
         id: toastId,
-        description: 'In the print window choose "Save as PDF".',
+        description: 'Choose “Save as PDF” as the destination.',
         duration: 7000,
       });
       window.print();
@@ -206,215 +264,127 @@ export default function CvPageClient() {
 
   return (
     <>
-      <header className="top ui">
-        <Link href="/" className="brand">
-          <img src="/favicon.svg" alt="" width="34" height="34" />
-          adnanzeros
-        </Link>
-        <Link href="/" className="back">
-          &larr; Back<span className="long"> to portfolio</span>
-        </Link>
-      </header>
+      <style>{styles}</style>
 
-      <main className="stage">
-        <h1 className="page-title ui">My CV</h1>
-        <p className="page-sub ui">
-          Preview below. You can download the one-page PDF with the button under
-          the CV.
-        </p>
+      <main className="cv-page">
+        <nav className="cv-toolbar" aria-label="CV actions">
+          <Link href="/">← Back to portfolio</Link>
+          <div className="cv-actions">
+            <button
+              className="cv-button primary"
+              type="button"
+              onClick={downloadCv}
+              disabled={downloading}
+            >
+              {downloading ? 'Preparing PDF…' : 'Download CV (PDF)'}
+            </button>
+            <button
+              className="cv-button"
+              type="button"
+              onClick={() => window.print()}
+            >
+              Print
+            </button>
+          </div>
+        </nav>
 
-        <div className="fit" ref={fitRef}>
-          <article
-            className="sheet"
-            ref={sheetRef}
-            aria-label="Curriculum vitae of Adnan Sami"
-          >
-            <header className="head">
-              <div>
-                <h1>Adnan Sami</h1>
-                <p className="headline">
-                  Junior Frontend &amp; Backend Developer &middot; Web Designer
-                  &middot; Digital Creator
+        <article
+          className="cv-sheet"
+          aria-label="Curriculum vitae of Adnan Sami"
+        >
+          <header>
+            <h1 className="cv-name">Adnan Sami</h1>
+            <p className="cv-role">{ROLE}</p>
+            <div className="cv-contact">
+              {CONTACT_ROWS.map((row, i) => (
+                <div className="cv-contact-row" key={i}>
+                  {row.map(item => (
+                    <span className="cv-contact-item" key={item.icon}>
+                      <Icon name={item.icon} />
+                      {item.href ? (
+                        <a href={item.href}>{item.value}</a>
+                      ) : (
+                        <span>{item.value}</span>
+                      )}
+                    </span>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </header>
+
+          <section className="cv-section">
+            <h2>Career Objective</h2>
+            <p>{OBJECTIVE}</p>
+          </section>
+
+          <section className="cv-section">
+            <h2>Skills</h2>
+            {SKILLS.map(([label, value]) => (
+              <div className="cv-skill" key={label}>
+                <strong>{label}:</strong> {value}
+              </div>
+            ))}
+          </section>
+
+          <section className="cv-section">
+            <h2>Projects</h2>
+            {PROJECTS.map(project => (
+              <div className="cv-project" key={project.title}>
+                <h3>{project.title}</h3>
+                <p className="cv-stack">
+                  <strong>Tech:</strong> {project.stack}
                 </p>
-                <div className="contact">
-                  {CONTACT.map(({ icon, href, text }) =>
-                    href ? (
-                      <a key={text} href={href}>
-                        <Icon name={icon} />
-                        <b>{text}</b>
-                      </a>
-                    ) : (
-                      <span key={text}>
-                        <Icon name={icon} />
-                        <b>{text}</b>
-                      </span>
-                    ),
-                  )}
+                <p>{project.overview}</p>
+                <ul>
+                  {project.features.map(feature => (
+                    <li key={feature}>{feature}</li>
+                  ))}
+                </ul>
+                <div className="cv-links">
+                  <span>
+                    <strong>Live:</strong>{' '}
+                    <a href={project.live} target="_blank" rel="noreferrer">
+                      {stripProtocol(project.live)}
+                    </a>
+                  </span>
+                  <span>
+                    <strong>GitHub:</strong>{' '}
+                    <a
+                      href={project.repository}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {stripProtocol(project.repository)}
+                    </a>
+                  </span>
                 </div>
               </div>
-              <div className="avatar">
-                <img
-                  src="/assets/adnan.webp"
-                  alt="Adnan Sami"
-                  width="920"
-                  height="920"
-                />
-              </div>
-            </header>
+            ))}
+          </section>
 
-            <section className="sec profile-section">
-              <h2>Profile</h2>
-              <p>
-                Junior full-stack web developer and web designer from Faridpur,
-                Bangladesh. I build responsive websites and React apps, design
-                clean interfaces, and make Chrome extensions that solve small
-                everyday problems. I am currently training in AI-driven
-                full-stack web engineering at Programming Hero and I learn by
-                shipping real projects.
-              </p>
-              <p className="motto">
-                &ldquo;Doing something is better than doing nothing.&rdquo;
-              </p>
-            </section>
-
-            <div className="cols">
-              <div className="col">
-                <section className="sec">
-                  <h2>Projects</h2>
-                  {PROJECTS.map(p => (
-                    <div className="item" key={p.title}>
-                      <div className="row">
-                        <h3>{p.title}</h3>
-                        <span className="meta">{p.meta}</span>
-                      </div>
-                      <ul>
-                        {p.points.map(pt => (
-                          <li key={pt}>{pt}</li>
-                        ))}
-                      </ul>
-                      <a className="lnk" href={p.href}>
-                        {p.label}
-                      </a>
-                    </div>
-                  ))}
-                </section>
-
-                <section className="sec">
-                  <h2>What I Do</h2>
-                  <div className="item">
-                    <ul>
-                      {FOCUS.map(f => (
-                        <li key={f}>{f}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </section>
-              </div>
-
-              <div className="col">
-                <section className="sec">
-                  <h2>Skills</h2>
-                  {SKILLS.map(([label, value]) => (
-                    <div className="skill" key={label}>
-                      <b>{label}</b>
-                      <span>{value}</span>
-                    </div>
-                  ))}
-                </section>
-
-                <section className="sec">
-                  <h2>Education &amp; Training</h2>
-                  <div className="item edu">
-                    <div className="row">
-                      <h3>AI-Driven Full Stack Web Engineering</h3>
-                      <span className="meta">Ongoing</span>
-                    </div>
-                    <p>
-                      Programming Hero &middot; Batch 14
-                      <br />
-                      Student ID: <span className="nowrap">WEB14-0865</span>
-                    </p>
-                  </div>
-                  <div className="item edu">
-                    <div className="row">
-                      <h3>Higher Secondary Certificate (HSC)</h3>
-                      <span className="meta">Completed</span>
-                    </div>
-                    <p>Government Yasin College, Faridpur, Bangladesh</p>
-                  </div>
-                </section>
-
-                <section className="sec">
-                  <h2>Personal Details</h2>
-                  <dl className="dl">
-                    {DETAILS.map(([k, v]) => (
-                      <div key={k} style={{ display: 'contents' }}>
-                        <dt>{k}</dt>
-                        <dd>{v}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                </section>
-              </div>
+          <section className="cv-section">
+            <h2>Education</h2>
+            <div className="cv-edu-row">
+              <h3>{EDUCATION.title}</h3>
+              <span className="cv-date">{EDUCATION.date}</span>
             </div>
-          </article>
-        </div>
+          </section>
 
-        <div className="actions ui">
-          <button
-            className="btn solid"
-            type="button"
-            disabled={downloading}
-            aria-busy={downloading}
-            onClick={downloadCv}
-          >
-            <BtnIcon name="download" />
-            <span>{downloading ? 'Preparing PDF…' : 'Download CV (PDF)'}</span>
-          </button>
-          <button className="btn" type="button" onClick={() => window.print()}>
-            <BtnIcon name="open" />
-            <span>Print</span>
-          </button>
-        </div>
+          <section className="cv-section">
+            <h2>Additional Training</h2>
+            <div className="cv-edu-row">
+              <h3>{TRAINING.title}</h3>
+              <span className="cv-date">{TRAINING.date}</span>
+            </div>
+          </section>
+
+          <section className="cv-section">
+            <h2>Languages</h2>
+            <p>{LANGUAGES}</p>
+          </section>
+        </article>
       </main>
-
-      <svg
-        width="0"
-        height="0"
-        style={{ position: 'absolute' }}
-        aria-hidden="true"
-        focusable="false"
-      >
-        <symbol id="i-mail" viewBox="0 0 24 24">
-          <path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" />
-          <polyline points="22,6 12,13 2,6" />
-        </symbol>
-        <symbol id="i-chat" viewBox="0 0 24 24">
-          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-        </symbol>
-        <symbol id="i-pin" viewBox="0 0 24 24">
-          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-          <circle cx="12" cy="10" r="3" />
-        </symbol>
-        <symbol id="i-github" viewBox="0 0 24 24">
-          <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
-        </symbol>
-        <symbol id="i-linkedin" viewBox="0 0 24 24">
-          <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-          <rect x="2" y="9" width="4" height="12" />
-          <circle cx="4" cy="4" r="2" />
-        </symbol>
-        <symbol id="i-download" viewBox="0 0 24 24">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-          <polyline points="7 10 12 15 17 10" />
-          <line x1="12" y1="15" x2="12" y2="3" />
-        </symbol>
-        <symbol id="i-open" viewBox="0 0 24 24">
-          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-          <polyline points="15 3 21 3 21 9" />
-          <line x1="10" y1="14" x2="21" y2="3" />
-        </symbol>
-      </svg>
     </>
   );
 }
