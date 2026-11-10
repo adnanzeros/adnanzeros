@@ -266,7 +266,7 @@ async function buildAndDownloadPdf() {
   CONTACT_ROWS.forEach(row => {
     linkRow(
       row.map(item => ({ text: item.value, url: item.href })),
-      9.5
+      9.5,
     );
   });
 

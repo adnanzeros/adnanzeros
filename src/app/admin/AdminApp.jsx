@@ -1,16 +1,27 @@
+// FILE: adnanzeros/adnanzeros/src/app/admin/AdminApp.jsx  (purono file replace koro)
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import MatrixRain from './MatrixRain';
 import ForgotPassword from './ForgotPassword';
 import BlogAdmin from './BlogAdmin';
+import SettingsPanel from './SettingsPanel';
+import BlogInsights from './BlogInsights';
+import './settings.css';
 
 const CATEGORIES = [
   ['frontend', 'Frontend'],
   ['backend', 'Backend'],
   ['tools', 'Extensions'],
 ];
-const TABS = ['dashboard', 'messages', 'projects', 'blog'];
+const TABS = ['dashboard', 'messages', 'projects', 'blog', 'settings'];
+const TAB_LABELS = {
+  dashboard: 'Dashboard',
+  messages: 'Messages',
+  projects: 'Projects',
+  blog: 'Blog',
+  settings: 'Settings',
+};
 const EMPTY_PROJECT = {
   category: 'frontend',
   name: '',
@@ -45,6 +56,19 @@ const ICONS = {
       <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
       <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
       <path d="M8 7h8M8 11h8" />
+    </>
+  ),
+  settings: (
+    <>
+      <circle cx="12" cy="12" r="3" />
+      <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3h0a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5h0a1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8v0a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" />
+    </>
+  ),
+  users: (
+    <>
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8" />
     </>
   ),
   products: (
@@ -346,12 +370,12 @@ function Login({
               </div>
             )}
             <label className="adm-field">
-              <span>Username</span>
+              <span>Username or email</span>
               <input
                 value={username}
                 onChange={event => setUsername(event.target.value)}
                 autoComplete="username"
-                placeholder="Your username"
+                placeholder="Username or Gmail"
                 required
               />
             </label>
@@ -456,7 +480,7 @@ function utcDays() {
   });
 }
 
-function Dashboard({ onOpenMessages }) {
+function Dashboard({ onOpenMessages, me }) {
   const [stats, setStats] = useState(null);
   const [error, setError] = useState('');
   const load = useCallback(async () => {
@@ -483,30 +507,60 @@ function Dashboard({ onOpenMessages }) {
   const projectTotal = Number(stats.projects?.total || 0);
   const recent = Array.isArray(stats.recent) ? stats.recent : [];
   const cards = [
-    {
-      label: 'Total messages',
-      value: stats.messages?.total,
-      icon: 'messages',
-      tone: 'blue',
-    },
-    {
-      label: 'Unread messages',
-      value: stats.messages?.unread,
-      icon: 'sparkle',
-      tone: 'peach',
-    },
-    {
-      label: 'Projects live',
-      value: stats.projects?.total,
-      icon: 'projects',
-      tone: 'lavender',
-    },
-    {
-      label: 'This week',
-      value: stats.messages?.week,
-      icon: 'arrow',
-      tone: 'green',
-    },
+    ...(stats.messages
+      ? [
+          {
+            label: 'Total messages',
+            value: stats.messages.total,
+            icon: 'messages',
+            tone: 'blue',
+          },
+          {
+            label: 'Unread messages',
+            value: stats.messages.unread,
+            icon: 'sparkle',
+            tone: 'peach',
+          },
+        ]
+      : []),
+    ...(stats.projects
+      ? [
+          {
+            label: 'Projects live',
+            value: stats.projects.total,
+            icon: 'projects',
+            tone: 'lavender',
+          },
+        ]
+      : []),
+    ...(stats.blog
+      ? [
+          {
+            label: 'Blog posts',
+            value: stats.blog.total,
+            icon: 'blog',
+            tone: 'blue',
+            caption: `${stats.blog.published} published · ${stats.blog.drafts} drafts`,
+          },
+          {
+            label: 'Blog views',
+            value: stats.blog.views,
+            icon: 'eye',
+            tone: 'green',
+            caption: 'all time',
+          },
+        ]
+      : []),
+    ...(stats.messages
+      ? [
+          {
+            label: 'This week',
+            value: stats.messages.week,
+            icon: 'arrow',
+            tone: 'green',
+          },
+        ]
+      : []),
   ];
 
   return (
@@ -515,7 +569,8 @@ function Dashboard({ onOpenMessages }) {
         <div>
           <p className="adm-eyebrow">YOUR SPACE, AT A GLANCE</p>
           <h1>
-            {greeting()}, Adnan <span aria-hidden="true">✦</span>
+            {greeting()}, {(me?.name || 'Adnan').split(' ')[0]}{' '}
+            <span aria-hidden="true">✦</span>
           </h1>
           <p className="adm-muted">
             Here&apos;s what&apos;s happening with your portfolio.
@@ -540,113 +595,125 @@ function Dashboard({ onOpenMessages }) {
               <CountUp value={card.value} />
             </strong>
             <span className="adm-stat-caption">
-              {card.label === 'This week' ? 'in the last 7 days' : 'all time'}
+              {card.caption ||
+                (card.label === 'This week'
+                  ? 'in the last 7 days'
+                  : 'all time')}
             </span>
           </article>
         ))}
       </section>
 
-      <div className="adm-dashboard-grid">
-        <section className="adm-panel adm-chart-panel">
-          <div className="adm-section-heading">
-            <div>
-              <p className="adm-eyebrow">INBOX ACTIVITY</p>
-              <h2>Messages this week</h2>
-            </div>
-            <span className="adm-chart-total">
-              {Number(stats.messages?.week || 0)} total
-            </span>
-          </div>
-          <div
-            className="adm-chart"
-            role="img"
-            aria-label="Messages received each of the last seven days"
-          >
-            {days.map(day => {
-              const value = Number(stats.perDay?.[day.key] || 0);
-              return (
-                <div className="adm-chart-column" key={day.key}>
-                  <span className="adm-chart-value">{value || ''}</span>
-                  <div className="adm-chart-track">
-                    <span
-                      style={{
-                        height: `${Math.max(7, (value / maxMessages) * 100)}%`,
-                      }}
-                    />
-                  </div>
-                  <span className="adm-chart-label">{day.label}</span>
-                </div>
-              );
-            })}
-          </div>
-        </section>
+      {stats.blog && <BlogInsights blog={stats.blog} Icon={Icon} />}
 
-        <section className="adm-panel adm-category-panel">
-          <div className="adm-section-heading">
-            <div>
-              <p className="adm-eyebrow">YOUR SHOWCASE</p>
-              <h2>Projects by category</h2>
+      <div className="adm-dashboard-grid">
+        {stats.messages && (
+          <section className="adm-panel adm-chart-panel">
+            <div className="adm-section-heading">
+              <div>
+                <p className="adm-eyebrow">INBOX ACTIVITY</p>
+                <h2>Messages this week</h2>
+              </div>
+              <span className="adm-chart-total">
+                {Number(stats.messages?.week || 0)} total
+              </span>
             </div>
-            <span className="adm-chart-total">{projectTotal} total</span>
-          </div>
-          <div className="adm-meter-list">
-            {CATEGORIES.map(([key, label]) => {
-              const amount = Number(categories[key] || 0);
-              const percent = projectTotal ? (amount / projectTotal) * 100 : 0;
-              return (
-                <div className="adm-meter" key={key}>
-                  <div>
-                    <span>{label}</span>
-                    <strong>{amount}</strong>
+            <div
+              className="adm-chart"
+              role="img"
+              aria-label="Messages received each of the last seven days"
+            >
+              {days.map(day => {
+                const value = Number(stats.perDay?.[day.key] || 0);
+                return (
+                  <div className="adm-chart-column" key={day.key}>
+                    <span className="adm-chart-value">{value || ''}</span>
+                    <div className="adm-chart-track">
+                      <span
+                        style={{
+                          height: `${Math.max(7, (value / maxMessages) * 100)}%`,
+                        }}
+                      />
+                    </div>
+                    <span className="adm-chart-label">{day.label}</span>
                   </div>
-                  <span className="adm-meter-track">
-                    <span style={{ width: `${percent}%` }} />
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </section>
+                );
+              })}
+            </div>
+          </section>
+        )}
+
+        {stats.projects && (
+          <section className="adm-panel adm-category-panel">
+            <div className="adm-section-heading">
+              <div>
+                <p className="adm-eyebrow">YOUR SHOWCASE</p>
+                <h2>Projects by category</h2>
+              </div>
+              <span className="adm-chart-total">{projectTotal} total</span>
+            </div>
+            <div className="adm-meter-list">
+              {CATEGORIES.map(([key, label]) => {
+                const amount = Number(categories[key] || 0);
+                const percent = projectTotal
+                  ? (amount / projectTotal) * 100
+                  : 0;
+                return (
+                  <div className="adm-meter" key={key}>
+                    <div>
+                      <span>{label}</span>
+                      <strong>{amount}</strong>
+                    </div>
+                    <span className="adm-meter-track">
+                      <span style={{ width: `${percent}%` }} />
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        )}
       </div>
 
-      <section className="adm-panel adm-recent-panel">
-        <div className="adm-section-heading">
-          <div>
-            <p className="adm-eyebrow">FRESH FROM YOUR INBOX</p>
-            <h2>Recent messages</h2>
+      {stats.messages && (
+        <section className="adm-panel adm-recent-panel">
+          <div className="adm-section-heading">
+            <div>
+              <p className="adm-eyebrow">FRESH FROM YOUR INBOX</p>
+              <h2>Recent messages</h2>
+            </div>
+            <button className="adm-text-button" onClick={onOpenMessages}>
+              All messages <Icon name="arrow" size={16} />
+            </button>
           </div>
-          <button className="adm-text-button" onClick={onOpenMessages}>
-            All messages <Icon name="arrow" size={16} />
-          </button>
-        </div>
-        {recent.length ? (
-          <div className="adm-recent-list">
-            {recent.slice(0, 4).map(message => (
-              <button
-                className="adm-recent-row"
-                key={message.id}
-                onClick={() => onOpenMessages(message.id)}
-              >
-                <span className="adm-avatar">{initials(message.name)}</span>
-                <span className="adm-recent-copy">
-                  <strong>{message.name || 'Anonymous'}</strong>
-                  <span>{message.message}</span>
-                </span>
-                <span className="adm-recent-date">
-                  {timeAgo(message.createdAt)}
-                </span>
-                {!message.read && <span className="adm-unread-dot" />}
-              </button>
-            ))}
-          </div>
-        ) : (
-          <p className="adm-empty-inline">No messages to show yet.</p>
-        )}
-      </section>
+          {recent.length ? (
+            <div className="adm-recent-list">
+              {recent.slice(0, 4).map(message => (
+                <button
+                  className="adm-recent-row"
+                  key={message.id}
+                  onClick={() => onOpenMessages(message.id)}
+                >
+                  <span className="adm-avatar">{initials(message.name)}</span>
+                  <span className="adm-recent-copy">
+                    <strong>{message.name || 'Anonymous'}</strong>
+                    <span>{message.message}</span>
+                  </span>
+                  <span className="adm-recent-date">
+                    {timeAgo(message.createdAt)}
+                  </span>
+                  {!message.read && <span className="adm-unread-dot" />}
+                </button>
+              ))}
+            </div>
+          ) : (
+            <p className="adm-empty-inline">No messages to show yet.</p>
+          )}
+        </section>
+      )}
 
       <section className="adm-soon-grid" aria-label="Coming soon">
         {[
-          ['blog', 'A home for your thoughts', 'Blog'],
           ['products', 'Things you can share or sell', 'Products'],
           ['payments', 'A smoother way to get paid', 'Payments'],
         ].map(([icon, description, title]) => (
@@ -1673,6 +1740,7 @@ export default function AdminApp() {
     authed: false,
     configured: false,
     dbReady: false,
+    me: null,
     error: '',
   });
   const [tab, setTab] = useState('dashboard');
@@ -1692,6 +1760,7 @@ export default function AdminApp() {
         authed: Boolean(data.authed),
         configured: Boolean(data.configured),
         dbReady: Boolean(data.dbReady),
+        me: data.me || null,
         error: '',
       });
     } catch (error) {
@@ -1737,6 +1806,23 @@ export default function AdminApp() {
   }, []);
   useEffect(() => () => window.clearTimeout(toastTimer.current), []);
 
+  const me = auth.me;
+  const visibleTabs = useMemo(() => {
+    if (!me) return ['dashboard'];
+    const allowed = ['messages', 'projects', 'blog'].filter(t =>
+      me.permissions.includes(t),
+    );
+    return [
+      'dashboard',
+      ...allowed,
+      ...(me.role === 'admin' ? ['settings'] : []),
+    ];
+  }, [me]);
+  const isViewer = me?.role === 'viewer';
+  useEffect(() => {
+    if (auth.authed && me && !visibleTabs.includes(tab)) setTab('dashboard');
+  }, [auth.authed, me, visibleTabs, tab]);
+
   function navigate(nextTab) {
     setTab(nextTab);
     if (window.location.hash !== `#${nextTab}`)
@@ -1751,13 +1837,14 @@ export default function AdminApp() {
     setConfirmation(request);
   }
   const refreshUnread = useCallback(async () => {
+    if (!me?.permissions?.includes('messages')) return;
     try {
       const data = await api('/api/admin/stats');
       setUnreadCount(Number(data.messages?.unread || 0));
     } catch (error) {
       notify(error.message, 'error');
     }
-  }, [notify]);
+  }, [notify, me]);
   useEffect(() => {
     if (auth.authed) refreshUnread();
   }, [auth.authed, refreshUnread]);
@@ -1773,7 +1860,7 @@ export default function AdminApp() {
 
   function completeLogin() {
     setTab('dashboard');
-    setAuth(current => ({ ...current, authed: true }));
+    checkSession(); // loads role + permissions
     window.history.replaceState(
       null,
       '',
@@ -1799,7 +1886,9 @@ export default function AdminApp() {
   }
 
   return (
-    <main className={`adm-workspace adm-theme-${theme}`}>
+    <main
+      className={`adm-workspace adm-theme-${theme}${isViewer ? ' adm-readonly' : ''}`}
+    >
       <aside className="adm-sidebar">
         <a className="adm-sidebar-brand" href="/" aria-label="adnanzeros home">
           <img src="/favicon.svg" alt="" width="34" height="34" />
@@ -1809,22 +1898,19 @@ export default function AdminApp() {
         </a>
         <p className="adm-nav-label">WORKSPACE</p>
         <nav className="adm-main-nav" aria-label="Admin sections">
-          {[
-            ['dashboard', 'Dashboard'],
-            ['messages', 'Messages'],
-            ['projects', 'Projects'],
-            ['blog', 'Blog'],
-          ].map(([value, label]) => (
-            <button
-              key={value}
-              className={`adm-nav-item${tab === value ? ' adm-nav-active' : ''}`}
-              onClick={() => navigate(value)}
-            >
-              <Icon name={value} size={19} />
-              <span>{label}</span>
-              {value === 'messages' && <UnreadBadge count={unreadCount} />}
-            </button>
-          ))}
+          {visibleTabs
+            .map(value => [value, TAB_LABELS[value]])
+            .map(([value, label]) => (
+              <button
+                key={value}
+                className={`adm-nav-item${tab === value ? ' adm-nav-active' : ''}`}
+                onClick={() => navigate(value)}
+              >
+                <Icon name={value} size={19} />
+                <span>{label}</span>
+                {value === 'messages' && <UnreadBadge count={unreadCount} />}
+              </button>
+            ))}
         </nav>
         <p className="adm-nav-label adm-nav-label-later">IN THE WORKS</p>
         <div className="adm-main-nav">
@@ -1858,10 +1944,12 @@ export default function AdminApp() {
             <span>Log out</span>
           </button>
           <div className="adm-sidebar-profile">
-            <span className="adm-avatar">AZ</span>
+            <span className="adm-avatar">
+              {(me?.name || 'AZ').slice(0, 2).toUpperCase()}
+            </span>
             <span>
-              <strong>Adnan Sami</strong>
-              <small>Portfolio owner</small>
+              <strong>{me?.name || 'Adnan Sami'}</strong>
+              <small>{me?.isOwner ? 'Portfolio owner' : me?.role}</small>
             </span>
             <ThemeToggle
               theme={theme}
@@ -1882,7 +1970,7 @@ export default function AdminApp() {
           <div className="adm-breadcrumb">
             <span>Workspace</span>
             <span>/</span>
-            <strong>{tab[0].toUpperCase() + tab.slice(1)}</strong>
+            <strong>{TAB_LABELS[tab]}</strong>
           </div>
           <div className="adm-topbar-actions">
             <ThemeToggle
@@ -1910,8 +1998,14 @@ export default function AdminApp() {
           </div>
         </header>
         <div className="adm-content-area">
+          {isViewer && (
+            <p className="adm-readonly-banner">
+              View-only access: you can look but not change anything.
+            </p>
+          )}
           {tab === 'dashboard' && (
             <Dashboard
+              me={me}
               onOpenMessages={id => {
                 setSelectedMessage(id || null);
                 navigate('messages');
@@ -1937,9 +2031,17 @@ export default function AdminApp() {
               kit={blogKit}
             />
           )}
+          {tab === 'settings' && me?.role === 'admin' && (
+            <SettingsPanel
+              kit={blogKit}
+              notify={notify}
+              requestConfirm={requestConfirm}
+              isOwner={Boolean(me.isOwner)}
+            />
+          )}
         </div>
         <nav className="adm-mobile-tabs" aria-label="Admin sections">
-          {TABS.map(value => (
+          {visibleTabs.map(value => (
             <button
               key={value}
               className={tab === value ? 'adm-mobile-tab-active' : ''}
@@ -1951,7 +2053,7 @@ export default function AdminApp() {
                   <UnreadBadge count={unreadCount} compact />
                 )}
               </span>
-              <span>{value[0].toUpperCase() + value.slice(1)}</span>
+              <span>{TAB_LABELS[value]}</span>
             </button>
           ))}
         </nav>

@@ -1,0 +1,65 @@
+/* FILE: adnanzeros/adnanzeros/src/app/admin/settings.css  (NOTUN file) */
+/* Settings page + blog insights + role helpers (admin panel) */
+.adm-settings { display: grid; gap: 18px; }
+.adm-member-form { display: grid; gap: 16px; }
+.adm-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.adm-field-wide { grid-column: 1 / -1; }
+.adm-form-label { margin: 4px 0 -6px; }
+.adm-pass-row { display: flex; gap: 8px; }
+.adm-pass-row input { flex: 1; min-width: 0; }
+.adm-role-grid, .adm-task-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.adm-role-card, .adm-task {
+  display: flex; gap: 10px; align-items: flex-start; padding: 13px 14px; text-align: left; cursor: pointer;
+  border: 1px solid var(--adm-line); border-radius: 14px; background: var(--adm-surface-soft); color: var(--adm-text);
+  transition: border-color 150ms, background 150ms, transform 150ms;
+}
+.adm-role-card { flex-direction: column; gap: 4px; }
+.adm-role-card:hover, .adm-task:hover { border-color: var(--adm-blue); }
+.adm-role-on, .adm-task-on { border-color: var(--adm-blue-deep); background: rgba(129, 173, 234, 0.14); }
+.adm-role-card small, .adm-task small, .adm-member-info small { color: var(--adm-muted); font-size: 0.72rem; }
+.adm-task input { margin-top: 3px; accent-color: var(--adm-blue-deep); }
+.adm-task > span { display: grid; gap: 3px; }
+.adm-form-actions { justify-content: flex-end; }
+.adm-member-list { display: grid; gap: 10px; margin: 18px 0 0; padding: 0; list-style: none; }
+.adm-member-list li {
+  display: flex; align-items: center; gap: 14px; padding: 14px; border: 1px solid var(--adm-line);
+  border-radius: 14px; background: var(--adm-surface-soft);
+}
+.adm-member-off { opacity: 0.6; }
+.adm-member-info { display: grid; min-width: 0; flex: 1; gap: 3px; }
+.adm-member-info strong, .adm-member-info small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.adm-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 5px; }
+.adm-chip { padding: 3px 9px; border-radius: 99px; background: var(--adm-surface); border: 1px solid var(--adm-line); color: var(--adm-muted); font-size: 0.66rem; font-weight: 700; text-transform: capitalize; }
+.adm-chip-admin { background: rgba(238, 170, 147, 0.2); color: #b3614a; border-color: transparent; }
+.adm-chip-moderator { background: rgba(129, 173, 234, 0.2); color: var(--adm-blue-deep); border-color: transparent; }
+.adm-chip-viewer { background: rgba(99, 169, 139, 0.2); color: #3f8a69; border-color: transparent; }
+.adm-chip-off { background: #fff4f0; color: #aa513c; }
+
+/* Blog insights */
+.adm-seg { display: inline-flex; padding: 3px; border-radius: 11px; background: var(--adm-surface-soft); border: 1px solid var(--adm-line); }
+.adm-seg button { padding: 6px 12px; border: 0; border-radius: 8px; background: transparent; color: var(--adm-muted); font-size: 0.74rem; font-weight: 700; cursor: pointer; }
+.adm-seg .adm-seg-on { background: var(--adm-surface); color: var(--adm-text); box-shadow: 0 2px 8px rgba(44, 58, 88, 0.1); }
+.adm-top-list { display: grid; gap: 16px; margin: 20px 0 0; padding: 0; list-style: none; }
+.adm-top-list li { display: flex; gap: 12px; align-items: flex-start; }
+.adm-top-rank { display: grid; width: 26px; height: 26px; flex: none; place-items: center; border-radius: 9px; background: var(--adm-surface-soft); color: var(--adm-blue-deep); font-size: 0.74rem; font-weight: 800; }
+.adm-top-body { display: grid; min-width: 0; flex: 1; gap: 7px; }
+.adm-top-line { display: flex; justify-content: space-between; gap: 12px; font-size: 0.82rem; }
+.adm-top-line a { overflow: hidden; font-weight: 700; text-decoration: none; text-overflow: ellipsis; white-space: nowrap; }
+.adm-top-line a:hover { color: var(--adm-blue-deep); }
+.adm-top-line strong { flex: none; }
+.adm-top-body small { color: var(--adm-muted); font-size: 0.7rem; }
+.adm-blog-insights { margin-top: 0; }
+
+/* Viewer = read-only: hide write buttons (the server blocks writes anyway) */
+.adm-readonly .adm-button-primary,
+.adm-readonly .adm-button-danger { display: none !important; }
+.adm-readonly-banner { margin: 0 0 14px; padding: 10px 14px; border-radius: 12px; background: rgba(129, 173, 234, 0.16); color: var(--adm-blue-deep); font-size: 0.78rem; font-weight: 700; }
+
+.adm-mobile-tabs { grid-auto-flow: column; grid-template-columns: none !important; grid-auto-columns: 1fr; }
+
+@media (max-width: 760px) {
+  .adm-form-grid, .adm-role-grid, .adm-task-grid { grid-template-columns: 1fr; }
+  .adm-member-list li { flex-wrap: wrap; }
+  .adm-member-list .adm-inline-actions { width: 100%; }
+  .adm-pass-row { flex-wrap: wrap; }
+}

@@ -1,3 +1,4 @@
+// FILE: adnanzeros/adnanzeros/src/app/blog/[slug]/page.js  (purono file replace koro)
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import PortfolioHeader from '../../components/PortfolioHeader';
@@ -5,6 +6,7 @@ import { getPublicPost } from '../../../lib/blog-store';
 import { formatDate } from '../../../lib/blog-utils';
 import styles from '../blog.module.css';
 import PostBody from './PostBody'; // NOTUN: English/Bangla switch
+import ViewTracker from './ViewTracker';
 
 export const revalidate = 60;
 
@@ -35,6 +37,7 @@ export default async function BlogPostPage({ params }) {
     <>
       <PortfolioHeader base="/" />
       <main className={styles.page}>
+        <ViewTracker slug={post.slug} />
         <article className={styles.article}>
           <Link href="/blog" className={styles.back}>
             <span aria-hidden="true">&larr;</span> All posts

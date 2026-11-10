@@ -1,3 +1,4 @@
+// FILE: adnanzeros/adnanzeros/src/app/page.js  (home page, purono file replace koro)
 import Link from 'next/link';
 import ContactForm from './components/ContactForm';
 import GitHubStats from './components/GitHubStats';
@@ -126,24 +127,84 @@ export default async function HomePage() {
         <ContactForm />
       </main>
       <footer className="foot">
-        <a href="#home" className="brand">
-          <img src="/favicon.svg" alt="" width="28" height="28" />
-          adnanzeros
-        </a>
-        <p>Adnan Sami · Dhaka, Bangladesh</p>
-        <div className="social">
-          {profiles.map(([name, url]) => (
-            <a key={name} href={url} target="_blank" rel="me noopener">
-              {name}
+        <div className="sf-glow" aria-hidden="true" />
+        <div className="sf-inner">
+          <div className="sf-top">
+            <div className="sf-brand">
+              <a href="#home" className="brand">
+                <img src="/favicon.svg" alt="" width="34" height="34" />
+                adnanzeros
+              </a>
+              <p>
+                Web designer &amp; frontend developer from Dhaka, Bangladesh. I
+                build simple, fast and slightly delightful things for the web.
+              </p>
+              <a href="#contact" className="btn solid">
+                Let&apos;s work together <span className="arr">&rarr;</span>
+              </a>
+            </div>
+
+            <nav className="sf-col" aria-label="Page sections">
+              <h3>Explore</h3>
+              <ul>
+                <li>
+                  <a href="#about">About</a>
+                </li>
+                <li>
+                  <a href="#stack">Stack</a>
+                </li>
+                <li>
+                  <a href="#projects">Projects</a>
+                </li>
+                <li>
+                  <a href="#github">GitHub</a>
+                </li>
+                <li>
+                  <a href="#contact">Contact</a>
+                </li>
+                <li>
+                  <Link href="/blog">Blog</Link>
+                </li>
+              </ul>
+            </nav>
+
+            <div className="sf-col">
+              <h3>Find me</h3>
+              <div className="sf-social">
+                {profiles.map(([name, url]) => (
+                  <a key={name} href={url} target="_blank" rel="me noopener">
+                    {name}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="sf-bottom">
+            <small>
+              &copy; {new Date().getFullYear()} adnanzeros &middot; Adnan Sami
+            </small>
+            <nav className="sf-legal" aria-label="Footer links">
+              <Link href="/privacy">Privacy Policy</Link>
+              <Link href="/terms">Terms of Use</Link>
+            </nav>
+            <a href="#home" className="sf-up" aria-label="Back to top">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M12 19V5M5 12l7-7 7 7" />
+              </svg>
             </a>
-          ))}
+          </div>
         </div>
-        <nav className="legal-links" aria-label="Footer links">
-          <Link href="/blog">Blog</Link>
-          <Link href="/privacy">Privacy Policy</Link>
-          <Link href="/terms">Terms of Use</Link>
-        </nav>
-        <small>© {new Date().getFullYear()} adnanzeros</small>
       </footer>
       <PortfolioEffects />
     </>
