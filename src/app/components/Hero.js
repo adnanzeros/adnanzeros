@@ -84,7 +84,7 @@ export default function Hero() {
           clean, practical websites and tools.
         </p>
         <div className="cta">
-          <a className="btn solid" href="#projects">
+          <a className="btn solid" href="#my-work">
             See my work <span className="arr" aria-hidden="true">&rarr;</span>
           </a>
           <a className="btn" href="#contact">

@@ -22,8 +22,8 @@ export default function PortfolioEffects() {
           .forEach(section =>
             gsap.from(section, {
               opacity: 0,
-              y: section.id === 'projects' ? 0 : 60,
-              rotationX: section.id === 'projects' ? 0 : 14,
+              y: section.id === 'my-work' ? 0 : 60,
+              rotationX: section.id === 'my-work' ? 0 : 14,
               z: -160,
               transformPerspective: 1200,
               transformOrigin: '50% 100%',

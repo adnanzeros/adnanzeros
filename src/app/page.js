@@ -154,7 +154,7 @@ export default async function HomePage() {
                   <a href="#stack">Stack</a>
                 </li>
                 <li>
-                  <a href="#projects">Projects</a>
+                  <a href="#my-work">My Work</a>
                 </li>
                 <li>
                   <a href="#github">GitHub</a>

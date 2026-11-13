@@ -14,8 +14,8 @@ export default function Projects({ projects }) {
   const cards = projects[category] || [];
 
   return (
-    <section id="projects" className="wrap">
-      <h2>Projects</h2>
+    <section id="my-work" className="wrap">
+      <h2>My Work</h2>
       <div className="tabs" role="tablist" aria-label="Project categories">
         {tabs.map(([id, label]) => (
           <button
