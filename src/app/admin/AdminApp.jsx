@@ -18,7 +18,7 @@ const TABS = ['dashboard', 'messages', 'projects', 'blog', 'settings'];
 const TAB_LABELS = {
   dashboard: 'Dashboard',
   messages: 'Messages',
-  projects: 'Projects',
+  projects: 'My Work',
   blog: 'Blog',
   settings: 'Settings',
 };
@@ -503,8 +503,9 @@ function Dashboard({ onOpenMessages, me }) {
     1,
     ...days.map(day => Number(stats.perDay?.[day.key] || 0)),
   );
-  const categories = stats.projects?.byCategory || {};
-  const projectTotal = Number(stats.projects?.total || 0);
+  const work = stats.myWork ?? stats.projects;
+  const categories = work?.byCategory || {};
+  const projectTotal = Number(work?.total || 0);
   const recent = Array.isArray(stats.recent) ? stats.recent : [];
   const cards = [
     ...(stats.messages
@@ -523,11 +524,11 @@ function Dashboard({ onOpenMessages, me }) {
           },
         ]
       : []),
-    ...(stats.projects
+    ...(work
       ? [
           {
-            label: 'Projects live',
-            value: stats.projects.total,
+            label: 'My Work live',
+            value: work.total,
             icon: 'projects',
             tone: 'lavender',
           },
@@ -643,12 +644,12 @@ function Dashboard({ onOpenMessages, me }) {
           </section>
         )}
 
-        {stats.projects && (
+        {work && (
           <section className="adm-panel adm-category-panel">
             <div className="adm-section-heading">
               <div>
                 <p className="adm-eyebrow">YOUR SHOWCASE</p>
-                <h2>Projects by category</h2>
+                <h2>My Work by category</h2>
               </div>
               <span className="adm-chart-total">{projectTotal} total</span>
             </div>
@@ -1214,12 +1215,12 @@ function ProjectDrawer({ project, onClose, onSaved, notify }) {
     try {
       const body = JSON.stringify({ ...form, tags: form.tags });
       if (form.id) {
-        await api(`/api/admin/projects/${encodeURIComponent(form.id)}`, {
+        await api(`/api/admin/my-work/${encodeURIComponent(form.id)}`, {
           method: 'PUT',
           body,
         });
       } else {
-        await api('/api/admin/projects', { method: 'POST', body });
+        await api('/api/admin/my-work', { method: 'POST', body });
       }
       onSaved();
     } catch (saveError) {
@@ -1250,7 +1251,7 @@ function ProjectDrawer({ project, onClose, onSaved, notify }) {
               {form.id ? 'REFINE YOUR SHOWCASE' : 'ADD TO YOUR SHOWCASE'}
             </p>
             <h2 id="adm-project-form-title">
-              {form.id ? 'Edit project' : 'New project'}
+              {form.id ? 'Edit work' : 'New work'}
             </h2>
           </div>
           <button
@@ -1268,7 +1269,7 @@ function ProjectDrawer({ project, onClose, onSaved, notify }) {
           onSubmit={submit}
         >
           <label className="adm-field">
-            <span>Project name</span>
+            <span>Work name</span>
             <input
               value={form.name}
               onChange={set('name')}
@@ -1361,7 +1362,7 @@ function ProjectDrawer({ project, onClose, onSaved, notify }) {
             />
             {form.image ? (
               <div className="adm-image-preview">
-                <img src={form.image} alt="Project cover preview" />
+                <img src={form.image} alt="Work cover preview" />
                 <div className="adm-image-preview-actions">
                   <button
                     type="button"
@@ -1425,7 +1426,7 @@ function ProjectDrawer({ project, onClose, onSaved, notify }) {
             className="adm-button adm-button-primary"
             disabled={busy || uploading}
           >
-            {busy ? 'Saving…' : form.id ? 'Save changes' : 'Add project'}
+            {busy ? 'Saving…' : form.id ? 'Save changes' : 'Add work'}
           </button>
         </footer>
       </aside>
@@ -1441,7 +1442,7 @@ function Projects({ notify, requestConfirm }) {
   const load = useCallback(async () => {
     setError('');
     try {
-      const data = await api('/api/admin/projects');
+      const data = await api('/api/admin/my-work');
       setItems(Array.isArray(data.projects) ? data.projects : []);
     } catch (loadError) {
       setError(loadError.message);
@@ -1453,11 +1454,11 @@ function Projects({ notify, requestConfirm }) {
 
   async function remove(project) {
     try {
-      await api(`/api/admin/projects/${encodeURIComponent(project.id)}`, {
+      await api(`/api/admin/my-work/${encodeURIComponent(project.id)}`, {
         method: 'DELETE',
       });
       setItems(current => current.filter(item => item.id !== project.id));
-      notify('Project deleted.', 'success');
+      notify('Work deleted.', 'success');
     } catch (deleteError) {
       notify(deleteError.message, 'error');
     }
@@ -1483,7 +1484,7 @@ function Projects({ notify, requestConfirm }) {
       <div className="adm-page-heading">
         <div>
           <p className="adm-eyebrow">THE WORK YOU PUT INTO THE WORLD</p>
-          <h1>Projects</h1>
+          <h1>My Work</h1>
           <p className="adm-muted">
             Your portfolio, shaped by the things you make.
           </p>
@@ -1492,11 +1493,11 @@ function Projects({ notify, requestConfirm }) {
           className="adm-button adm-button-primary"
           onClick={() => setEditing({ ...EMPTY_PROJECT })}
         >
-          <Icon name="plus" size={18} /> Add project
+          <Icon name="plus" size={18} /> Add work
         </button>
       </div>
       <div className="adm-project-filters">
-        {[['all', 'All projects'], ...CATEGORIES].map(([value, label]) => (
+        {[['all', 'All work'], ...CATEGORIES].map(([value, label]) => (
           <button
             key={value}
             className={filter === value ? 'adm-filter-active' : ''}
@@ -1529,18 +1530,16 @@ function Projects({ notify, requestConfirm }) {
                 <div className="adm-project-title-row">
                   <h2>{project.name}</h2>
                   <div className="adm-project-links">
-                    {project.url && (
-                      <a
-                        className="adm-project-link"
-                        href={project.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={`Open live link for ${project.name}`}
-                        title="Live link"
-                      >
-                        <Icon name="external" size={17} />
-                      </a>
-                    )}
+                    <a
+                      className="adm-project-link"
+                      href={`/?category=${encodeURIComponent(project.category)}&work=${encodeURIComponent(project.id)}#my-work`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`View ${project.name} on my website`}
+                      title="View on my website"
+                    >
+                      <Icon name="external" size={17} />
+                    </a>
                     {project.repo && (
                       <a
                         className="adm-project-link"
@@ -1550,7 +1549,7 @@ function Projects({ notify, requestConfirm }) {
                         aria-label={`Open GitHub repository for ${project.name}`}
                         title="GitHub link"
                       >
-                        <Icon name="external" size={17} />
+                        <Icon name="link" size={17} />
                       </a>
                     )}
                   </div>
@@ -1586,9 +1585,9 @@ function Projects({ notify, requestConfirm }) {
                     aria-label={`Delete ${project.name}`}
                     onClick={() =>
                       requestConfirm({
-                        title: 'Delete this project?',
+                        title: 'Delete this work?',
                         message: `"${project.name}" will be removed from your portfolio.`,
-                        confirmLabel: 'Delete project',
+                        confirmLabel: 'Delete work',
                         onConfirm: () => remove(project),
                       })
                     }
@@ -1607,20 +1606,20 @@ function Projects({ notify, requestConfirm }) {
           </span>
           <h2>
             {items.length
-              ? 'No projects in this category'
-              : 'Your next project starts here'}
+              ? 'No work in this category'
+              : 'Your next work starts here'}
           </h2>
           <p>
             {items.length
               ? 'Try another category filter.'
-              : 'Add a project to give your portfolio a fresh update.'}
+              : 'Add work to give your portfolio a fresh update.'}
           </p>
           {!items.length && (
             <button
               className="adm-button adm-button-primary"
               onClick={() => setEditing({ ...EMPTY_PROJECT })}
             >
-              <Icon name="plus" size={18} /> Add your first project
+              <Icon name="plus" size={18} /> Add your first work
             </button>
           )}
         </div>
@@ -1632,10 +1631,7 @@ function Projects({ notify, requestConfirm }) {
           notify={notify}
           onSaved={() => {
             setEditing(null);
-            notify(
-              editing.id ? 'Project updated.' : 'Project added.',
-              'success',
-            );
+            notify(editing.id ? 'Work updated.' : 'Work added.', 'success');
             load();
           }}
         />

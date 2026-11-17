@@ -6,8 +6,16 @@ import '../header-dropdown.css';
 
 const aboutItems = [
   { title: 'Tech', description: 'Stack and tools I use', href: '#stack' },
-  { title: 'Work', description: 'Frontend, backend, extensions', href: '#my-work' },
-  { title: 'Dev stats', description: 'Activity and languages', href: '#github' },
+  {
+    title: 'Work',
+    description: 'Frontend, backend, extensions',
+    href: '#my-work',
+  },
+  {
+    title: 'Dev stats',
+    description: 'Activity and languages',
+    href: '#github',
+  },
   { title: 'Contact', description: 'Send me a message', href: '#contact' },
 ];
 
@@ -36,7 +44,10 @@ export default function PortfolioHeader({ base = '' }) {
       if (headerRef.current && !headerRef.current.contains(event.target)) {
         setMenuOpen(false);
         setOpenMenu(null);
-      } else if (!(event.target instanceof Element) || !event.target.closest('.dd')) {
+      } else if (
+        !(event.target instanceof Element) ||
+        !event.target.closest('.dd')
+      ) {
         setOpenMenu(null);
       }
     }
@@ -79,7 +90,7 @@ export default function PortfolioHeader({ base = '' }) {
   }
 
   function toggleDropdown(name) {
-    setOpenMenu(current => current === name ? null : name);
+    setOpenMenu(current => (current === name ? null : name));
   }
 
   function renderAboutItems() {
@@ -116,7 +127,10 @@ export default function PortfolioHeader({ base = '' }) {
       onMouseLeave={event => {
         if (
           window.matchMedia('(min-width: 992px)').matches &&
-          !event.currentTarget.contains(event.relatedTarget)
+          !(
+            event.relatedTarget instanceof Node &&
+            event.currentTarget.contains(event.relatedTarget)
+          )
         ) {
           setOpenMenu(null);
         }
@@ -152,7 +166,8 @@ export default function PortfolioHeader({ base = '' }) {
             className={`dd ${name}${openMenu === name ? ' open' : ''}`}
             key={name}
             onMouseOver={() => {
-              if (window.matchMedia('(min-width: 992px)').matches) setOpenMenu(name);
+              if (window.matchMedia('(min-width: 992px)').matches)
+                setOpenMenu(name);
             }}
           >
             <button
@@ -167,12 +182,16 @@ export default function PortfolioHeader({ base = '' }) {
               <Chevron />
             </button>
             <div className="dd-panel" id={`${name}-navigation-panel`}>
-              {name === 'about' ? renderAboutItems() : (
+              {name === 'about' ? (
+                renderAboutItems()
+              ) : (
                 <div className="dd-links">
                   <Link className="dd-item" href="/blog" onClick={closeMenus}>
                     <span className="dd-item-copy">
                       <span className="dd-item-title">Blog</span>
-                      <span className="dd-item-subtitle">Notes on design and code</span>
+                      <span className="dd-item-subtitle">
+                        Notes on design and code
+                      </span>
                     </span>
                   </Link>
                 </div>

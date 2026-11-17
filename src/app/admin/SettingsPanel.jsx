@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 const TASKS = [
   ['blog', 'Blog', 'Write, edit and delete blog posts'],
-  ['projects', 'Projects', 'Manage portfolio projects'],
+  ['projects', 'My Work', 'Manage portfolio work'],
   ['messages', 'Messages', 'Read and reply to inbox messages'],
 ];
 const ROLES = [

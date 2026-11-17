@@ -1,0 +1,22 @@
+/* My Work: "All" view er category chip + admin theke deep link korle card highlight */
+.chips span.cat {
+  background: rgba(238, 170, 147, 0.4);
+  color: var(--ink);
+}
+
+.card.hl {
+  border-color: var(--peach);
+  box-shadow: 0 0 0 3px var(--peach), 0 24px 60px rgba(25, 50, 95, 0.19);
+  animation: work-pulse 1.2s ease-in-out 2;
+}
+
+@keyframes work-pulse {
+  50% {
+    box-shadow: 0 0 0 10px rgba(238, 170, 147, 0.45),
+      0 24px 60px rgba(25, 50, 95, 0.19);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card.hl { animation: none; }
+}

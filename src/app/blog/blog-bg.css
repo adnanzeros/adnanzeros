@@ -1,0 +1,10 @@
+/* Blog background: Option 8 (bokeh circles).
+   Sudhu .blog-bg wrapper er vitore lage, tai onno page e kono effect porbe na. */
+.blog-bg::before {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: url('/backgrounds/bokeh.svg') center / cover no-repeat, var(--blue);
+  content: "";
+  pointer-events: none;
+}

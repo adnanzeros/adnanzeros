@@ -16,12 +16,14 @@ const builtInProjects = () =>
 
 export async function getPublicProjects() {
   try {
-    const response = await fetch(`${API_URL}/api/projects`, {
+    const response = await fetch(`${API_URL}/api/my-work`, {
       next: { revalidate: 60 },
       signal: AbortSignal.timeout(6000),
     });
     if (!response.ok) {
-      throw new Error(`Projects request failed with status ${response.status}.`);
+      throw new Error(
+        `Projects request failed with status ${response.status}.`,
+      );
     }
 
     const data = await response.json();
