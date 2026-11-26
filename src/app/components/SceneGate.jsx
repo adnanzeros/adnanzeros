@@ -1,3 +1,4 @@
+// src/app/components/SceneGate.jsx
 'use client';
 
 import { useEffect } from 'react';
@@ -5,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import Scene3D from './Scene3D';
 
 /* Je route gulote 3D scene lagbe na */
-const NO_SCENE = ['/cv', '/privacy', '/terms', '/admin', '/blog'];
+const NO_SCENE = ['/cv', '/old-cv', '/privacy', '/terms', '/admin', '/blog'];
 
 export default function SceneGate() {
   const pathname = usePathname() || '';
